@@ -3,7 +3,6 @@ package com.tsystems.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "location")
@@ -23,15 +22,17 @@ public class Location implements Serializable {
     @Column(name = "longitude")
     private double longitude;
 
-    @ManyToOne
-    @JoinColumn(name = "waypoint_id")
-    private Waypoint waypoint;
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    private  List<Waypoint> waypointList;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<Driver> driverList;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<Truck> truckList;
+
+    public Location() {
+    }
 
     public long getId() {
         return id;
@@ -65,12 +66,12 @@ public class Location implements Serializable {
         this.longitude = longitude;
     }
 
-    public Waypoint getWaypoint() {
-        return waypoint;
+    public List<Waypoint> getWaypointList() {
+        return waypointList;
     }
 
-    public void setWaypoint(Waypoint waypoint) {
-        this.waypoint = waypoint;
+    public void setWaypointList(List<Waypoint> waypointList) {
+        this.waypointList = waypointList;
     }
 
     public List<Driver> getDriverList() {
@@ -87,24 +88,5 @@ public class Location implements Serializable {
 
     public void setTruckList(List<Truck> truckList) {
         this.truckList = truckList;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return id == location.id &&
-                Double.compare(location.latitude, latitude) == 0 &&
-                Double.compare(location.longitude, longitude) == 0 &&
-                Objects.equals(city, location.city) &&
-                Objects.equals(waypoint, location.waypoint) &&
-                Objects.equals(driverList, location.driverList) &&
-                Objects.equals(truckList, location.truckList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, city, latitude, longitude, waypoint, driverList, truckList);
     }
 }

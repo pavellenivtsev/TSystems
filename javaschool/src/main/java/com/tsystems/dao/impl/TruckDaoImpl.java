@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TruckDaoImpl extends AbstractGenericDao<Truck> implements TruckDao {
+
 }

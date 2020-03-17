@@ -17,16 +17,17 @@
         <th>current city</th>
         <th>action</th>
     </tr>
-    <c:forEach var="truck" items="${trucks}">
+        <c:forEach var="truck" items="${trucks}">
         <tr>
             <td>${truck.registrationNumber}</td>
             <td>${truck.driverShiftSize}</td>
             <td>${truck.weightCapacity}</td>
             <td>${truck.status}</td>
-            <td>${truck.locationDto}</td>
+            <td>${truck.location.city}</td>
             <td>
-                <c:url value="/truck/edit/${truck.id}" var="edit"/>
+                <c:url value="/truck/edit" var="edit"/>
                 <form name="edit" method="get" action="${edit}">
+                    <input type="hidden" name="id" value="${truck.id}">
                     <button type="submit">Edit</button>
                 </form>
                 <c:url value="/truck/delete" var="delete"/>

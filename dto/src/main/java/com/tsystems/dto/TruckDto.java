@@ -1,5 +1,7 @@
 package com.tsystems.dto;
 
+import com.tsystems.enumaration.TruckStatus;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,23 +15,15 @@ public class TruckDto implements Serializable {
 
     private double weightCapacity;
 
-    private String status;
+    private TruckStatus status;
 
-    private LocationDto locationDto;
+    private LocationDto location;
 
     private UserOrderDto userOrderDto;
 
     private List<DriverDto> driverDtoList;
 
     public TruckDto() {
-    }
-
-    public TruckDto(long id, String registrationNumber, double driverShiftSize, double weightCapacity, String status) {
-        this.id = id;
-        this.registrationNumber = registrationNumber;
-        this.driverShiftSize = driverShiftSize;
-        this.weightCapacity = weightCapacity;
-        this.status = status;
     }
 
     public long getId() {
@@ -64,20 +58,20 @@ public class TruckDto implements Serializable {
         this.weightCapacity = weightCapacity;
     }
 
-    public String getStatus() {
+    public TruckStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TruckStatus status) {
         this.status = status;
     }
 
-    public LocationDto getLocationDto() {
-        return locationDto;
+    public LocationDto getLocation() {
+        return location;
     }
 
-    public void setLocationDto(LocationDto locationDto) {
-        this.locationDto = locationDto;
+    public void setLocation(LocationDto location) {
+        this.location = location;
     }
 
     public UserOrderDto getUserOrderDto() {

@@ -1,9 +1,10 @@
 package com.tsystems.entity;
 
+import com.tsystems.enumaration.CargoStatus;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
-
+import java.util.List;
 
 @Entity
 @Table(name = "cargo")
@@ -20,12 +21,19 @@ public class Cargo implements Serializable {
     @Column(name = "weight")
     private double weight;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private CargoStatus status;
+
+    @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL)
+    private List<Waypoint> waypointList;
 
     @ManyToOne
-    @JoinColumn(name = "waypoint_id")
-    private Waypoint waypoint;
+    @JoinColumn(name = "user_order_id")
+    private UserOrder userOrder;
+
+    public Cargo() {
+    }
 
     public long getId() {
         return id;
@@ -51,36 +59,27 @@ public class Cargo implements Serializable {
         this.weight = weight;
     }
 
-    public String getStatus() {
+    public CargoStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CargoStatus status) {
         this.status = status;
     }
 
-    public Waypoint getWaypoint() {
-        return waypoint;
+    public List<Waypoint> getWaypointList() {
+        return waypointList;
     }
 
-    public void setWaypoint(Waypoint waypoint) {
-        this.waypoint = waypoint;
+    public void setWaypointList(List<Waypoint> waypointList) {
+        this.waypointList = waypointList;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cargo cargo = (Cargo) o;
-        return id == cargo.id &&
-                Double.compare(cargo.weight, weight) == 0 &&
-                Objects.equals(name, cargo.name) &&
-                Objects.equals(status, cargo.status) &&
-                Objects.equals(waypoint, cargo.waypoint);
+    public UserOrder getUserOrder() {
+        return userOrder;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, weight, status, waypoint);
+    public void setUserOrder(UserOrder userOrder) {
+        this.userOrder = userOrder;
     }
 }

@@ -1,9 +1,9 @@
 package com.tsystems.entity;
 
+import com.tsystems.enumaration.WaypointType;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "waypoint")
@@ -14,18 +14,20 @@ public class Waypoint implements Serializable {
     @Column(name = "id")
     private long id;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "type")
-    private String type;
+    private WaypointType type;
 
     @ManyToOne
-    @JoinColumn(name = "user_order_id")
-    private UserOrder userOrder;
+    @JoinColumn(name = "location_id")
+    private Location location;
 
-    @OneToMany(mappedBy = "waypoint", cascade = CascadeType.ALL)
-    private List<Location> locationList;
+    @ManyToOne
+    @JoinColumn(name = "cargo_id")
+    private Cargo cargo;
 
-    @OneToMany(mappedBy = "waypoint", cascade = CascadeType.ALL)
-    private List<Cargo> cargoList;
+    public Waypoint() {
+    }
 
     public long getId() {
         return id;
@@ -35,52 +37,27 @@ public class Waypoint implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
+    public WaypointType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(WaypointType type) {
         this.type = type;
     }
 
-    public UserOrder getUserOrder() {
-        return userOrder;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setUserOrder(UserOrder userOrder) {
-        this.userOrder = userOrder;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public List<Location> getLocationList() {
-        return locationList;
+    public Cargo getCargo() {
+        return cargo;
     }
 
-    public void setLocationList(List<Location> locationList) {
-        this.locationList = locationList;
-    }
-
-    public List<Cargo> getCargoList() {
-        return cargoList;
-    }
-
-    public void setCargoList(List<Cargo> cargoList) {
-        this.cargoList = cargoList;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Waypoint waypoint = (Waypoint) o;
-        return id == waypoint.id &&
-                Objects.equals(type, waypoint.type) &&
-                Objects.equals(userOrder, waypoint.userOrder) &&
-                Objects.equals(locationList, waypoint.locationList) &&
-                Objects.equals(cargoList, waypoint.cargoList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, type, userOrder, locationList, cargoList);
+    public void setCargo(Cargo cargo) {
+        this.cargo = cargo;
     }
 }

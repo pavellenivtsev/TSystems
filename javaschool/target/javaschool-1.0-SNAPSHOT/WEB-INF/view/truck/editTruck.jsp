@@ -28,6 +28,10 @@
         <input type="text" name="status" id="status" value="${truck.status}" required/>
     </div>
     <div class="form-element">
+        <label for="locationCity">City</label>
+        <input type="text" name="locationCity" id="locationCity" value="${truck.location.city}" required/>
+    </div>
+    <div class="form-element">
          <input type="submit" value="Edit truck">
     </div>
 </form>

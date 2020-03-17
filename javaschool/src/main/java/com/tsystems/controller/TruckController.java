@@ -27,10 +27,10 @@ public class TruckController {
      */
     @GetMapping(value = "/all")
     public ModelAndView getTrucks() {
-        List<TruckDto> trucks = truckService.findAll();
+        List<TruckDto> trucksDto =truckService.findAll();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("truck/allTrucks");
-        modelAndView.addObject("trucks", trucks);
+        modelAndView.addObject("trucks", trucksDto);
         return modelAndView;
     }
 
@@ -41,8 +41,7 @@ public class TruckController {
      */
     @PostMapping(value = "/delete")
     public String deleteTruck(@RequestParam long id){
-        TruckDto truckDto = truckService.findById(id);
-        truckService.delete(truckDto);
+        truckService.deleteById(id);
         return "redirect:/truck/all";
     }
 
@@ -51,8 +50,8 @@ public class TruckController {
      *
      * @return editTruck.jsp
      */
-    @GetMapping(value = "/edit/{id}")
-    public ModelAndView editTruckPage(@PathVariable("id") long id) {
+    @GetMapping(value = "/edit")
+    public ModelAndView editTruckPage(@RequestParam long id) {
         TruckDto truckDto=truckService.findById(id);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("truck/editTruck");
@@ -66,12 +65,11 @@ public class TruckController {
      * @return allTrucks.jsp
      */
     @PostMapping(value = "/edit")
-    public String editTruck(@ModelAttribute("truck") TruckDto truckDto){
-        truckService.update(truckDto);
+    public String editTruck(@ModelAttribute("truck") TruckDto truckDto,
+                            @RequestParam("locationCity") String locationCity) {
+        truckService.update(truckDto, locationCity);
         return "redirect:/truck/all";
     }
-
-
 
     /**
      * Add new truck.
@@ -93,8 +91,10 @@ public class TruckController {
      * @return allTruck.jsp
      */
     @PostMapping(value = "/add")
-    public String addTruck(@ModelAttribute("newTruck") TruckDto truckDto){
-        truckService.save(truckDto);
+    public String addTruck(@ModelAttribute("newTruck") TruckDto truckDto,
+                           @RequestParam("locationCity") String locationCity
+                           ){
+        truckService.save(truckDto,locationCity);
         return "redirect:/truck/all";
     }
 }

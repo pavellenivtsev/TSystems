@@ -1,9 +1,10 @@
 package com.tsystems.entity;
 
+import com.tsystems.enumaration.TruckStatus;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "truck")
@@ -23,10 +24,11 @@ public class Truck implements Serializable {
     @Column(name = "weight_capacity")
     private double weightCapacity;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TruckStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -36,6 +38,9 @@ public class Truck implements Serializable {
 
     @OneToMany(mappedBy = "truck", cascade = CascadeType.ALL)
     private List<Driver> driverList;
+
+    public Truck() {
+    }
 
     public long getId() {
         return id;
@@ -69,11 +74,11 @@ public class Truck implements Serializable {
         this.weightCapacity = weightCapacity;
     }
 
-    public String getStatus() {
+    public TruckStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TruckStatus status) {
         this.status = status;
     }
 
@@ -99,39 +104,5 @@ public class Truck implements Serializable {
 
     public void setDriverList(List<Driver> driverList) {
         this.driverList = driverList;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Truck truck = (Truck) o;
-        return id == truck.id &&
-                Double.compare(truck.driverShiftSize, driverShiftSize) == 0 &&
-                Double.compare(truck.weightCapacity, weightCapacity) == 0 &&
-                Objects.equals(registrationNumber, truck.registrationNumber) &&
-                Objects.equals(status, truck.status) &&
-                Objects.equals(location, truck.location) &&
-                Objects.equals(userOrder, truck.userOrder) &&
-                Objects.equals(driverList, truck.driverList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, registrationNumber, driverShiftSize, weightCapacity, status, location, userOrder, driverList);
-    }
-
-    @Override
-    public String toString() {
-        return "Truck{" +
-                "id=" + id +
-                ", registrationNumber='" + registrationNumber + '\'' +
-                ", driverShiftSize=" + driverShiftSize +
-                ", weightCapacity=" + weightCapacity +
-                ", status='" + status + '\'' +
-                ", location=" + location +
-                ", userOrder=" + userOrder +
-                ", driverList=" + driverList +
-                '}';
     }
 }

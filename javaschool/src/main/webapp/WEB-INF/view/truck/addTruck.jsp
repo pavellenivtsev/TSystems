@@ -24,6 +24,10 @@
         <input type="text" name="status" id="status" required/>
     </div>
     <div class="form-element">
+        <label for="locationCity">City</label>
+        <input type="text" name="locationCity" id="locationCity" required/>
+    </div>
+    <div class="form-element">
         <input type="submit" value="Add truck">
     </div>
 </form>

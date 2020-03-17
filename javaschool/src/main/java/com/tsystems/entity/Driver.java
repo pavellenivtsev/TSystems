@@ -1,8 +1,9 @@
 package com.tsystems.entity;
 
+import com.tsystems.enumaration.DriverStatus;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "driver")
@@ -16,8 +17,9 @@ public class Driver implements Serializable{
     @Column(name = "hours_this_month")
     private Double hoursThisMonth;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private DriverStatus status;
 
     @ManyToOne
     @JoinColumn(name = "truck_id")
@@ -35,6 +37,9 @@ public class Driver implements Serializable{
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 
+    public Driver() {
+    }
+
     public long getId() {
         return id;
     }
@@ -51,11 +56,11 @@ public class Driver implements Serializable{
         this.hoursThisMonth = hoursThisMonth;
     }
 
-    public String getStatus() {
+    public DriverStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(DriverStatus status) {
         this.status = status;
     }
 
@@ -89,24 +94,5 @@ public class Driver implements Serializable{
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Driver driver = (Driver) o;
-        return id == driver.id &&
-                Objects.equals(hoursThisMonth, driver.hoursThisMonth) &&
-                Objects.equals(status, driver.status) &&
-                Objects.equals(truck, driver.truck) &&
-                Objects.equals(userOrder, driver.userOrder) &&
-                Objects.equals(location, driver.location) &&
-                Objects.equals(user, driver.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, hoursThisMonth, status, truck, userOrder, location, user);
     }
 }

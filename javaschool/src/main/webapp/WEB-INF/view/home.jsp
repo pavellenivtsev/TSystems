@@ -23,5 +23,10 @@
         <br>
         <c:url value="/truck/all" var="var4"/>
         <a href="${var4}">trucks</a>
+        <br>
+        <br>
+        <br>
+        <c:url value="/order/all" var="var5"/>
+        <a href="${var5}">orders</a>
     </body>
 </html>
