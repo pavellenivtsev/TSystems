@@ -15,6 +15,8 @@ public class HomeController {
     public ModelAndView getHomePage(){
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("home");
+        modelAndView.addObject("title","Welcome");
+        modelAndView.addObject("message", "This is welcome page!");
         return modelAndView;
     }
 

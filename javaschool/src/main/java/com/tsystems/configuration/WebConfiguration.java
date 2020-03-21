@@ -1,15 +1,15 @@
 package com.tsystems.configuration;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
-import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 
 /**
  * Contains definition and dependence of bean components.
@@ -17,7 +17,7 @@ import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.tsystems")
-public class WebConfiguration  {
+public class WebConfiguration implements WebMvcConfigurer {
 
     /**
      * Determines where to look for web views.
@@ -37,5 +37,12 @@ public class WebConfiguration  {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    // Static Resource Config
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
     }
 }

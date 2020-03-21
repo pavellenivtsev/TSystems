@@ -1,12 +1,18 @@
 package com.tsystems.entity;
 
 import com.tsystems.enumaration.WaypointType;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "waypoint")
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Waypoint implements Serializable {
 
     @Id
@@ -26,38 +32,4 @@ public class Waypoint implements Serializable {
     @JoinColumn(name = "cargo_id")
     private Cargo cargo;
 
-    public Waypoint() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public WaypointType getType() {
-        return type;
-    }
-
-    public void setType(WaypointType type) {
-        this.type = type;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public Cargo getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
-    }
 }

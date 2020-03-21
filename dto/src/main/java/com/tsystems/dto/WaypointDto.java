@@ -1,9 +1,15 @@
 package com.tsystems.dto;
 
 import com.tsystems.enumaration.WaypointType;
+import lombok.*;
 
 import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class WaypointDto implements Serializable {
 
     private long id;
@@ -14,35 +20,4 @@ public class WaypointDto implements Serializable {
 
     private CargoDto cargo;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public WaypointType getType() {
-        return type;
-    }
-
-    public void setType(WaypointType type) {
-        this.type = type;
-    }
-
-    public LocationDto getLocation() {
-        return location;
-    }
-
-    public void setLocation(LocationDto location) {
-        this.location = location;
-    }
-
-    public CargoDto getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(CargoDto cargo) {
-        this.cargo = cargo;
-    }
 }

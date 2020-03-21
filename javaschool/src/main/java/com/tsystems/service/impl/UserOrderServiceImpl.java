@@ -1,13 +1,6 @@
 package com.tsystems.service.impl;
 
-import com.tsystems.dao.api.CargoDao;
-import com.tsystems.dao.api.LocationDao;
-import com.tsystems.dao.api.UserOrderDao;
-import com.tsystems.dao.api.WaypointDao;
-import com.tsystems.dao.impl.CargoDaoImpl;
-import com.tsystems.dao.impl.LocationDaoImpl;
-import com.tsystems.dao.impl.UserOrderDaoImpl;
-import com.tsystems.dao.impl.WaypointDaoImpl;
+import com.tsystems.dao.api.*;
 import com.tsystems.dto.UserOrderDto;
 import com.tsystems.entity.Cargo;
 import com.tsystems.entity.Location;
@@ -17,6 +10,7 @@ import com.tsystems.enumaration.CargoStatus;
 import com.tsystems.enumaration.UserOrderStatus;
 import com.tsystems.enumaration.WaypointType;
 import com.tsystems.service.api.UserOrderService;
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,40 +21,30 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserOrderServiceImpl implements UserOrderService {
-    private UserOrderDao userOrderDao = new UserOrderDaoImpl();
+    private static final Logger logger=Logger.getLogger(UserOrderServiceImpl.class);
 
-    private CargoDao cargoDao=new CargoDaoImpl();
+    private final UserOrderDao userOrderDao;
 
-    private LocationDao locationDao=new LocationDaoImpl();
+    private final CargoDao cargoDao;
 
-    private WaypointDao waypointDao=new WaypointDaoImpl();
+    private final TruckDao truckDao;
 
-    private ModelMapper modelMapper;
+    private final LocationDao locationDao;
+
+    private final WaypointDao waypointDao;
+
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
+    public UserOrderServiceImpl(UserOrderDao userOrderDao, CargoDao cargoDao,TruckDao truckDao, LocationDao locationDao, WaypointDao waypointDao, ModelMapper modelMapper) {
+        this.userOrderDao = userOrderDao;
+        this.cargoDao = cargoDao;
+        this.truckDao=truckDao;
+        this.locationDao = locationDao;
+        this.waypointDao = waypointDao;
         this.modelMapper = modelMapper;
     }
 
-    @Autowired
-    public void setUserOrderDao(UserOrderDao userOrderDao) {
-        this.userOrderDao = userOrderDao;
-    }
-
-    @Autowired
-    public void setCargoDao(CargoDao cargoDao) {
-        this.cargoDao = cargoDao;
-    }
-
-    @Autowired
-    public void setLocationDao(LocationDao locationDao) {
-        this.locationDao = locationDao;
-    }
-
-    @Autowired
-    public void setWaypointDao(WaypointDao waypointDao) {
-        this.waypointDao = waypointDao;
-    }
 
     @Override
     @Transactional
@@ -74,7 +58,14 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Override
     @Transactional
-    public void save(UserOrderDto userOrderDto, String cargoName, String cargoWeight, String locationFromCity, String locationToCity) {
+    public void save(UserOrderDto userOrderDto, String cargoName, double cargoWeight, String locationFromCity, String locationToCity) {
+//        if(locationFromCity.isEmpty()){
+//            logger.error("");
+//        }
+//        if (locationToCity.isEmpty()){
+//            logger.error();
+//        }
+
         //create new order
         UserOrder userOrder=convertToEntity(userOrderDto);
         userOrder.setStatus(UserOrderStatus.NOT_COMPLETED);
@@ -83,7 +74,7 @@ public class UserOrderServiceImpl implements UserOrderService {
         //create new cargo
         Cargo cargo = new Cargo();
         cargo.setName(cargoName);
-        cargo.setWeight(Double.parseDouble(cargoWeight));
+        cargo.setWeight(cargoWeight);
         cargo.setStatus(CargoStatus.PREPARED);
         cargo.setUserOrder(userOrder);
         cargoDao.save(cargo);
@@ -111,7 +102,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Override
     @Transactional
-    public void update(UserOrderDto userOrderDto, String cargoName, String cargoWeight, String locationFromCity, String locationToCity) {
+    public void update(UserOrderDto userOrderDto, String cargoName, double cargoWeight, String locationFromCity, String locationToCity) {
         UserOrder userOrder=userOrderDao.findById(userOrderDto.getId());
         userOrder.setUniqueNumber(userOrderDto.getUniqueNumber());
 
@@ -119,7 +110,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 
         Cargo cargo=userOrder.getCargoList().get(0);
         cargo.setName(cargoName);
-        cargo.setWeight(Double.parseDouble(cargoWeight));
+        cargo.setWeight(cargoWeight);
         cargoDao.update(cargo);
 
         List<Waypoint> waypointList=cargo.getWaypointList();
@@ -150,6 +141,14 @@ public class UserOrderServiceImpl implements UserOrderService {
             cargoDao.delete(cargo);
         }
         userOrderDao.delete(userOrder);
+    }
+
+    @Override
+    @Transactional
+    public void addTruck(UserOrderDto userOrderDto, long id) {
+        UserOrder userOrder=userOrderDao.findById(userOrderDto.getId());
+        userOrder.setTruck(truckDao.findById(id));
+        userOrderDao.update(userOrder);
     }
 
     private UserOrderDto convertToDto(UserOrder userOrder) {

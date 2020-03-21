@@ -1,12 +1,18 @@
 package com.tsystems.entity;
 
 import com.tsystems.enumaration.DriverStatus;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "driver")
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Driver implements Serializable{
 
     @Id
@@ -16,6 +22,9 @@ public class Driver implements Serializable{
 
     @Column(name = "hours_this_month")
     private Double hoursThisMonth;
+
+    @Column(name = "personal_number")
+    private String personalNumber;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
@@ -37,62 +46,4 @@ public class Driver implements Serializable{
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 
-    public Driver() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Double getHoursThisMonth() {
-        return hoursThisMonth;
-    }
-
-    public void setHoursThisMonth(Double hoursThisMonth) {
-        this.hoursThisMonth = hoursThisMonth;
-    }
-
-    public DriverStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DriverStatus status) {
-        this.status = status;
-    }
-
-    public Truck getTruck() {
-        return truck;
-    }
-
-    public void setTruck(Truck truck) {
-        this.truck = truck;
-    }
-
-    public UserOrder getUserOrder() {
-        return userOrder;
-    }
-
-    public void setUserOrder(UserOrder userOrder) {
-        this.userOrder = userOrder;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

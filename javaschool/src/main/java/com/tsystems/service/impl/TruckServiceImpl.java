@@ -1,15 +1,16 @@
 package com.tsystems.service.impl;
 
+import com.tsystems.dao.api.DriverDao;
 import com.tsystems.dao.api.LocationDao;
 import com.tsystems.dao.api.TruckDao;
-import com.tsystems.dao.impl.LocationDaoImpl;
-import com.tsystems.dao.impl.TruckDaoImpl;
+import com.tsystems.dto.DriverDto;
 import com.tsystems.dto.TruckDto;
+import com.tsystems.entity.Driver;
 import com.tsystems.entity.Location;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.tsystems.entity.Truck;
+import com.tsystems.enumaration.TruckStatus;
 import com.tsystems.service.api.TruckService;
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,37 +22,31 @@ import java.util.stream.Collectors;
 
 @Service
 public class TruckServiceImpl implements TruckService {
-    private static final Logger logger = LogManager.getLogger(TruckServiceImpl.class);
+    private static final Logger log=Logger.getLogger(TruckServiceImpl.class);
 
-    private TruckDao truckDao = new TruckDaoImpl();
+    private final TruckDao truckDao;
 
-    private LocationDao locationDao = new LocationDaoImpl();
+    private final LocationDao locationDao;
 
-    private ModelMapper modelMapper;
+    private final DriverDao driverDao;
 
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public void setTruckDao(TruckDao truckDao) {
+    public TruckServiceImpl(TruckDao truckDao, LocationDao locationDao, DriverDao driverDao, ModelMapper modelMapper) {
         this.truckDao = truckDao;
-    }
-
-    @Autowired
-    public void setLocationDao(LocationDao locationDao) {
         this.locationDao = locationDao;
+        this.driverDao = driverDao;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     @Transactional
     public List<TruckDto> findAll() {
         List<Truck> trucks = truckDao.findAll();
-        List<TruckDto> trucksDto = trucks.stream()
+        return trucks.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-        return trucksDto;
     }
 
     @Override
@@ -62,7 +57,10 @@ public class TruckServiceImpl implements TruckService {
         location.setCity(locationCity);
         locationDao.save(location);
         truck.setLocation(location);
+        truck.setStatus(TruckStatus.ON_DUTY);
         truckDao.save(truck);
+
+        log.info("Added a new truck with registration number "+truck.getRegistrationNumber());
     }
 
     @Override
@@ -84,7 +82,9 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public void deleteById(long id) {
         Truck truck = truckDao.findById(id);
-        locationDao.delete(truck.getLocation());
+
+        log.info("Deleted a truck with registration number "+ truck.getRegistrationNumber());
+
         truckDao.delete(truck);
     }
 
@@ -92,6 +92,40 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public TruckDto findById(long id) {
         return convertToDto(truckDao.findById(id));
+    }
+
+    @Override
+    @Transactional
+    public List<TruckDto> findAllAvailable() {
+
+        //добавить проверку
+        List<Truck> trucks = truckDao.findAll();
+        List<TruckDto> trucksDto = trucks.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return trucksDto;
+    }
+
+    @Override
+    @Transactional
+    public void addDriver(TruckDto truckDto, long driverId) {
+        Truck truck=convertToEntity(truckDto);
+        List<Driver> driverList=truck.getDriverList();
+        Driver driver =driverDao.findById(driverId);
+        driverList.add(driver);
+        truck.setDriverList(driverList);
+        truckDao.update(truck);
+    }
+
+    @Override
+    @Transactional
+    public void deleteDriver(TruckDto truckDto, long driverId) {
+        Truck truck=convertToEntity(truckDto);
+        List<Driver> driverList=truck.getDriverList();
+        Driver driver =driverDao.findById(driverId);
+        driverList.remove(driver);
+        truck.setDriverList(driverList);
+        truckDao.update(truck);
     }
 
     private TruckDto convertToDto(Truck truck) {

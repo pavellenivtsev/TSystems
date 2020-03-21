@@ -1,7 +1,6 @@
 package com.tsystems.service.impl;
 
 import com.tsystems.dao.api.LocationDao;
-import com.tsystems.dao.impl.LocationDaoImpl;
 import com.tsystems.entity.Location;
 import com.tsystems.service.api.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +11,10 @@ import java.util.List;
 
 @Service
 public class LocationServiceImpl implements LocationService {
-    private LocationDao locationDao=new LocationDaoImpl();
+    private final LocationDao locationDao;
 
     @Autowired
-    @Transactional
-    public void setLocationDao(LocationDao locationDao) {
+    public LocationServiceImpl(LocationDao locationDao) {
         this.locationDao = locationDao;
     }
 

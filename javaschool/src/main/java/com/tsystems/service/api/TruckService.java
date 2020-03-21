@@ -13,4 +13,10 @@ public interface TruckService {
     void deleteById(long id);
 
     TruckDto findById(long id);
+
+    List<TruckDto> findAllAvailable();
+
+    void addDriver(TruckDto truckDto, long driverId);
+
+    void deleteDriver(TruckDto truckDto, long driverId);
 }

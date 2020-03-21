@@ -1,14 +1,24 @@
 package com.tsystems.service.api;
 
-import com.tsystems.entity.User;
+import com.tsystems.dto.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    List<User> findAll();
-    boolean save(User user);
-    void update(User user);
-    void delete(User user);
-    User findById(long id);
+    List<UserDto> findAll();
+
+    boolean save(UserDto userDto);
+
+    void update(UserDto userDto);
+
+    boolean deleteById(long id);
+
+    UserDto findById(long id);
+
+    void appointAsAdmin(long id);
+
+    void appointAsManager(long id);
+
+    void appointAsDriver(long id);
 }

@@ -1,10 +1,11 @@
 package com.tsystems.controller;
 
 import com.tsystems.dto.TruckDto;
+import com.tsystems.service.api.DriverService;
 import com.tsystems.service.api.TruckService;
-import com.tsystems.service.impl.TruckServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,11 +14,14 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/truck")
 public class TruckController {
-    private TruckService truckService = new TruckServiceImpl();
+    private final TruckService truckService;
+
+    private final DriverService driverService;
 
     @Autowired
-    public void setTruckService(TruckService truckService) {
+    public TruckController(TruckService truckService, DriverService driverService) {
         this.truckService = truckService;
+        this.driverService = driverService;
     }
 
     /**
@@ -27,7 +31,7 @@ public class TruckController {
      */
     @GetMapping(value = "/all")
     public ModelAndView getTrucks() {
-        List<TruckDto> trucksDto =truckService.findAll();
+        List<TruckDto> trucksDto = truckService.findAll();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("truck/allTrucks");
         modelAndView.addObject("trucks", trucksDto);
@@ -40,7 +44,7 @@ public class TruckController {
      * @return allTruck.jsp
      */
     @PostMapping(value = "/delete")
-    public String deleteTruck(@RequestParam long id){
+    public String deleteTruck(@RequestParam long id) {
         truckService.deleteById(id);
         return "redirect:/truck/all";
     }
@@ -52,7 +56,7 @@ public class TruckController {
      */
     @GetMapping(value = "/edit")
     public ModelAndView editTruckPage(@RequestParam long id) {
-        TruckDto truckDto=truckService.findById(id);
+        TruckDto truckDto = truckService.findById(id);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("truck/editTruck");
         modelAndView.addObject("truck", truckDto);
@@ -78,10 +82,10 @@ public class TruckController {
      */
     @GetMapping(value = "/add")
     public ModelAndView addPage() {
-        TruckDto truckDto=new TruckDto();
-        ModelAndView modelAndView=new ModelAndView();
+        TruckDto truckDto = new TruckDto();
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("/truck/addTruck");
-        modelAndView.addObject("newTruck",truckDto);
+        modelAndView.addObject("newTruck", truckDto);
         return modelAndView;
     }
 
@@ -93,8 +97,58 @@ public class TruckController {
     @PostMapping(value = "/add")
     public String addTruck(@ModelAttribute("newTruck") TruckDto truckDto,
                            @RequestParam("locationCity") String locationCity
-                           ){
-        truckService.save(truckDto,locationCity);
+    ) {
+        truckService.save(truckDto, locationCity);
         return "redirect:/truck/all";
     }
+
+    /**
+     * Returns the truck page.
+     *
+     * @return truck.jsp
+     */
+    @GetMapping(value = "/")
+    public ModelAndView getTruck(@RequestParam long id) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("truck/truck");
+        modelAndView.addObject("truck", truckService.findById(id));
+        return modelAndView;
+    }
+
+    /**
+     * Add driver.
+     *
+     * @return addDriver.jsp
+     */
+    @GetMapping(value = "/add/driver")
+    public String addDriverPage(@ModelAttribute TruckDto truckDto, Model model) {
+        model.addAttribute("truck", truckDto);
+        model.addAttribute("drivers", driverService.findAllAvailable());
+        return "truck/addDriver";
+    }
+
+    /**
+     * Add driver.
+     *
+     * @return truck.jsp
+     */
+    @PostMapping(value = "/add/driver")
+    public String addDriver(@ModelAttribute TruckDto truckDto,
+                            @RequestParam long driverId){
+        truckService.addDriver(truckDto, driverId);
+        return "redirect:/truck/";
+    }
+
+    /**
+     * Delete driver.
+     *
+     * @return truck.jsp
+     */
+    @PostMapping(value = "/delete/driver")
+    public String deleteDriver(@ModelAttribute TruckDto truckDto,
+                               @RequestParam long driverId){
+        truckService.deleteDriver(truckDto, driverId);
+        return "redirect:/truck/";
+    }
+
 }

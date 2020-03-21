@@ -2,7 +2,6 @@ package com.tsystems.service.impl;
 
 
 import com.tsystems.dto.CargoDto;
-import com.tsystems.entity.Cargo;
 import com.tsystems.service.api.CargoService;
 import org.springframework.stereotype.Service;
 

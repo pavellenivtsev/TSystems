@@ -14,55 +14,54 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    UserService userService;
-
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    //Security configuration
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                //Доступ только для не зарегистрированных пользователей
-                .antMatchers("/registration").not().fullyAuthenticated()
-                //Доступ только для пользователей с ролью Администратор
+                .csrf().disable()
+                //for unregistered users
+                .authorizeRequests().antMatchers("/registration").not().fullyAuthenticated()
+                //for admins
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                //Доступ только для пользователей с ролью Менеджера
-                .antMatchers("/manager/**").hasRole("MANAGER")
-                //Доступ только для пользователей с ролью Водителя
-                .antMatchers("/driver/**").hasRole("Driver")
-                //Доступ только для пользователей с ролью User
+                //for drivers
+                .antMatchers("/driver/**").hasRole("DRIVER")
+                //for registered users
                 .antMatchers("/user/**").hasRole("USER")
-                //Доступ только для пользователей с ролью Менеджера или Админа
-                .antMatchers("/truck/**").hasAnyRole("ADMIN","MANAGER")
-                //Доступ разрешен всем пользователей
+                //for managers
+                .antMatchers("/truck/**").hasRole("MANAGER")
+                .antMatchers("/order/**").hasRole("MANAGER")
+                .antMatchers("/manager/**").hasRole("MANAGER")
+                //for all
                 .antMatchers("/", "/resources/**").permitAll()
-                //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
-                //Настройка для входа в систему
-                .formLogin()
-                .loginPage("/login")
-                //Перенарпавление на главную страницу после успешного входа
-                .defaultSuccessUrl("/")
+
+                //Setting up to log in
+                .formLogin().loginPage("/login").loginProcessingUrl("/loginAction")
+                //Redirect to the cabinet after successful login
+                .defaultSuccessUrl("/cabinet")
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .permitAll()
+                //Redirect to the home page after logout
                 .and()
-                .logout()
-                .permitAll()
-                .logoutSuccessUrl("/");
+                .logout().permitAll().logoutSuccessUrl("/");
     }
 
+    //Global security configuration
     @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("admin").password(bCryptPasswordEncoder().encode("admin"))
+                .authorities("ADMIN");
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
     }
 }

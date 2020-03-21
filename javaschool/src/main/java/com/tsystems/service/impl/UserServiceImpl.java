@@ -1,10 +1,13 @@
 package com.tsystems.service.impl;
 
+
 import com.tsystems.dao.api.UserDao;
-import com.tsystems.dao.impl.UserDaoImpl;
+import com.tsystems.dto.UserDto;
 import com.tsystems.entity.Role;
 import com.tsystems.entity.User;
 import com.tsystems.service.api.UserService;
+import org.apache.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,22 +18,23 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserDetailsService, UserService {
-    private UserDao userDao = new UserDaoImpl();
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private static final Logger log = Logger.getLogger(UserServiceImpl.class);
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserDao userDao;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    @Autowired
-    public void setUserDao(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
         this.userDao = userDao;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -47,45 +51,84 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     @Transactional
-    public List<User> findAll() {
-        return userDao.findAll();
+    public List<UserDto> findAll() {
+        List<User> users = userDao.findAll();
+        return users.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public boolean save(User user) {
+    public boolean save(UserDto userDto) {
 
-        User userFromDB = userDao.findByUsername(user.getUsername());
-
-        if (userFromDB != null) {
-            return false;
+        if (userDao.findByUsername(userDto.getUsername())==null){
+            User user = convertToEntity(userDto);
+            user.setRoles(Collections.singleton(new Role(1L, "USER")));
+            user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+            userDao.save(user);
+            log.info("Saved a new user with username " + user.getUsername());
+            return true;
         }
-
-        user.setRoles(Collections.singleton(new Role(1L, "USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userDao.save(user);
-        return true;
+        return false;
     }
 
 
     @Override
     @Transactional
-    public void update(User user) {
+    public void update(UserDto userDto) {
+        User user = convertToEntity(userDto);
         userDao.update(user);
     }
 
     @Override
     @Transactional
-    public void delete(User user) {
+    public boolean deleteById(long id) {
+        User user = userDao.findById(id);
         userDao.delete(user);
+        log.info("Deleted a user with username " + user.getUsername());
+        return true;
     }
 
     @Override
     @Transactional
-    public User findById(long userId) {
-        Optional<User> userFromDb = Optional.ofNullable(userDao.findById(userId));
-        return userFromDb.orElse(new User());
+    public UserDto findById(long id) {
+        User user = userDao.findById(id);
+        return convertToDto(user);
     }
 
+    @Override
+    @Transactional
+    public void appointAsAdmin(long id) {
+        User user = userDao.findById(id);
+        user.setRoles(null);
+        user.setRoles(Collections.singleton(new Role(2L, "ADMIN")));
+        log.info("A user with username " + user.getUsername()+" was appointed as admin.");
+    }
 
+    @Override
+    @Transactional
+    public void appointAsManager(long id) {
+        User user = userDao.findById(id);
+        user.setRoles(null);
+        user.setRoles(Collections.singleton(new Role(3L, "MANAGER")));
+        log.info("A user with username " + user.getUsername()+" was appointed as manager.");
+    }
+
+    @Override
+    @Transactional
+    public void appointAsDriver(long id) {
+        User user = userDao.findById(id);
+        user.setRoles(null);
+        user.setRoles(Collections.singleton(new Role(4L, "DRIVER")));
+        log.info("A user with username " + user.getUsername()+" was appointed as driver.");
+    }
+
+    private UserDto convertToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    private User convertToEntity(UserDto userDto) {
+        return modelMapper.map(userDto, User.class);
+    }
 }

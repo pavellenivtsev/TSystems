@@ -15,10 +15,10 @@ import java.util.List;
 
 //@Controller
 public class WaypointController {
-    private WaypointService waypointService=new WaypointServiceImpl();
+    private final WaypointService waypointService;
 
     @Autowired
-    public void setWaypointService(WaypointService waypointService) {
+    public WaypointController(WaypointService waypointService) {
         this.waypointService = waypointService;
     }
 

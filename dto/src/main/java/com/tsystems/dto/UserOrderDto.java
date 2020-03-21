@@ -1,10 +1,16 @@
 package com.tsystems.dto;
 
 import com.tsystems.enumaration.UserOrderStatus;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class UserOrderDto implements Serializable {
 
     private long id;
@@ -15,58 +21,8 @@ public class UserOrderDto implements Serializable {
 
     private List<DriverDto> driverList;
 
-    private List<TruckDto> truckList;
+    private TruckDto truck;
 
     private List<CargoDto> cargoList;
 
-    public UserOrderDto() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public UserOrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserOrderStatus status) {
-        this.status = status;
-    }
-
-    public String getUniqueNumber() {
-        return uniqueNumber;
-    }
-
-    public void setUniqueNumber(String uniqueNumber) {
-        this.uniqueNumber = uniqueNumber;
-    }
-
-    public List<DriverDto> getDriverList() {
-        return driverList;
-    }
-
-    public void setDriverList(List<DriverDto> driverList) {
-        this.driverList = driverList;
-    }
-
-    public List<TruckDto> getTruckList() {
-        return truckList;
-    }
-
-    public void setTruckList(List<TruckDto> truckList) {
-        this.truckList = truckList;
-    }
-
-    public List<CargoDto> getCargoList() {
-        return cargoList;
-    }
-
-    public void setCargoList(List<CargoDto> cargoList) {
-        this.cargoList = cargoList;
-    }
 }

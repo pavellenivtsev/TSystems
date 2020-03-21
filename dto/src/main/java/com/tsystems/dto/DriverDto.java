@@ -1,14 +1,22 @@
 package com.tsystems.dto;
 
 import com.tsystems.enumaration.DriverStatus;
+import lombok.*;
 
 import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class DriverDto implements Serializable{
 
     private long id;
 
     private Double hoursThisMonth;
+
+    private String personalNumber;
 
     private DriverStatus status;
 
@@ -20,59 +28,4 @@ public class DriverDto implements Serializable{
 
     private UserDto user;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Double getHoursThisMonth() {
-        return hoursThisMonth;
-    }
-
-    public void setHoursThisMonth(Double hoursThisMonth) {
-        this.hoursThisMonth = hoursThisMonth;
-    }
-
-    public DriverStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DriverStatus status) {
-        this.status = status;
-    }
-
-    public TruckDto getTruck() {
-        return truck;
-    }
-
-    public void setTruck(TruckDto truck) {
-        this.truck = truck;
-    }
-
-    public UserOrderDto getUserOrder() {
-        return userOrder;
-    }
-
-    public void setUserOrder(UserOrderDto userOrder) {
-        this.userOrder = userOrder;
-    }
-
-    public LocationDto getLocation() {
-        return location;
-    }
-
-    public void setLocation(LocationDto location) {
-        this.location = location;
-    }
-
-    public UserDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
 }

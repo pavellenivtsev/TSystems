@@ -1,10 +1,7 @@
 package com.tsystems.service.impl;
 
 import com.tsystems.dao.api.WaypointDao;
-import com.tsystems.dao.impl.WaypointDaoImpl;
-import com.tsystems.dto.UserOrderDto;
 import com.tsystems.dto.WaypointDto;
-import com.tsystems.entity.UserOrder;
 import com.tsystems.entity.Waypoint;
 import com.tsystems.service.api.WaypointService;
 import org.modelmapper.ModelMapper;
@@ -17,18 +14,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class WaypointServiceImpl implements WaypointService {
-    private WaypointDao waypointDao=new WaypointDaoImpl();
+    private final WaypointDao waypointDao;
 
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public void setWaypointDao(WaypointDao waypointDao) {
+    public WaypointServiceImpl(WaypointDao waypointDao, ModelMapper modelMapper) {
         this.waypointDao = waypointDao;
+        this.modelMapper = modelMapper;
     }
 
     @Override

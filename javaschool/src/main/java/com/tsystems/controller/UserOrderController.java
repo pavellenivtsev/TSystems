@@ -1,8 +1,9 @@
 package com.tsystems.controller;
 
+import com.tsystems.dto.TruckDto;
 import com.tsystems.dto.UserOrderDto;
+import com.tsystems.service.api.TruckService;
 import com.tsystems.service.api.UserOrderService;
-import com.tsystems.service.impl.UserOrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +14,14 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/order")
 public class UserOrderController {
-    private UserOrderService userOrderService = new UserOrderServiceImpl();
+    private final UserOrderService userOrderService;
+
+    private final TruckService truckService;
 
     @Autowired
-    public void setUserOrderService(UserOrderService userOrderService) {
+    public UserOrderController(UserOrderService userOrderService, TruckService truckService) {
         this.userOrderService = userOrderService;
+        this.truckService = truckService;
     }
 
     /**
@@ -67,7 +71,7 @@ public class UserOrderController {
     @PostMapping(value = "/edit")
     public String editOrder(@ModelAttribute("order") UserOrderDto userOrderDto,
                             @RequestParam("cargoName") String cargoName,
-                            @RequestParam("cargoWeight") String cargoWeight,
+                            @RequestParam("cargoWeight") double cargoWeight,
                             @RequestParam("locationFromCity") String locationFromCity,
                             @RequestParam("locationToCity") String locationToCity
     ){
@@ -97,12 +101,42 @@ public class UserOrderController {
     @PostMapping(value = "/add")
     public String addOrder(@ModelAttribute("order") UserOrderDto userOrderDto,
                            @RequestParam("cargoName") String cargoName,
-                           @RequestParam("cargoWeight") String cargoWeight,
+                           @RequestParam("cargoWeight") double cargoWeight,
                            @RequestParam("locationFromCity") String locationFromCity,
                            @RequestParam("locationToCity") String locationToCity
     ){
         userOrderService.save(userOrderDto, cargoName, cargoWeight, locationFromCity, locationToCity);
         return "redirect:/order/all";
     }
+
+    /**
+     * Add truck to order.
+     *
+     * @return addTruck.jsp
+     */
+    @GetMapping(value = "/add/truck")
+    public ModelAndView addTruckPage(@RequestParam long id){
+        UserOrderDto userOrderDto=userOrderService.findById(id);
+        List<TruckDto> truckDtoList=truckService.findAllAvailable();
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("order/addTruck");
+        modelAndView.addObject("order", userOrderDto);
+        modelAndView.addObject("trucks",truckDtoList);
+        return modelAndView;
+    }
+
+    /**
+     * Add truck to order.
+     *
+     * @return allOrders.jsp
+     */
+    @PostMapping(value = "/add/truck")
+    public String addTruckToOrder(@ModelAttribute("order") UserOrderDto userOrderDto,
+                                  @RequestParam("truckId") long id
+                                  ){
+        userOrderService.addTruck(userOrderDto, id);
+        return "redirect:/order/all";
+    }
+
 
 }
