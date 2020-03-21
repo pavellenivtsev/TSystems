@@ -45,11 +45,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
 
                 //Setting up to log in
-                .formLogin().loginPage("/login").loginProcessingUrl("/loginAction")
+                .formLogin().loginPage("/login")
                 //Redirect to the cabinet after successful login
                 .defaultSuccessUrl("/cabinet")
-                .usernameParameter("username")
-                .passwordParameter("password")
                 .permitAll()
                 //Redirect to the home page after logout
                 .and()

@@ -12,7 +12,7 @@
 </sec:authorize>
 <div class="container">
     <h2 class="text-center">Login</h2>
-    <c:url value="/loginAction" var="login"/>
+    <c:url value="/login" var="login"/>
     <form class="form-horizontal" method="post" action="${login}">
         <div class="form-group">
             <label for="username" class="col-sm-2 control-label">Username</label>
