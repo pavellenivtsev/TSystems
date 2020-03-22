@@ -9,8 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class UserOrderDto implements Serializable {
 
     private long id;

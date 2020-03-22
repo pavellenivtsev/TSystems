@@ -69,7 +69,6 @@ public class RegistrationController {
 
     /**
      * Returns cabinet.
-     *
      */
     @GetMapping("/cabinet")
     public String getCabinet(Authentication authentication) {

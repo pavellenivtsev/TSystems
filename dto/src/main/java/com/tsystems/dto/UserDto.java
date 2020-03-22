@@ -11,8 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class UserDto implements Serializable {
 
     private long id;

@@ -11,9 +11,6 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Home</a></li>
-                <sec:authorize access="hasRole('USER')">
-                    <li><a href="/cabinet">Cabinet</a></li>
-                </sec:authorize>
                 <sec:authorize access="hasRole('ADMIN')">
                     <li><a href="/cabinet">Cabinet</a></li>
                     <li><a href="/admin/user/all">All users</a></li>
@@ -26,9 +23,12 @@
                 </sec:authorize>
                 <sec:authorize access="hasRole('DRIVER')">
                     <li><a href="/cabinet">Cabinet</a></li>
-                    <li><a href="#"></a></li>
-                    <li><a href="#">Работы</a></li>
-                    <li><a href="#"></a></li>
+<%--                    <li><a href="#"></a></li>--%>
+<%--                    <li><a href="#"></a></li>--%>
+<%--                    <li><a href="#"></a></li>--%>
+                </sec:authorize>
+                <sec:authorize access="hasRole('USER')">
+                    <li><a href="/cabinet">Cabinet</a></li>
                 </sec:authorize>
                 <sec:authorize access="!isAuthenticated()">
                     <li>

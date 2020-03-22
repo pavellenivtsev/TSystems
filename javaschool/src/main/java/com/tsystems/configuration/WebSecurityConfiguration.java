@@ -10,12 +10,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.sql.DataSource;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -24,7 +29,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     //Security configuration
     @Override
-    public void configure(HttpSecurity httpSecurity) throws Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
                 //for unregistered users
@@ -56,10 +61,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     //Global security configuration
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin").password(bCryptPasswordEncoder().encode("admin"))
-                .authorities("ADMIN");
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+        // Users in database
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery("select select username, password from user where username=?")
+                .authoritiesByUsernameQuery(
+                "select u.username, r.name "+
+                "from user u join u.roles r"+
+                "where u.username=?");
+
     }
 }

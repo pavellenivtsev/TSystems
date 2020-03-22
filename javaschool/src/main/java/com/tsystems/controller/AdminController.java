@@ -1,5 +1,6 @@
 package com.tsystems.controller;
 
+import com.tsystems.dto.DriverDto;
 import com.tsystems.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,11 +65,29 @@ public class AdminController {
     /**
      * Appoint user as driver.
      *
+     * @return appointAsDriver.jsp
+     */
+    @GetMapping("/appoint/driver")
+    public String appointAsDriverPage(@RequestParam long id, Model model){
+        model.addAttribute("userId",id);
+        return "admin/appointAsDriver";
+    }
+
+    /**
+     * Appoint user as driver.
+     *
      * @return allUsers.jsp
      */
     @PostMapping("/appoint/driver")
-    public String appointAsDriver(@RequestParam long id){
-        userService.appointAsDriver(id);
+    public String appointAsDriver(@RequestParam("userId") long userId,
+                                  @RequestParam("personalNumber") String personalNumber,
+                                  @RequestParam("currentCity") String currentCity,
+                                  Model model){
+        if(!userService.appointAsDriver(userId, personalNumber, currentCity)){
+            model.addAttribute("personalNumberError","This personal number is already in use");
+            return "admin/appointAsDriver";
+
+        }
         return "redirect:/admin/user/all";
     }
 

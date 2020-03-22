@@ -44,7 +44,7 @@
                 </td>
                 <td>
                     <c:url value="/admin/appoint/driver" var="driver"/>
-                    <form name="driver" method="post" action="${driver}">
+                    <form name="driver" method="get" action="${driver}">
                         <input type="hidden" name="id" value="${user.id}">
                         <button type="submit">Appoint as driver</button>
                     </form>

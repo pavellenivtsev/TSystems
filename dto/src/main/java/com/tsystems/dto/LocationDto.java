@@ -8,8 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class LocationDto implements Serializable {
 
     private long id;

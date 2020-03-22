@@ -10,7 +10,8 @@ import com.tsystems.enumaration.CargoStatus;
 import com.tsystems.enumaration.UserOrderStatus;
 import com.tsystems.enumaration.WaypointType;
 import com.tsystems.service.api.UserOrderService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserOrderServiceImpl implements UserOrderService {
-    private static final Logger logger=Logger.getLogger(UserOrderServiceImpl.class);
+    private static final Logger LOGGER= LogManager.getLogger(UserOrderServiceImpl.class);
 
     private final UserOrderDao userOrderDao;
 
@@ -50,10 +51,9 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Transactional
     public List<UserOrderDto> findAll() {
         List<UserOrder> userOrderList = userOrderDao.findAll();
-        List<UserOrderDto> userOrderDtoList = userOrderList.stream()
+        return userOrderList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-        return userOrderDtoList;
     }
 
     @Override

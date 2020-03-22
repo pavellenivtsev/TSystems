@@ -8,8 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class DriverDto implements Serializable{
 
     private long id;

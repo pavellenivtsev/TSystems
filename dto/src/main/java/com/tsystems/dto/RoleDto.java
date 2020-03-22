@@ -7,8 +7,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class RoleDto {
 
     private Long id;

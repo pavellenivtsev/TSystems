@@ -20,5 +20,5 @@ public interface UserService extends UserDetailsService {
 
     void appointAsManager(long id);
 
-    void appointAsDriver(long id);
+    boolean appointAsDriver(long userId, String personalNumber, String currentCity);
 }

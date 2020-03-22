@@ -9,8 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class CargoDto implements Serializable {
 
     private long id;

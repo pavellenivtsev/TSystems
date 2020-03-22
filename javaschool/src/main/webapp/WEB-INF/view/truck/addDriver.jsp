@@ -1,10 +1,10 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <%@include file="../common/common.jsp" %>
     <title>Title</title>
 </head>
 <body>
+<%@include file="../common/navbar.jsp" %>
 <div class="container">
     <h2 class="text-center">Available drivers</h2>
     <table class="table table-striped">

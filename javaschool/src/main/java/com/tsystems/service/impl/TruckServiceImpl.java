@@ -3,14 +3,14 @@ package com.tsystems.service.impl;
 import com.tsystems.dao.api.DriverDao;
 import com.tsystems.dao.api.LocationDao;
 import com.tsystems.dao.api.TruckDao;
-import com.tsystems.dto.DriverDto;
 import com.tsystems.dto.TruckDto;
 import com.tsystems.entity.Driver;
 import com.tsystems.entity.Location;
 import com.tsystems.entity.Truck;
 import com.tsystems.enumaration.TruckStatus;
 import com.tsystems.service.api.TruckService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TruckServiceImpl implements TruckService {
-    private static final Logger log=Logger.getLogger(TruckServiceImpl.class);
+    private static final Logger LOGGER= LogManager.getLogger(TruckServiceImpl.class);
 
     private final TruckDao truckDao;
 
@@ -60,7 +60,7 @@ public class TruckServiceImpl implements TruckService {
         truck.setStatus(TruckStatus.ON_DUTY);
         truckDao.save(truck);
 
-        log.info("Added a new truck with registration number "+truck.getRegistrationNumber());
+        LOGGER.info("Added a new truck with registration number "+truck.getRegistrationNumber());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class TruckServiceImpl implements TruckService {
     public void deleteById(long id) {
         Truck truck = truckDao.findById(id);
 
-        log.info("Deleted a truck with registration number "+ truck.getRegistrationNumber());
+        LOGGER.info("Deleted a truck with registration number "+ truck.getRegistrationNumber());
 
         truckDao.delete(truck);
     }
@@ -100,10 +100,9 @@ public class TruckServiceImpl implements TruckService {
 
         //добавить проверку
         List<Truck> trucks = truckDao.findAll();
-        List<TruckDto> trucksDto = trucks.stream()
+        return trucks.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-        return trucksDto;
     }
 
     @Override
