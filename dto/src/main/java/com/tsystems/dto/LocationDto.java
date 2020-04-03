@@ -20,7 +20,7 @@ public class LocationDto implements Serializable {
 
     private List<WaypointDto> waypointList;
 
-    private List<DriverDto> driverList;
+    private List<UserDto> userList;
 
     private List<TruckDto> truckList;
 }

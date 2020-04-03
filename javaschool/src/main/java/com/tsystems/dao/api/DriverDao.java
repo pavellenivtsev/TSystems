@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface DriverDao extends GenericDao<Driver> {
 
-    List<Driver> findAllAvailable();
+    List<Driver> findAllDriversWithoutTruck();
 
 }

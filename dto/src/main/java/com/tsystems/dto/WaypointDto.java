@@ -18,4 +18,6 @@ public class WaypointDto implements Serializable {
 
     private CargoDto cargo;
 
+    private UserOrderDto userOrder;
+
 }

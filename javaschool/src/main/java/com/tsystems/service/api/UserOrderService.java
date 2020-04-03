@@ -2,19 +2,24 @@ package com.tsystems.service.api;
 
 import com.tsystems.dto.UserOrderDto;
 
-
 import java.util.List;
 
 public interface UserOrderService {
-    List<UserOrderDto> findAll();
-
-    void save(UserOrderDto userOrderDto, String cargoName, double cargoWeight, String locationFromCity, String locationToCity);
-
-    void update(UserOrderDto userOrderDto, String cargoName, double cargoWeight, String locationFromCity, String locationToCity);
+    List<UserOrderDto> findAllSortedByDate();
 
     UserOrderDto findById(long id);
 
-    void deleteById(long id);
+    boolean deleteById(long id);
 
-    void addTruck(UserOrderDto userOrderDto, long id);
+    boolean addTruck(UserOrderDto userOrderDto, long truckId);
+
+    boolean addOrder(String locationFromCity, String locationToCity,
+                  double latitudeFrom, double longitudeFrom,
+                  double latitudeTo, double longitudeTo,
+                  double distance);
+
+    boolean update(long orderId, String locationFromCity, String locationToCity,
+                   double latitudeFrom, double longitudeFrom,
+                   double latitudeTo, double longitudeTo,
+                   double distance);
 }

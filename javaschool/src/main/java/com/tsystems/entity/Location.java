@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class Location implements Serializable {
 
     @Id
@@ -33,7 +32,7 @@ public class Location implements Serializable {
     private  List<Waypoint> waypointList;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
-    private List<Driver> driverList;
+    private List<User> userList;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<Truck> truckList;

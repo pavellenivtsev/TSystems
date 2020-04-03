@@ -11,7 +11,7 @@ public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverD
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Driver> findAllAvailable() {
+    public List<Driver> findAllDriversWithoutTruck() {
         return (List<Driver>) getSession()
                 .createQuery("from Driver where truck=null")
                 .list();

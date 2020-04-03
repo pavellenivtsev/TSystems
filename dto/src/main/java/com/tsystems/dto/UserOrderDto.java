@@ -2,6 +2,7 @@ package com.tsystems.dto;
 
 import com.tsystems.enumaration.UserOrderStatus;
 import lombok.*;
+import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,10 +18,16 @@ public class UserOrderDto implements Serializable {
 
     private String uniqueNumber;
 
+    private double distance;
+
+    private DateTime creationDate;
+
     private List<DriverDto> driverList;
 
     private TruckDto truck;
 
     private List<CargoDto> cargoList;
+
+    private List<WaypointDto> waypointList;
 
 }

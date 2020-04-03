@@ -1,20 +1,21 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <%@include file="../common/common.jsp" %>
     <title>Title</title>
 </head>
 <body>
-<div class="container">
+<%@include file="../common/navbar.jsp" %>
+<div class="container" id="main-container">
     <h2 class="text-center">Available drivers</h2>
-    <table class="table table-striped">
+    <table class="table table-striped" id="cssTable">
         <tr>
-            <th>Personal number</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Phone number</th>
-            <th>Email</th>
-            <th></th>
+            <td>Personal number</td>
+            <td>First name</td>
+            <td>Last name</td>
+            <td>Phone number</td>
+            <td>Email</td>
+            <td>City</td>
+            <td></td>
         </tr>
         <c:forEach var="driver" items="${drivers}">
             <tr>
@@ -23,6 +24,7 @@
                 <td>${driver.user.lastName}</td>
                 <td>${driver.user.phoneNumber}</td>
                 <td>${driver.user.email}</td>
+                <td>${driver.user.location.city}</td>
                 <td>
                     <c:url value="/truck/add/driver" var="add"/>
                     <form name="delete" method="post" action="${add}">

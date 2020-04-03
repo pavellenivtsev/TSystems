@@ -1,22 +1,24 @@
 package com.tsystems.service.api;
 
 import com.tsystems.dto.TruckDto;
+import com.tsystems.dto.UserOrderDto;
+
 import java.util.List;
 
 public interface TruckService {
     List<TruckDto> findAll();
 
-    void save(TruckDto truckDto, String locationCity);
+    boolean save(TruckDto truckDto, String locationCity, double latitude, double longitude);
 
-    void update(TruckDto truckDto, String locationCity);
+    boolean update(TruckDto truckDto, String locationCity, double latitude, double longitude);
 
-    void deleteById(long id);
+    boolean deleteById(long id);
 
     TruckDto findById(long id);
 
-    List<TruckDto> findAllAvailable();
+    List<TruckDto> findAllAvailable(UserOrderDto userOrderDto);
 
-    void addDriver(TruckDto truckDto, long driverId);
+    boolean addDriver(TruckDto truckDto, long driverId);
 
-    void deleteDriver(TruckDto truckDto, long driverId);
+    boolean deleteDriver(TruckDto truckDto, long driverId);
 }

@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class Cargo implements Serializable {
 
     @Id

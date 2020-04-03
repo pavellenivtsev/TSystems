@@ -11,7 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 public class Role implements GrantedAuthority {
 
     @Id

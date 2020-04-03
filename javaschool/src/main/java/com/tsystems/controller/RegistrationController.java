@@ -9,13 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Controller
+@Validated
 public class RegistrationController {
 
     private final UserService userService;
@@ -40,7 +41,12 @@ public class RegistrationController {
      * Register users.
      */
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, Model model) {
+    public String addUser(@ModelAttribute("user") @Valid UserDto userDto,
+                          @RequestParam("locationCity") @NotNull String locationCity,
+                          @RequestParam("latitude") @NotNull double latitude,
+                          @RequestParam("longitude") @NotNull double longitude,
+                          BindingResult bindingResult,
+                          Model model) {
 
         if (bindingResult.hasErrors()) {
             return "sign/registration";
@@ -49,7 +55,7 @@ public class RegistrationController {
             model.addAttribute("passwordError", "Passwords don't match");
             return "sign/registration";
         }
-        if (!userService.save(userDto)) {
+        if (!userService.save(userDto, locationCity, latitude, longitude)) {
             model.addAttribute("usernameError", "A user with this name already exists");
             return "sign/registration";
         }
@@ -75,17 +81,17 @@ public class RegistrationController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         for (GrantedAuthority grantedAuthority : userDetails.getAuthorities()) {
-            if (grantedAuthority.getAuthority().equals("ADMIN")) {
-                return "admin/cabinet";
+            if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
+                return "redirect:/admin/user/all";
             }
-            if (grantedAuthority.getAuthority().equals("MANAGER")) {
-                return "manager/cabinet";
+            if (grantedAuthority.getAuthority().equals("ROLE_MANAGER")) {
+                return "redirect:/dispatcher/cabinet";
             }
-            if (grantedAuthority.getAuthority().equals("DRIVER")) {
-                return "driver/cabinet";
+            if (grantedAuthority.getAuthority().equals("ROLE_DRIVER")) {
+                return "redirect:/driver/cabinet";
             }
-            if (grantedAuthority.getAuthority().equals("USER")) {
-                return "user/cabinet";
+            if (grantedAuthority.getAuthority().equals("ROLE_USER")) {
+                return "redirect:/user/cabinet";
             }
         }
         return "redirect:/login";

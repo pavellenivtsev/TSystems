@@ -10,7 +10,7 @@
 <sec:authorize access="isAuthenticated()">
     <% response.sendRedirect("/cabinet"); %>
 </sec:authorize>
-<div class="container">
+<div class="container" id="main-container">
     <h2 class="text-center">Login</h2>
     <c:url value="/login" var="login"/>
     <form class="form-horizontal" method="post" action="${login}">

@@ -1,12 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@page session="false"%>
 <html>
 <head>
+    <%@include file="../common/common.jsp" %>
     <title>Access Denied</title>
 </head>
 <body>
-<%@ include file="/WEB-INF/view/menu.jsp"%>
-
-<h3 style="color:red;">${message}</h3>
+<%@include file="../common/navbar.jsp" %>
+<div class="container" id="main-container">
+    <h1>HTTP Status 403 - Access is denied</h1>
+    <h2>${msg}</h2>
+</div>
 </body>
 </html>

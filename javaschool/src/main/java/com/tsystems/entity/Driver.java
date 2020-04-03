@@ -2,6 +2,8 @@ package com.tsystems.entity;
 
 import com.tsystems.enumaration.DriverStatus;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +14,6 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class Driver implements Serializable{
 
     @Id
@@ -30,6 +31,10 @@ public class Driver implements Serializable{
     @Column(name = "status")
     private DriverStatus status;
 
+    @Column(name = "shift_start_time")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime shiftStartTime;
+
     @ManyToOne
     @JoinColumn(name = "truck_id")
     private Truck truck;
@@ -37,10 +42,6 @@ public class Driver implements Serializable{
     @ManyToOne
     @JoinColumn(name = "user_order_id")
     private UserOrder userOrder;
-
-    @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id",referencedColumnName = "id")

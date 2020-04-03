@@ -10,17 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private DataSource dataSource;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -43,9 +38,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //for managers
                 .antMatchers("/truck/**").hasRole("MANAGER")
                 .antMatchers("/order/**").hasRole("MANAGER")
-                .antMatchers("/manager/**").hasRole("MANAGER")
+                .antMatchers("/dispatcher/**").hasRole("MANAGER")
                 //for all
-                .antMatchers("/", "/resources/**").permitAll()
+                .antMatchers("/", "/resources/**","/accessDenied").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
@@ -56,21 +51,25 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 //Redirect to the home page after logout
                 .and()
-                .logout().permitAll().logoutSuccessUrl("/");
+                .logout().permitAll().logoutSuccessUrl("/")
+                .and()
+                .exceptionHandling().accessDeniedPage("/403");
     }
 
     //Global security configuration
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        //Users in memory
+        auth.inMemoryAuthentication().withUser("admin").password(bCryptPasswordEncoder().encode("admin")).authorities("ROLE_ADMIN");
 
         // Users in database
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
-        auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("select select username, password from user where username=?")
-                .authoritiesByUsernameQuery(
-                "select u.username, r.name "+
-                "from user u join u.roles r"+
-                "where u.username=?");
+//        auth.jdbcAuthentication().dataSource(dataSource)
+//               .usersByUsernameQuery("select select username, password from user where username=?")
+//                .authoritiesByUsernameQuery(
+//                "select u.username, r.name "+
+//                "from user u join u.roles r"+
+//                "where u.username=?");
 
     }
 }

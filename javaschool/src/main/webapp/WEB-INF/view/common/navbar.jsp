@@ -19,13 +19,11 @@
                     <li><a href="/cabinet">Cabinet</a></li>
                     <li><a href="/order/all">All orders</a></li>
                     <li><a href="/truck/all">All trucks</a></li>
-                    <li><a href="/manager/driver/all">All Drivers</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('DRIVER')">
                     <li><a href="/cabinet">Cabinet</a></li>
-<%--                    <li><a href="#"></a></li>--%>
-<%--                    <li><a href="#"></a></li>--%>
-<%--                    <li><a href="#"></a></li>--%>
+                    <li><a href="/driver/truck">Your truck</a></li>
+                    <li><a href="/driver/order">Order</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('USER')">
                     <li><a href="/cabinet">Cabinet</a></li>
@@ -34,6 +32,13 @@
                     <li>
                         <form action="/login" method="get">
                             <input value="Login" type="submit">
+                        </form>
+                    </li>
+                </sec:authorize>
+                <sec:authorize access="!isAuthenticated()">
+                    <li>
+                        <form action="/registration" method="get">
+                            <input value="Sign up" type="submit">
                         </form>
                     </li>
                 </sec:authorize>

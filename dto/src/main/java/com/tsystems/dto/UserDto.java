@@ -2,8 +2,6 @@ package com.tsystems.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
@@ -15,30 +13,21 @@ public class UserDto implements Serializable {
 
     private long id;
 
-    @NotNull
-    @NotEmpty
+    @Size(min = 1, message = "At least 1 characters")
     private String firstName;
 
-    @NotNull
-    @NotEmpty
+    @Size(min = 1, message = "At least 1 characters")
     private String lastName;
 
-    @NotNull
-    @NotEmpty
+    @Size(min = 1, message = "At least 1 characters")
     private String phoneNumber;
 
-    @NotNull
-    @NotEmpty
     private String email;
 
-    @NotNull
-    @NotEmpty
     @Size(min=2, message = "At least 2 characters")
     private String username;
 
-    @NotNull
-    @NotEmpty
-    @Size(min=2, message = "At least 2 characters")
+    @Size(min=5, message = "At least 5 characters")
     private String password;
 
     private String passwordConfirm;
@@ -46,5 +35,7 @@ public class UserDto implements Serializable {
     private Set<RoleDto> roles;
 
     private DriverDto driver;
+
+    private LocationDto location;
 
 }

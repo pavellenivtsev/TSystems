@@ -15,7 +15,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class User implements Serializable, UserDetails {
 
     @Id
@@ -49,6 +48,10 @@ public class User implements Serializable, UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Driver driver;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @Override
     public String getUsername() {

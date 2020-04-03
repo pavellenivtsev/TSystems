@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class Waypoint implements Serializable {
 
     @Id
@@ -31,5 +30,10 @@ public class Waypoint implements Serializable {
     @ManyToOne
     @JoinColumn(name = "cargo_id")
     private Cargo cargo;
+
+    @ManyToOne
+    @JoinColumn(name = "user_order_id")
+    private UserOrder userOrder;
+
 
 }

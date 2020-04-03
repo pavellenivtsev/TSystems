@@ -28,10 +28,9 @@ public class WaypointServiceImpl implements WaypointService {
     @Transactional
     public List<WaypointDto> findAll() {
         List<Waypoint> waypointList=waypointDao.findAll();
-        List<WaypointDto> waypointDtoList=waypointList.stream()
+        return waypointList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-        return waypointDtoList;
     }
 
     @Override

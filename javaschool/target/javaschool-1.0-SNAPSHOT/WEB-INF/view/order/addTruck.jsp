@@ -1,37 +1,39 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <%@include file="../common/common.jsp" %>
     <title>Available Trucks</title>
 </head>
 <body>
-<h2>Trucks</h2>
-<table>
-    <tr>
-        <th>registration number</th>
-        <th>driver shift size</th>
-        <th>weight capacity</th>
-        <th>status</th>
-        <th>current city</th>
-        <th>action</th>
-    </tr>
-    <c:forEach var="truck" items="${trucks}">
+<%@include file="../common/navbar.jsp" %>
+<div class="container" id="main-container">
+    <h2 class="text-center">Available trucks</h2>
+    <table class="table table-striped" id="cssTable">
         <tr>
-            <td>${truck.registrationNumber}</td>
-            <td>${truck.driverShiftSize}</td>
-            <td>${truck.weightCapacity}</td>
-            <td>${truck.status}</td>
-            <td>${truck.location.city}</td>
-            <td>
-                <c:url value="/order/add/truck" var="addTruck"/>
-                <form name="edit" method="post" action="${addTruck}">
-                    <input type="hidden" name="id" value="${order.id}">
-                    <input type="hidden" name="truckId" value="${truck.id}">
-                    <button type="submit">Add/edit truck</button>
-                </form>
-            </td>
+            <th>Registration number</th>
+            <th>Driver shift size</th>
+            <th>Weight capacity</th>
+            <th>Status</th>
+            <th>Current city</th>
+            <th></th>
         </tr>
-    </c:forEach>
-</table>
+        <c:forEach var="truck" items="${trucks}">
+            <tr>
+                <td>${truck.registrationNumber}</td>
+                <td>${truck.driverShiftSize}</td>
+                <td>${truck.weightCapacity}</td>
+                <td>${truck.status.name().toLowerCase().replaceAll("_"," ")}</td>
+                <td>${truck.location.city}</td>
+                <td>
+                    <c:url value="/order/add/truck" var="addTruck"/>
+                    <form name="edit" method="post" action="${addTruck}">
+                        <input type="hidden" name="orderId" value="${order.id}">
+                        <input type="hidden" name="truckId" value="${truck.id}">
+                        <button type="submit">Add truck</button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
 </body>
 </html>

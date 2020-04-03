@@ -12,12 +12,11 @@ public class UserDaoImpl extends AbstractGenericDao<User> implements UserDao {
     @SuppressWarnings("unchecked")
     @Override
     public User findByUsername(String username) {
-
-        List<User> userList= getSession()
+        List<User> userList = getSession()
                 .createQuery("from User where username=?0")
                 .setParameter(0, username)
                 .list();
-        return userList.isEmpty()? null:userList.get(0);
+        return userList.isEmpty() ? null : userList.get(0);
     }
 
 }

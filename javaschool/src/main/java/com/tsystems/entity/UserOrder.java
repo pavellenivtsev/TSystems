@@ -2,6 +2,8 @@ package com.tsystems.entity;
 
 import com.tsystems.enumaration.UserOrderStatus;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +16,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class UserOrder implements Serializable {
 
     @Id
@@ -29,6 +30,13 @@ public class UserOrder implements Serializable {
     @Column(name = "unique_number")
     private String uniqueNumber;
 
+    @Column(name = "distance")
+    private double distance;
+
+    @Column(name = "creation_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime creationDate;
+
     @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
     private List<Driver> driverList;
 
@@ -38,5 +46,8 @@ public class UserOrder implements Serializable {
 
     @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
     private List<Cargo> cargoList;
+
+    @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
+    private List<Waypoint> waypointList;
 
 }
