@@ -77,7 +77,7 @@ public class DriverServiceImpl implements DriverService {
     /**
      * Finds all drivers
      *
-     * @return
+     * @return List<DriverDto>
      */
     @Override
     @Transactional
@@ -92,7 +92,7 @@ public class DriverServiceImpl implements DriverService {
      * Finds driver by id
      *
      * @param id
-     * @return
+     * @return DriverDto
      */
     @Override
     @Transactional
@@ -105,7 +105,7 @@ public class DriverServiceImpl implements DriverService {
      * Finds all available drivers for this truck
      *
      * @param truckDto
-     * @return
+     * @return List<DriverDto>
      */
     @Override
     @Transactional
