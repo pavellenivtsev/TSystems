@@ -37,17 +37,11 @@ public class UserOrder implements Serializable {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime creationDate;
 
-    @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
-    private List<Driver> driverList;
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "truck_id")
     private Truck truck;
 
     @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
     private List<Cargo> cargoList;
-
-    @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
-    private List<Waypoint> waypointList;
 
 }

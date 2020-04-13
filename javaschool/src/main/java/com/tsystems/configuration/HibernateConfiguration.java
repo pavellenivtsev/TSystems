@@ -31,8 +31,8 @@ public class HibernateConfiguration {
     /**
      * Loads properties from a file.
      */
-    private Properties hibernateProperties(){
-        Properties properties=new Properties();
+    private Properties hibernateProperties() {
+        Properties properties = new Properties();
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         return properties;
@@ -42,8 +42,8 @@ public class HibernateConfiguration {
      * Creates a connection to the database.
      */
     @Bean
-    public DataSource dataSource(){
-        BasicDataSource dataSource=new BasicDataSource();
+    public DataSource dataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
         dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
@@ -67,8 +67,8 @@ public class HibernateConfiguration {
      * Creates a transaction manager.
      */
     @Bean
-    public HibernateTransactionManager transactionManager(){
-        HibernateTransactionManager transactionManager=new HibernateTransactionManager();
+    public HibernateTransactionManager transactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory().getObject());
         return transactionManager;
     }

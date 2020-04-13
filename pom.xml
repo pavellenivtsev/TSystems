@@ -10,8 +10,8 @@
     <modules>
         <module>dto</module>
         <module>javaschool</module>
+        <module>SecondApp</module>
     </modules>
     <packaging>pom</packaging>
-
 
 </project>

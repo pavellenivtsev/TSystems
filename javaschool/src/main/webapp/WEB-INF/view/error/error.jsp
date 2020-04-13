@@ -1,17 +1,17 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Oops</title>
-    <link rel="icon" href="/resources/img/error.png">
+    <link rel="icon" href="/resources/img/error.ico" type="images/x-icon">
 </head>
 <body>
 <br>
 <br>
 <br>
 <br>
-<br>
 <div class="container text-center">
-    Something went wrong...
+    <div class="text-center">
+        Something went wrong...
+    </div>
 </div>
 </body>
 </html>

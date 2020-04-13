@@ -19,6 +19,9 @@
                 <input class="form-control" type="text" id="username" name="username" autofocus="autofocus"
                        placeholder="Username" required>
             </div>
+            <c:if test="${(usernameError!=null)}">
+                <div class="text-center" id="warning-message">${usernameError}</div>
+            </c:if>
         </div>
         <div class="form-group">
             <label for="password" class="col-sm-2 control-label">Password</label>
@@ -65,29 +68,25 @@
         <div class="form-group">
             <label for="address" class="col-sm-2 control-label">City</label>
             <div class="col-sm-10">
-                <input class="form-control" type="text" id="address" name="locationCity"
+                <input class="form-control" type="text" id="address" name="address"
                        placeholder="City" required>
             </div>
         </div>
         <input type="text" style="visibility: hidden" id="latitude" name="latitude" required>
         <input type="text" style="visibility: hidden" id="longitude" name="longitude">
-        <div class="form-group">
-            <div class="text-center">
-                <input id="confirmLocation" type="button" formaction="#" value="Confirm location">
-            </div>
+        <div class="text-center">
+            <button class="btn btn-default" id="confirmLocation" type="button" formaction="#">Confirm location</button>
         </div>
         <div id="confirmLocationError" class="text-center"></div>
         <div id="map"></div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit">Sign up</button>
-            </div>
+        <div class="text-center">
+            <button class="btn btn-default" type="submit">Sign up</button>
         </div>
     </form>
+    <br>
+    <c:url value="/" var="home"/>
+    <h3 class="text-center"><a href="${home}">Home page</a></h3>
 </div>
-
-<c:url value="/" var="home"/>
-<h3 class="text-center"><a href="${home}">Home page</a></h3>
 <script>
     var markers = [];
     var map;
@@ -137,9 +136,9 @@
         var validator = $("#form").validate({
             // Specify validation rules
             rules: {
-                // The key name on the left side is the name attribute
-                // of an input field. Validation rules are defined
-                // on the right side
+                username: {
+                    minlength: 2
+                },
                 password: {
                     minlength: 5
                 },
@@ -149,7 +148,10 @@
             },
             // Specify validation error messages
             messages: {
-                username: "Please enter username.",
+                username: {
+                    required: "Please enter username.",
+                    minlength: "Your username must be at least 2 characters long."
+                },
                 password: {
                     required: "Please provide a password.",
                     minlength: "Your password must be at least 5 characters long."
@@ -175,10 +177,8 @@
         });
     });
 </script>
-
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATUc0x8f71SoXH6-0qlrD3YJYVBgQ9VS4&callback=initMap">
 </script>
-
 </body>
 </html>

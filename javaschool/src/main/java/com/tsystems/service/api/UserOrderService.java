@@ -11,15 +11,7 @@ public interface UserOrderService {
 
     boolean deleteById(long id);
 
-    boolean addTruck(UserOrderDto userOrderDto, long truckId);
+//    boolean addTruck(UserOrderDto userOrderDto, long truckId);
 
-    boolean addOrder(String locationFromCity, String locationToCity,
-                  double latitudeFrom, double longitudeFrom,
-                  double latitudeTo, double longitudeTo,
-                  double distance);
-
-    boolean update(long orderId, String locationFromCity, String locationToCity,
-                   double latitudeFrom, double longitudeFrom,
-                   double latitudeTo, double longitudeTo,
-                   double distance);
+    boolean addOrder();
 }

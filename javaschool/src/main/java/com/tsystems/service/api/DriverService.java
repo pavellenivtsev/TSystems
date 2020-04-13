@@ -1,16 +1,10 @@
 package com.tsystems.service.api;
 
 import com.tsystems.dto.DriverDto;
-import com.tsystems.dto.TruckDto;
-
-import java.util.List;
 
 public interface DriverService {
-    List<DriverDto> findAll();
 
     DriverDto findById(long id);
-
-    List<DriverDto> findAllAvailable(TruckDto truckDto);
 
     DriverDto findByUsername(String username);
 

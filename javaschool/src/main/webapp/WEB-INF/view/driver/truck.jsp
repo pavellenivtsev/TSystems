@@ -25,7 +25,7 @@
                             <c:url value="/driver/truck/status/onDuty" var="truckOnDuty"/>
                             <form method="post" action="${truckOnDuty}">
                                 <input type="hidden" name="driverId" value="${driver.id}">
-                                <button type="submit">Set status on duty</button>
+                                <button class="btn btn-default" type="submit">Set status on duty</button>
                             </form>
                         </c:if>
 
@@ -33,7 +33,7 @@
                             <c:url value="/driver/truck/status/faulty" var="truckFaulty"/>
                             <form method="post" action="${truckFaulty}">
                                 <input type="hidden" name="driverId" value="${driver.id}">
-                                <button type="submit">Set faulty status</button>
+                                <button class="btn btn-default" type="submit">Set faulty status</button>
                             </form>
                         </c:if>
                     </td>
@@ -41,7 +41,6 @@
             </table>
         </c:when>
         <c:otherwise>
-            <br>
             <div class="text-center">
                 You don't have a truck yet, please wait
             </div>

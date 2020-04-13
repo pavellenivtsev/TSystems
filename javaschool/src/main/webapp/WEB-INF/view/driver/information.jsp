@@ -29,7 +29,7 @@
                             <c:url value="/driver/status/start" var="start"/>
                             <form method="post" action="${start}">
                                 <input type="hidden" name="driverId" value="${driver.id}">
-                                <button type="submit">Start shift</button>
+                                <button class="btn btn-default" type="submit">Start shift</button>
                             </form>
                         </c:if>
 
@@ -37,7 +37,7 @@
                             <c:url value="/driver/status/finish" var="finish"/>
                             <form method="post" action="${finish}">
                                 <input type="hidden" name="driverId" value="${driver.id}">
-                                <button type="submit">Finish shift</button>
+                                <button class="btn btn-default" type="submit">Finish shift</button>
                             </form>
                         </c:if>
                     </c:if>

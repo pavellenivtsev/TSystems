@@ -5,36 +5,41 @@ import java.util.List;
 
 public interface GenericDao<E> {
 
-        /**
-         * Find by primary key
-         * @param id
-         * @return unique entity
-         */
-        E findById( Serializable id );
+    /**
+     * Find by primary key
+     *
+     * @param id
+     * @return unique entity
+     */
+    E findById(Serializable id);
 
-        /**
-         * Find all records
-         * @return
-         */
-        List<E> findAll();
+    /**
+     * Find all records
+     *
+     * @return
+     */
+    List<E> findAll();
 
-        /**
-         *
-         * @param entity: entity to save
-         * @return Identifier of saved entity
-         */
-        Serializable save(E entity);
+    /**
+     * Save
+     *
+     * @param entity: entity to save
+     * @return Identifier of saved entity
+     */
+    Serializable save(E entity);
 
-        /**
-         *
-         * @param entity:entity to update
-         */
-        void update(E entity);
+    /**
+     * Update
+     *
+     * @param entity:entity to update
+     */
+    void update(E entity);
 
-        /**
-         *
-         * @param entity: entity to delete
-         */
-        void delete( E entity );
+    /**
+     * Delete
+     *
+     * @param entity: entity to delete
+     */
+    void delete(E entity);
 
 }

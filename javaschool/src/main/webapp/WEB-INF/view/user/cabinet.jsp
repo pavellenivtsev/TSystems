@@ -16,12 +16,11 @@
             <li>Last name: ${user.lastName}</li>
             <li>Phone number: ${user.phoneNumber}</li>
             <li>Email: ${user.email}</li>
-
         </ol>
         <div class="text-center">
             <form action="/user/edit" method="get">
                 <input type="hidden" name="id" value="${user.id}">
-                <input value="Edit information" type="submit">
+                <button class="btn btn-default" type="submit">Edit information</button>
             </form>
         </div>
     </div>

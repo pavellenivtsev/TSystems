@@ -9,33 +9,47 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 @RequestMapping("/user")
 public class UserController {
-
-    private final UserService userService;
-
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
+    /**
+     * Get user cabinet
+     *
+     * @param model
+     * @param authentication
+     * @return user/cabinet.jsp
+     */
     @GetMapping("/cabinet")
-    public String userCabinet(Model model, Authentication authentication){
+    public String userCabinet(Model model, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         model.addAttribute("user", userService.findByUsername(userDetails.getUsername()));
-        return "/user/cabinet";
+        return "user/cabinet";
     }
 
+    /**
+     * Edit user
+     *
+     * @param id
+     * @param model
+     * @return user/edit.jsp
+     */
     @GetMapping("/edit")
-    public String getEditPage(@RequestParam("id") long id, Model model ){
+    public String getEditPage(@RequestParam("id") long id, Model model) {
         model.addAttribute("user", userService.findById(id));
         return "user/edit";
     }
 
+    /**
+     * Edit user information
+     *
+     * @param userDto user
+     * @return user/cabinet.jsp
+     */
     @PostMapping("/edit")
-    public String editUser(@ModelAttribute("user")UserDto userDto){
+    public String editUser(@ModelAttribute("user") UserDto userDto) {
         userService.update(userDto);
         return "redirect:/user/cabinet";
     }

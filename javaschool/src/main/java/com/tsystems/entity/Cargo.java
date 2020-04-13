@@ -30,11 +30,25 @@ public class Cargo implements Serializable {
     @Column(name = "status")
     private CargoStatus status;
 
-    @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL)
-    private List<Waypoint> waypointList;
+    @Column(name = "loading_address")
+    private String loadingAddress;
+
+    @Column(name = "loading_latitude")
+    private double loadingLatitude;
+
+    @Column(name = "loading_longitude")
+    private double loadingLongitude;
+
+    @Column(name = "unloading_address")
+    private String unloadingAddress;
+
+    @Column(name = "unloading_latitude")
+    private double unloadingLatitude;
+
+    @Column(name = "unloading_longitude")
+    private double unloadingLongitude;
 
     @ManyToOne
     @JoinColumn(name = "user_order_id")
     private UserOrder userOrder;
-
 }

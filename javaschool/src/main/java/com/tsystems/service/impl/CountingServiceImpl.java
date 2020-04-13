@@ -1,18 +1,28 @@
 package com.tsystems.service.impl;
 
+import com.tsystems.dto.CargoDto;
+import com.tsystems.dto.TruckDto;
+import com.tsystems.dto.UserOrderDto;
+import com.tsystems.entity.Driver;
 import com.tsystems.service.api.CountingService;
+import com.tsystems.utils.CargoPair;
+import com.tsystems.utils.CurrentPoint;
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Service
 public class CountingServiceImpl implements CountingService {
     public static final int EARTH_RADIUS = 6371;
 
-
     public double convertToRadians(double value) {
         return value * Math.PI / 180;
     }
-
 
     /**
      * Calculates the distance between two points
@@ -23,7 +33,7 @@ public class CountingServiceImpl implements CountingService {
      * @param longitudeTo
      * @return km of distance
      */
-    public int getDistanceLength(double latitudeFrom,double longitudeFrom, double latitudeTo, double longitudeTo) {
+    public int getDistanceLength(double latitudeFrom, double longitudeFrom, double latitudeTo, double longitudeTo) {
         double latFrom = convertToRadians(latitudeFrom);
         double lngFrom = convertToRadians(longitudeFrom);
         double latTo = convertToRadians(latitudeTo);
@@ -36,6 +46,126 @@ public class CountingServiceImpl implements CountingService {
         return (int) (2 * EARTH_RADIUS * Math.asin(Math.sqrt(sin1 * sin1 + sin2 * sin2 * Math.cos(latFrom) * Math.cos(latTo))));
     }
 
+    /**
+     * Calculates hours of working for driver
+     *
+     * @param driver
+     * @return hours of working
+     */
+    public double getDriverHours(Driver driver) {
+        double hoursWorked = calculateTime(driver.getShiftStartTime());
+        double maxHoursWorked = driver.getTruck().getDriverShiftSize();
+        return Math.min(maxHoursWorked, hoursWorked);
+    }
+
+    /**
+     * Calculates hours of working for driver
+     *
+     * @param shiftStartTime
+     * @return hours of working
+     */
+    private double calculateTime(DateTime shiftStartTime) {
+        DateTime currentDate = new DateTime();
+        Seconds seconds = Seconds.secondsBetween(shiftStartTime, currentDate);
+        double secondsDouble = seconds.getSeconds();
+        return secondsDouble / 3600;
+    }
+
+    /**
+     * Calculates approximately distance for this truck and this order
+     *
+     * @param truckDtoList
+     * @param userOrderDto
+     * @return mapping for this truck and this order
+     */
+    @Override
+    public TreeMap<Integer, TruckDto> getApproximatelyTotalDistanceForTruckAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto) {
+        TreeMap<Integer, TruckDto> truckTreeMap = new TreeMap<>();
+        List<CargoPair> cargoPairs = userOrderDto.getCargoList().stream().map(CargoPair::new).collect(Collectors.toList());
+        final int[] approximatelyTotalDistance = {0};
+        CurrentPoint currentPoint = new CurrentPoint();
+        truckDtoList.forEach(truckDto -> {
+            currentPoint.setLatitude(truckDto.getLatitude());
+            currentPoint.setLongitude(truckDto.getLongitude());
+            CargoPair minDistanceCargo = new CargoPair();
+
+            while (!cargoPairs.isEmpty()) {
+                for (CargoPair cargoPair : cargoPairs) {
+                    if (cargoPair.isUnloaded()) {                              //доюавить проверку на массу груза
+                        cargoPairs.remove(cargoPair);
+                        continue;
+                    }
+                    if (cargoPair.isLoaded()) {
+                        cargoPair.setDistanceToCurrentPoint(getDistanceLength(
+                                currentPoint.getLatitude(),
+                                currentPoint.getLongitude(),
+                                cargoPair.getUnloadingLatitude(),
+                                cargoPair.getUnloadingLongitude()
+                        ));
+                    }
+                    if (!cargoPair.isLoaded()){
+                        cargoPair.setDistanceToCurrentPoint(getDistanceLength(
+                                currentPoint.getLatitude(),
+                                currentPoint.getLongitude(),
+                                cargoPair.getLoadingLatitude(),
+                                cargoPair.getLoadingLongitude()
+                        ));
+                    }
+                    if (minDistanceCargo.getDistanceToCurrentPoint() > cargoPair.getDistanceToCurrentPoint()) {
+                        minDistanceCargo = cargoPair;
+                    }
+                }
+                approximatelyTotalDistance[0] += minDistanceCargo.getDistanceToCurrentPoint();
+                if (minDistanceCargo.isLoaded()){
+                    minDistanceCargo.setUnloaded(true);
+                    currentPoint.setLatitude(minDistanceCargo.getUnloadingLatitude());
+                    currentPoint.setLongitude(minDistanceCargo.getUnloadingLongitude());
+                    minDistanceCargo.setDistanceToCurrentPoint(0);
+                }
+                if (!minDistanceCargo.isLoaded()){
+                    minDistanceCargo.setLoaded(true);
+                    currentPoint.setLatitude(minDistanceCargo.getLoadingLatitude());
+                    currentPoint.setLongitude(minDistanceCargo.getLoadingLongitude());
+                    minDistanceCargo.setDistanceToCurrentPoint(0);
+                }
+            }
+            truckTreeMap.put(approximatelyTotalDistance[0], truckDto);
+        });
+        return truckTreeMap;
+    }
+
+    //            //for 1 loading
+//            for (CargoPair cargoPair : cargoPairs) {
+//                cargoPair.setDistanceToCurrentPoint(getDistanceLength(
+//                        currentPoint.getLatitude(),
+//                        currentPoint.getLongitude(),
+//                        cargoPair.getLoadingLatitude(),
+//                        cargoPair.getLoadingLongitude()
+//                ));
+//                if (minDistanceCargo.getDistanceToCurrentPoint() > cargoPair.getDistanceToCurrentPoint()) {
+//                    minDistanceCargo = cargoPair;
+//                }
+//            }
+//            approximatelyTotalDistance[0] += minDistanceCargo.getDistanceToCurrentPoint();
+//            minDistanceCargo.setLoaded(true);
+//            currentPoint.setLatitude(minDistanceCargo.getLoadingLatitude());
+//            currentPoint.setLongitude(minDistanceCargo.getLoadingLongitude());
+//            minDistanceCargo.setDistanceToCurrentPoint(0);
+//
+//            //for others points
+    public static void main(String[] args) {
+        CargoDto cargoDto = new CargoDto();
+        System.out.println(cargoDto.getId());
+        cargoDto.setName("cargo");
+        List<CargoDto> cargoDtoList = new ArrayList<>();
+        cargoDtoList.add(cargoDto);
+        List<CargoPair> cargoPairs = cargoDtoList.stream().map(CargoPair::new).collect(Collectors.toList());
+        for (CargoPair cargopair : cargoPairs) {
+            System.out.println(cargopair.getCargoDto().getName());
+        }
+
+    }
+}
 //    public TreeMap<Integer, Truck> getApproximatelyTotalDistanceForTruckAndOrder(List<Truck> trucks, UserOrder userOrder) {
 //        TreeMap<Integer, Truck> totalDistanceForTruckAndOrder = new TreeMap<>();
 //        List<Cargo> cargoList = userOrder.getCargoList();
@@ -223,4 +353,4 @@ public class CountingServiceImpl implements CountingService {
 //        }
 //        return null;
 //    }
-}
+

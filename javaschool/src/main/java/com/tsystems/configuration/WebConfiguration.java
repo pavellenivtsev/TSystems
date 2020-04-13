@@ -23,8 +23,8 @@ public class WebConfiguration implements WebMvcConfigurer {
      * Determines where to look for web views.
      */
     @Bean
-    ViewResolver viewResolver(){
-        InternalResourceViewResolver viewResolver=new InternalResourceViewResolver();
+    ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setPrefix("/WEB-INF/view/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
@@ -32,6 +32,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     /**
      * For Entity-DTO conversion
+     *
      * @return bean
      */
     @Bean
@@ -48,6 +49,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     /**
      * For validation
+     *
      * @return bean
      */
     @Bean

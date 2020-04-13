@@ -8,4 +8,5 @@ public interface DriverDao extends GenericDao<Driver> {
 
     List<Driver> findAllDriversWithoutTruck();
 
+    Driver findByPersonalNumber(String personalNumber);
 }

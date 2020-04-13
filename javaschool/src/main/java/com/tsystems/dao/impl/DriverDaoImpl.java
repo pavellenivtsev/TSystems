@@ -16,4 +16,13 @@ public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverD
                 .createQuery("from Driver where truck=null")
                 .list();
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Driver findByPersonalNumber(String personalNumber) {
+        List<Driver> driverList = getSession().createQuery("from Driver where personalNumber=?0")
+                .setParameter(0, personalNumber)
+                .list();
+        return driverList.isEmpty() ? null : driverList.get(0);
+    }
 }

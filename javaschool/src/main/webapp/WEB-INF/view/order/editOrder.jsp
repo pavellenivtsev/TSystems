@@ -21,7 +21,6 @@
                        value="${order.waypointList.get(0).location.city}" required/>
             </div>
         </div>
-
         <div class="form row">
             <label for="locationToCity" class="col-sm-2 col-form-label">To city</label>
             <div class="col-sm-10">
@@ -41,13 +40,12 @@
         <input type="text" style="visibility: hidden" id="distance" name="distance" value="${order.distance}" required>
 
         <div class="text-center">
-            <input id="submit" type="button" formaction="#" value="Build a route">
+            <button class="btn btn-default" id="submit" type="button" formaction="#">Build a route</button>
         </div>
         <div id="buildRoadError" class="text-center"></div>
         <div id="map"></div>
-
         <div class="text-center">
-            <input type="submit" value="Edit order">
+            <button class="btn btn-default" type="submit">Edit order</button>
         </div>
     </form>
 </div>

@@ -13,7 +13,7 @@
             <td>Last name</td>
             <td>Phone number</td>
             <td>Email</td>
-            <td>City</td>
+            <td>Address</td>
             <td>Role</td>
             <td></td>
             <td></td>
@@ -26,45 +26,46 @@
                 <td>${user.lastName}</td>
                 <td>${user.phoneNumber}</td>
                 <td>${user.email}</td>
-                <td>${user.location.city}</td>
+                <td>${user.address}</td>
                 <td>
                     <c:forEach items="${user.roles}" var="role">${role.name}</c:forEach>
                 </td>
                 <td>
-                    <c:if test="${(user.driver.truck==null)||(user.driver.truck.userOrderList.isEmpty())}">
-                        <c:url value="/admin/appoint/admin" var="admin"/>
-                        <form name="admin" method="post" action="${admin}">
-                            <input type="hidden" name="id" value="${user.id}">
-                            <button type="submit">Appoint as admin</button>
-                        </form>
-                    </c:if>
+
+                    <c:url value="/admin/appoint/admin" var="admin"/>
+                    <form name="admin" method="post" action="${admin}">
+                        <input type="hidden" name="id" value="${user.id}">
+                        <button class="btn btn-default" type="submit">Appoint<br/>as admin</button>
+                    </form>
+
+
                 </td>
                 <td>
-                    <c:if test="${(user.driver.truck==null)||(user.driver.truck.userOrderList.isEmpty())}">
-                        <c:url value="/admin/appoint/manager" var="manager"/>
-                        <form name="manager" method="post" action="${manager}">
-                            <input type="hidden" name="id" value="${user.id}">
-                            <button type="submit">Appoint as manager</button>
-                        </form>
-                    </c:if>
+
+                    <c:url value="/admin/appoint/manager" var="manager"/>
+                    <form name="manager" method="post" action="${manager}">
+                        <input type="hidden" name="id" value="${user.id}">
+                        <button class="btn btn-default" type="submit">Appoint<br/>as manager</button>
+                    </form>
+
+
                 </td>
                 <td>
-                    <c:if test="${(user.driver.truck==null)||(user.driver.truck.userOrderList.isEmpty())}">
-                        <c:url value="/admin/appoint/driver" var="driver"/>
-                        <form name="driver" method="post" action="${driver}">
-                            <input type="hidden" name="userId" value="${user.id}">
-                            <button type="submit">Appoint as driver</button>
-                        </form>
-                    </c:if>
+
+                    <c:url value="/admin/appoint/driver" var="driver"/>
+                    <form name="driver" method="post" action="${driver}">
+                        <input type="hidden" name="id" value="${user.id}">
+                        <button class="btn btn-default" type="submit">Appoint<br/>as driver</button>
+                    </form>
+
                 </td>
                 <td>
-                    <c:if test="${(user.driver.truck==null)||(user.driver.truck.userOrderList.isEmpty())}">
-                            <c:url value="/admin/user/delete" var="delete"/>
-                            <form name="delete" method="post" action="${delete}">
-                                <input type="hidden" name="id" value="${user.id}">
-                                <button type="submit">Delete</button>
-                            </form>
-                    </c:if>
+
+                    <c:url value="/admin/user/delete" var="delete"/>
+                    <form name="delete" method="post" action="${delete}">
+                        <input type="hidden" name="id" value="${user.id}">
+                        <button class="btn btn-default" type="submit">Delete</button>
+                    </form>
                 </td>
             </tr>
         </c:forEach>

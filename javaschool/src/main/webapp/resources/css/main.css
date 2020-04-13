@@ -69,6 +69,11 @@ hr{
     font-size: 22px;
     letter-spacing: 1px;
 }
+
+.navbar-inverse .navbar-brand > .logout > a{
+    background-color: white;
+}
+
 #headerwrap{
     /*background: url(../resources/img/road.jpg) no-repeat center top;*/
     color: #f2f2f2;;

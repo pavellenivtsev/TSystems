@@ -28,7 +28,7 @@
                     <form name="edit" method="post" action="${addTruck}">
                         <input type="hidden" name="orderId" value="${order.id}">
                         <input type="hidden" name="truckId" value="${truck.id}">
-                        <button type="submit">Add truck</button>
+                        <button class="btn btn-default" type="submit">Add truck</button>
                     </form>
                 </td>
             </tr>

@@ -67,8 +67,8 @@ public class AdminController {
      * @return allUsers.jsp
      */
     @PostMapping("/appoint/driver")
-    public String appointAsDriver(@RequestParam("userId") long userId) {
-        adminService.appointAsDriver(userId);
+    public String appointAsDriver(@RequestParam("id") long id) {
+        adminService.appointAsDriver(id);
         return "redirect:/admin/user/all";
     }
 }

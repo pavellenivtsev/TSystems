@@ -1,7 +1,9 @@
 package com.tsystems.service.api;
 
+import com.tsystems.dto.TruckDto;
 import com.tsystems.dto.UserOrderDto;
-import com.tsystems.entity.Location;
+import com.tsystems.entity.Driver;
+
 import com.tsystems.entity.Truck;
 import com.tsystems.entity.UserOrder;
 
@@ -28,14 +30,20 @@ public interface CountingService {
      */
     int getDistanceLength(double latitudeFrom,double longitudeFrom, double latitudeTo, double longitudeTo);
 
-//    /**
-//     * Calculates approximately distance for this truck and this order
-//     *
-//     * @param trucks
-//     * @param userOrder
-//     * @return mapping for this truck and this order
-//     */
-//    TreeMap<Integer, Truck> getApproximatelyTotalDistanceForTruckAndOrder(List<Truck> trucks, UserOrder userOrder);
+    /**
+     * Calculates hours of working for driver
+     *
+     * @param driver
+     * @return hours of working
+     */
+    double getDriverHours(Driver driver);
 
-
+    /**
+     * Calculates approximately distance for this truck and this order
+     *
+     * @param truckDtoList
+     * @param userOrderDto
+     * @return mapping for this truck and this order
+     */
+    TreeMap<Integer, TruckDto> getApproximatelyTotalDistanceForTruckAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto);
 }

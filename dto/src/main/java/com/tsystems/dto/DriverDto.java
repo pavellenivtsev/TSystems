@@ -23,8 +23,5 @@ public class DriverDto implements Serializable{
 
     private TruckDto truck;
 
-    private UserOrderDto userOrder;
-
     private UserDto user;
-
 }

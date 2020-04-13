@@ -39,8 +39,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/truck/**").hasRole("MANAGER")
                 .antMatchers("/order/**").hasRole("MANAGER")
                 .antMatchers("/dispatcher/**").hasRole("MANAGER")
+                .antMatchers("/office/**").hasRole("MANAGER")
                 //for all
-                .antMatchers("/", "/resources/**","/accessDenied").permitAll()
+                .antMatchers("/", "/resources/**", "/accessDenied","/secondapp/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
@@ -60,16 +61,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         //Users in memory
-        auth.inMemoryAuthentication().withUser("admin").password(bCryptPasswordEncoder().encode("admin")).authorities("ROLE_ADMIN");
+        auth.inMemoryAuthentication().withUser("admin").password(bCryptPasswordEncoder().encode("admin")).roles("ADMIN");
 
         // Users in database
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
-//        auth.jdbcAuthentication().dataSource(dataSource)
-//               .usersByUsernameQuery("select select username, password from user where username=?")
-//                .authoritiesByUsernameQuery(
-//                "select u.username, r.name "+
-//                "from user u join u.roles r"+
-//                "where u.username=?");
-
     }
 }

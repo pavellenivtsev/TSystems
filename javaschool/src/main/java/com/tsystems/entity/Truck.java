@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Truck implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -33,14 +32,22 @@ public class Truck implements Serializable {
     @Column(name = "status")
     private TruckStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @Column(name = "address")
+    private String address;
 
-    @OneToMany(mappedBy = "truck", cascade = CascadeType.ALL)
-    private List<UserOrder> userOrderList;
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
+    @OneToOne(mappedBy = "truck", cascade = CascadeType.ALL)
+    private UserOrder userOrder;
 
     @OneToMany(mappedBy = "truck", cascade = CascadeType.ALL)
     private List<Driver> driverList;
 
+    @ManyToOne
+    @JoinColumn(name = "office_id")
+    private Office office;
 }

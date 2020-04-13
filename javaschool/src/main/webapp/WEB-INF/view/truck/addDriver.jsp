@@ -24,13 +24,13 @@
                 <td>${driver.user.lastName}</td>
                 <td>${driver.user.phoneNumber}</td>
                 <td>${driver.user.email}</td>
-                <td>${driver.user.location.city}</td>
+                <td>${driver.user.address}</td>
                 <td>
                     <c:url value="/truck/add/driver" var="add"/>
                     <form name="delete" method="post" action="${add}">
-                        <input type="hidden" name="id" value="${truck.id}">
+                        <input type="hidden" name="truckId" value="${truckId}">
                         <input type="hidden" name="driverId" value="${driver.id}">
-                        <button type="submit">Add</button>
+                        <button class="btn btn-default" type="submit">Add</button>
                     </form>
                 </td>
             </tr>

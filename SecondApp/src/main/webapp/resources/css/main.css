@@ -1,0 +1,23 @@
+#cssTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#cssTable2 td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#main-container{
+    background-color: white;
+    /*background-color: rgba(0, 255, 0, 0.2);*/
+    border-radius: 10px;
+}
+
+form .error {
+    color: #ff0000;
+}
+
+#warning-message{
+    color: #ff0000;
+}

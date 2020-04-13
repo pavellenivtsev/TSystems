@@ -1,7 +1,6 @@
 package com.tsystems.service.impl;
 
 import com.tsystems.dao.api.DriverDao;
-import com.tsystems.dao.api.LocationDao;
 import com.tsystems.dao.api.UserDao;
 import com.tsystems.dto.UserDto;
 import com.tsystems.entity.Driver;
@@ -26,40 +25,49 @@ import java.util.stream.Collectors;
 public class AdminServiceImpl implements AdminService {
     private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
 
-    private final UserDao userDao;
-
-    private final DriverDao driverDao;
-
-    private final LocationDao locationDao;
-
-    private final ModelMapper modelMapper;
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
-    public AdminServiceImpl(UserDao userDao, DriverDao driverDao, LocationDao locationDao, ModelMapper modelMapper) {
-        this.userDao = userDao;
-        this.driverDao = driverDao;
-        this.locationDao = locationDao;
-        this.modelMapper = modelMapper;
-    }
+    private DriverDao driverDao;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    /**
+     * Get all users from DB
+     *
+     * @return List<UserDto>
+     */
     @Override
     @Transactional
     public List<UserDto> findAll() {
         List<User> users = userDao.findAll();
         return users.stream()
-                .map(this::convertToDto)
+                .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Deletes user by id
+     *
+     * @param id
+     * @return true if user was deleted
+     */
     @Override
     @Transactional
     public boolean deleteById(long id) {
         User user = userDao.findById(id);
-        locationDao.delete(user.getLocation());
+        userDao.delete(user);
         LOGGER.info("Deleted a user with username " + user.getUsername());
         return true;
     }
 
+    /**
+     * Appoints user as admin
+     *
+     * @param id
+     */
     @Override
     @Transactional
     public void appointAsAdmin(long id) {
@@ -67,9 +75,14 @@ public class AdminServiceImpl implements AdminService {
         grantRole(user, new Role(2L, "ROLE_ADMIN"));
         userDao.update(user);
 
-        LOGGER.info("A user with username " + user.getUsername()+" was appointed as admin.");
+        LOGGER.info("A user with username " + user.getUsername() + " was appointed as admin.");
     }
 
+    /**
+     * Appoints user as manager
+     *
+     * @param id
+     */
     @Override
     @Transactional
     public void appointAsManager(long id) {
@@ -77,51 +90,52 @@ public class AdminServiceImpl implements AdminService {
         grantRole(user, new Role(3L, "ROLE_MANAGER"));
         userDao.update(user);
 
-        LOGGER.info("A user with username " + user.getUsername()+" was appointed as manager.");
+        LOGGER.info("A user with username " + user.getUsername() + " was appointed as manager.");
     }
 
+    /**
+     * Appoints user as driver
+     *
+     * @param id
+     */
     @Override
     @Transactional
-    public void appointAsDriver(long userId) {
-        String uniqueNumber=generatePersonalNumber();
-        outer:
-        for(Driver driver:driverDao.findAll()){
-            if (driver.getPersonalNumber().equals(uniqueNumber)){
-                uniqueNumber=generatePersonalNumber();
-                break outer;
-            }
+    public void appointAsDriver(long id) {
+        String uniqueNumber = generatePersonalNumber();
+        while (driverDao.findByPersonalNumber(uniqueNumber) != null) {
+            uniqueNumber = generatePersonalNumber();
         }
 
-        User user = userDao.findById(userId);
+        User user = userDao.findById(id);
         grantRole(user, new Role(4L, "ROLE_DRIVER"));
 
-        Driver driver =new Driver();
+        Driver driver = new Driver();
         driver.setHoursThisMonth(0.0);
         driver.setStatus(DriverStatus.REST);
         driver.setPersonalNumber(uniqueNumber);
         driver.setShiftStartTime(new DateTime());
         driver.setUser(user);
-
-        user.setDriver(driver);
-        userDao.update(user);
-
-        LOGGER.info("A user with username " + user.getUsername()+" was appointed as driver.");
+        driverDao.save(driver);
+        LOGGER.info("A user with username " + user.getUsername() + " was appointed as driver.");
     }
 
-    private UserDto convertToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
-    }
-
-    private User convertToEntity(UserDto userDto) {
-        return modelMapper.map(userDto, User.class);
-    }
-
-    private void grantRole(User user, Role role){
+    /**
+     * Grants role to user
+     *
+     * @param user
+     * @param role
+     */
+    private void grantRole(User user, Role role) {
         user.setRoles(null);
         user.setRoles(Collections.singleton(role));
     }
 
-    private String generatePersonalNumber(){
+    /**
+     * Generates personal number for driver
+     *
+     * @return personal number
+     */
+    private String generatePersonalNumber() {
         Random random = new Random();
         return random.ints(48, 122)
                 .filter(i -> (i < 57 || i > 65) && (i < 90 || i > 97))

@@ -5,5 +5,4 @@ public enum DriverStatus {
     ON_SHIFT,
     ON_DUTY,
     DRIVING
-
 }

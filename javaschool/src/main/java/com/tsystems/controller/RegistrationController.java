@@ -9,14 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @Controller
-@Validated
 public class RegistrationController {
 
     private final UserService userService;
@@ -29,7 +26,8 @@ public class RegistrationController {
     /**
      * Returns registration page.
      *
-     * @return registration.jsp
+     * @param model model
+     * @return sign/registration.jsp
      */
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -39,23 +37,25 @@ public class RegistrationController {
 
     /**
      * Register users.
+     *
+     * @param userDto user
+     * @param bindingResult binding result
+     * @param model model
+     * @return cabinet.jsp or sign/registration.jsp
      */
     @PostMapping("/registration")
     public String addUser(@ModelAttribute("user") @Valid UserDto userDto,
-                          @RequestParam("locationCity") @NotNull String locationCity,
-                          @RequestParam("latitude") @NotNull double latitude,
-                          @RequestParam("longitude") @NotNull double longitude,
                           BindingResult bindingResult,
                           Model model) {
-
         if (bindingResult.hasErrors()) {
             return "sign/registration";
         }
+
         if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
             model.addAttribute("passwordError", "Passwords don't match");
             return "sign/registration";
         }
-        if (!userService.save(userDto, locationCity, latitude, longitude)) {
+        if (!userService.save(userDto)) {
             model.addAttribute("usernameError", "A user with this name already exists");
             return "sign/registration";
         }
@@ -74,12 +74,14 @@ public class RegistrationController {
     }
 
     /**
-     * Returns cabinet.
+     * Returns cabinet
+     *
+     * @param authentication authentication
+     * @return cabinet.jsp
      */
     @GetMapping("/cabinet")
     public String getCabinet(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
         for (GrantedAuthority grantedAuthority : userDetails.getAuthorities()) {
             if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
                 return "redirect:/admin/user/all";

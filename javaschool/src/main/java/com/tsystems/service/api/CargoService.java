@@ -8,9 +8,9 @@ public interface CargoService {
 
     CargoDto findById(long id);
 
-    boolean editCargo(CargoDto cargoDto, long orderId);
+    boolean editCargo(CargoDto cargoDto);
 
-    boolean deleteCargo(long cargoId, long orderId);
+    boolean deleteCargo(long cargoId);
 
     boolean setStatusDelivered(long id);
 

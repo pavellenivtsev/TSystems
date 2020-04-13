@@ -22,12 +22,8 @@ public class UserOrderDto implements Serializable {
 
     private DateTime creationDate;
 
-    private List<DriverDto> driverList;
-
     private TruckDto truck;
 
     private List<CargoDto> cargoList;
-
-    private List<WaypointDto> waypointList;
 
 }

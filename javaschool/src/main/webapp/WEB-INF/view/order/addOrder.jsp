@@ -34,12 +34,12 @@
         <input type="text" style="visibility: hidden" id="distance" name="distance" required>
 
         <div class="text-center">
-            <input id="submit" type="button" formaction="#" value="Build a route">
+            <button class="btn btn-default" id="submit" type="button" formaction="#">Build a route</button>
         </div>
         <div id="buildRoadError" class="text-center"></div>
         <div id="map"></div>
         <div class="text-center">
-            <button type="submit">Create order</button>
+            <button class="btn btn-default" type="submit">Create order</button>
         </div>
     </form>
 

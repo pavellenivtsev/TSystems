@@ -16,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class User implements Serializable, UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -43,15 +42,20 @@ public class User implements Serializable, UserDetails {
     @Transient
     private String passwordConfirm;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Driver driver;
-
-    @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
 
     @Override
     public String getUsername() {

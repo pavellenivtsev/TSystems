@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <%@include file="../common/common.jsp" %>
@@ -7,8 +6,15 @@
 <body>
 <%@include file="../common/navbar.jsp" %>
 <div class="container" id="main-container">
-    <h1>HTTP Status 403 - Access is denied</h1>
-    <h2>${msg}</h2>
+    <div class="text-center">
+        <h1>HTTP Status 403 - Access is denied</h1>
+        <sec:authorize access="isAuthenticated()">
+        <h2>Hi <sec:authentication property="name"/>, you do not have permission to access this page!</h2>
+        </sec:authorize>
+        <sec:authorize access="!isAuthenticated()">
+            <h2>You do not have permission to access this page!</h2>
+        </sec:authorize>
+    </div>
 </div>
 </body>
 </html>

@@ -10,7 +10,7 @@
     <c:url value="/truck/add" var="add"/>
     <div class="text-center">
         <form name="delete" method="get" action="${add}">
-            <button type="submit">Add new truck</button>
+            <button class="btn btn-default" type="submit">Add new truck</button>
         </form>
     </div>
     <c:if test="${!trucks.isEmpty()}">
@@ -20,7 +20,7 @@
                 <td>Driver shift size</td>
                 <td>Weight capacity</td>
                 <td>Status</td>
-                <td>Current city</td>
+                <td>City</td>
                 <td></td>
             </tr>
             <c:forEach var="truck" items="${trucks}">
@@ -33,7 +33,7 @@
                     <td>
                         <c:url value="/truck/${truck.id}" var="getTruck"/>
                         <form name="edit" method="get" action="${getTruck}">
-                            <button type="submit">More information</button>
+                            <button class="btn btn-default" type="submit">More information</button>
                         </form>
                     </td>
                 </tr>

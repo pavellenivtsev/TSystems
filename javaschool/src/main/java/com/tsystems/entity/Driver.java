@@ -36,15 +36,10 @@ public class Driver implements Serializable{
     private DateTime shiftStartTime;
 
     @ManyToOne
-    @JoinColumn(name = "truck_id")
+    @JoinColumn(name = "truck_id", referencedColumnName = "id")
     private Truck truck;
 
-    @ManyToOne
-    @JoinColumn(name = "user_order_id")
-    private UserOrder userOrder;
-
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
 }
