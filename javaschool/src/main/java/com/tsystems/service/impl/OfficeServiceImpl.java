@@ -38,7 +38,7 @@ public class OfficeServiceImpl implements OfficeService {
     /**
      * Finds office by id
      *
-     * @param id
+     * @param id - office id
      * @return OfficeDto
      */
     @Override
@@ -50,7 +50,7 @@ public class OfficeServiceImpl implements OfficeService {
     /**
      * Saves new office
      *
-     * @param officeDto
+     * @param officeDto - office
      * @return true if office was saved
      */
     @Override
@@ -64,7 +64,7 @@ public class OfficeServiceImpl implements OfficeService {
     /**
      * Deletes office by id
      *
-     * @param id
+     * @param id - office id
      * @return true if office was deleted
      */
     @Override

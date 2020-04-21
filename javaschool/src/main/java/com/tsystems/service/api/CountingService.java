@@ -6,6 +6,7 @@ import com.tsystems.entity.Driver;
 
 import com.tsystems.entity.Truck;
 import com.tsystems.entity.UserOrder;
+import com.tsystems.utils.TruckPair;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -22,10 +23,10 @@ public interface CountingService {
     /**
      * Calculates distance between two coordinates
      *
-     * @param latitudeFrom
-     * @param longitudeFrom
-     * @param latitudeTo
-     * @param longitudeTo
+     * @param latitudeFrom - latitude from
+     * @param longitudeFrom - longitude from
+     * @param latitudeTo - latitude to
+     * @param longitudeTo - longitude to
      * @return integer kilometers of distance between two points
      */
     int getDistanceLength(double latitudeFrom,double longitudeFrom, double latitudeTo, double longitudeTo);
@@ -33,17 +34,17 @@ public interface CountingService {
     /**
      * Calculates hours of working for driver
      *
-     * @param driver
+     * @param driver - driver
      * @return hours of working
      */
     double getDriverHours(Driver driver);
 
     /**
-     * Calculates approximately distance for this truck and this order
+     * Calculates approximately distance for this truck and this order and checks whether the weight is exceeded
      *
-     * @param truckDtoList
-     * @param userOrderDto
+     * @param truckDtoList - trucks
+     * @param userOrderDto - order
      * @return mapping for this truck and this order
      */
-    TreeMap<Integer, TruckDto> getApproximatelyTotalDistanceForTruckAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto);
+    List<TruckPair> getApproximatelyTotalDistanceForTruckAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto);
 }

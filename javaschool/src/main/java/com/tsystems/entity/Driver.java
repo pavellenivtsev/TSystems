@@ -39,7 +39,7 @@ public class Driver implements Serializable{
     @JoinColumn(name = "truck_id", referencedColumnName = "id")
     private Truck truck;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

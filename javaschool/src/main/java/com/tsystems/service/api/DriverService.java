@@ -17,4 +17,6 @@ public interface DriverService {
     boolean changeTruckStatusToFaulty(long id);
 
     boolean completeOrder(long userOrderId);
+
+    String getTruckJson(DriverDto driverDto);
 }

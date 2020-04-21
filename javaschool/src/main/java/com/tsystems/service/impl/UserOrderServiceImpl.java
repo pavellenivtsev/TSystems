@@ -4,6 +4,8 @@ import com.tsystems.dao.api.*;
 import com.tsystems.dto.UserOrderDto;
 import com.tsystems.entity.UserOrder;
 import com.tsystems.enumaration.UserOrderStatus;
+import com.tsystems.exception.DataChangingException;
+import com.tsystems.service.api.JMSSenderService;
 import com.tsystems.service.api.UserOrderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +28,9 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private JMSSenderService jmsSenderService;
 
     /**
      * Finds all orders
@@ -85,10 +90,11 @@ public class UserOrderServiceImpl implements UserOrderService {
     public boolean deleteById(long id) {
         UserOrder userOrder = userOrderDao.findById(id);
         if (userOrder.getStatus().equals(UserOrderStatus.TAKEN)) {
-            return false;
+            throw new DataChangingException("Cant delete this order");
         }
         userOrderDao.delete(userOrder);
         LOGGER.info("An order with unique number " + userOrder.getUniqueNumber() + " was deleted ");
+        jmsSenderService.sendMessage();
         return true;
     }
 

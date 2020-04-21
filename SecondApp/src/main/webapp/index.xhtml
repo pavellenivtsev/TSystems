@@ -2,91 +2,111 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:p="http://primefaces.org/ui"
-        xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:head>
     <title>Logistic state</title>
-    <link rel="stylesheet" href="/resources/css/main.css"/>
-    <link rel="stylesheet" href="/resources/css/bootstrap.css"/>
+    <h:outputStylesheet library="css" name="main.css"/>
+    <h:outputStylesheet library="css" name="bootstrap.css"/>
 </h:head>
 <h:body>
     <div class="container" id="main-container">
-        <h2 class="text-center">Orders</h2>
-        <p:dataTable value="#{memoryBean.userOrderDtoList}" var="userOrder"
+        <p:dataTable value="#{memoryBean.getUserOrderDtoList()}" var="userOrder"
                      rendered="#{memoryBean.userOrderDtoList !=null}" class="table table-striped" id="orderTable">
+            <f:facet name="header">Orders</f:facet>
 
-            <p:column headerText="Unique number">
-                <h:column>#{userOrder.uniqueNumber}</h:column>
-            </p:column>
+            <p:columnGroup type="header">
+                <p:row>
+                    <p:column colspan="2" headerText="Order"/>
+                    <p:column colspan="5" headerText="Cargo"/>
+                </p:row>
+                <p:row>
+                    <p:column headerText="Unique number"/>
+                    <p:column headerText="Status"/>
+                    <p:column headerText="Name"/>
+                    <p:column headerText="Weight"/>
+                    <p:column headerText="Status"/>
+                    <p:column headerText="Place of departure"/>
+                    <p:column headerText="Delivery place"/>
+                </p:row>
+            </p:columnGroup>
 
-            <p:column headerText="Status">
-                <h:column>#{userOrder.status.name.toLowerCase().replaceAll("_"," ")}</h:column>
-            </p:column>
+                <p:column rowspan="#{userOrder.cargoList.size()}" groupRow="true">
+                    <h:outputText value="#{userOrder.uniqueNumber}"/>
+                </p:column>
+                <p:column rowspan="#{userOrder.cargoList.size()}" groupRow="true">
+                    <h:outputText value="#{userOrder.status.name().replaceAll('_','').toLowerCase()}"/>
+                </p:column>
 
-            <p:column headerText="Status">
-                <h:column>#{userOrder.status.name.toLowerCase().replaceAll("_"," ")}</h:column>
-            </p:column>
+            <!--            <p:column rowspan="#{userOrder.cargoList.size()}">-->
+            <!--                <h:outputText value="#{userOrder.uniqueNumber}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column rowspan="#{userOrder.cargoList.size()}">-->
+            <!--                <h:outputText value="#{userOrder.status.name().replaceAll('_','').toLowerCase()}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column>-->
+            <!--                <h:outputText value="#{userOrder.cargoList.get(0).name}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column>-->
+            <!--                <h:outputText value="#{userOrder.cargoList.get(0).weight}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column>-->
+            <!--                <h:outputText value="#{userOrder.cargoList.get(0).status}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column>-->
+            <!--                <h:outputText value="#{userOrder.cargoList.get(0).loadingAddress}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column>-->
+            <!--                <h:outputText value="#{userOrder.cargoList.get(0).unloadingAddress}"/>-->
+            <!--            </p:column>-->
 
-            <p:column headerText="Status">
-                <h:column>#{userOrder.status.name.toLowerCase().replaceAll("_"," ")}</h:column>
-            </p:column>
+
+            <!--                <ui:repeat value="#{userOrder.cargoList}" var="cargo" begin="1">-->
+            <!--                    <p:row>-->
+            <!--                        <p:column>-->
+            <!--                            <h:outputText value="#{cargo.name}"/>-->
+            <!--                        </p:column>-->
+            <!--                        <p:column>-->
+            <!--                            <h:outputText value="#{cargo.weight}"/>-->
+            <!--                        </p:column>-->
+            <!--                        <p:column>-->
+            <!--                            <h:outputText value="#{cargo.status}"/>-->
+            <!--                        </p:column>-->
+            <!--                        <p:column>-->
+            <!--                            <h:outputText value="#{cargo.loadingAddress}"/>-->
+            <!--                        </p:column>-->
+            <!--                        <p:column>-->
+            <!--                            <h:outputText value="#{cargo.unloadingAddress}"/>-->
+            <!--                        </p:column>-->
+            <!--                    </p:row>-->
+            <!--                </ui:repeat>-->
+            <!--            <p:column rowspan="#{userOrder.cargoList.size()}">-->
+            <!--                <h:outputText value="#{userOrder.uniqueNumber}"/>-->
+            <!--            </p:column>-->
+            <!--            <p:column rowspan="#{userOrder.cargoList.size()}">-->
+            <!--                <h:outputText value="#{userOrder.status.name().replaceAll('_','').toLowerCase()}"/>-->
+            <!--            </p:column>-->
         </p:dataTable>
 
-        <h2 class="text-center">Drivers</h2>
-        <p:dataTable value="#{memoryBean.driverDtoList}" var="driver"
-                     rendered="#{memoryBean.driverDtoList !=null}" class="table table-striped" id="driverTable">
 
-            <p:column headerText="Personal number">
-                <h:column>#{driver.personalNumber}</h:column>
-            </p:column>
-
-            <p:column headerText="Hours this month">
-                <h:column>#{driver.hoursThisMonth}</h:column>
-            </p:column>
-
-            <p:column headerText="Status">
-                <h:column>#{driver.status.name.toLowerCase().replaceAll("_"," ")}</h:column>
-            </p:column>
-        </p:dataTable>
-
-        <h2 class="text-center">Trucks</h2>
-        <p:dataTable value="#{memoryBean.truckDtoList}" var="truck"
-                     rendered="#{memoryBean.truckDtoList !=null}" class="table table-striped" id="truckTable">
-
-            <p:column headerText="Registration number">
-                <h:column>#{truck.registrationNumber}</h:column>
-            </p:column>
-
-            <p:column headerText="Weight capacity">
-                <h:column>#{truck.weightCapacity}</h:column>
-            </p:column>
-
-            <p:column headerText="Unique number">
-                <h:column>#{truck.status.name.toLowerCase().replaceAll("_"," ")}</h:column>
-            </p:column>
-        </p:dataTable>
-
-        <h2 class="text-center">Statistics</h2>
-        <p:dataTable value="#{memoryBean.countTable}" var="entry"
+        <p:dataTable value="#{memoryBean.getCountTable()}" var="entry"
                      rendered="#{memoryBean.countTable !=null}" class="table table-striped" id="countTable">
+            <f:facet name="header">Statistics</f:facet>
+            <p:column headerText="Name">
+                <h:column>#{entry.name}</h:column>
+            </p:column>
 
-                    <p:column headerText="Name">
-                        <h:column>#{entry.name}</h:column>
-                    </p:column>
-
-                    <p:column headerText="Quantity">
-                        <h:column>#{entry.value}</h:column>
-                    </p:column>
+            <p:column headerText="Quantity">
+                <h:column>#{entry.value}</h:column>
+            </p:column>
         </p:dataTable>
 
         <h:form>
             <f:websocket channel="someChannel">
                 <f:ajax event="updateOrders" render=":orderTable"/>
-                <f:ajax event="updateDrivers" render=":driverTable"/>
-                <f:ajax event="updateTrucks" render=":truckTable"/>
                 <f:ajax event="updateCountTable" render=":countTable"/>
             </f:websocket>
         </h:form>

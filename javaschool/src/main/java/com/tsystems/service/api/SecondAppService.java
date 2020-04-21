@@ -1,15 +1,12 @@
 package com.tsystems.service.api;
 
-import com.tsystems.dto.DriverDto;
-import com.tsystems.dto.TruckDto;
+import com.tsystems.dto.EntryDto;
 import com.tsystems.dto.UserOrderDto;
 
 import java.util.List;
 
 public interface SecondAppService {
-    List<DriverDto> findAllDrivers();
+    List<UserOrderDto> findAllCompletedOrCarriedOrders();
 
-    List<UserOrderDto> findAllOrders();
-
-    List<TruckDto> findAllTrucks();
+    List<EntryDto> createCountTable();
 }

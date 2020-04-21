@@ -1,8 +1,8 @@
 package com.tsystems.dao.impl;
 
 import com.tsystems.dao.api.UserOrderDao;
-import com.tsystems.entity.User;
 import com.tsystems.entity.UserOrder;
+import com.tsystems.enumaration.UserOrderStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +23,14 @@ public class UserOrderDaoImpl extends AbstractGenericDao<UserOrder> implements U
                 .setParameter(0, uniqueNumber)
                 .list();
         return userOrderList.isEmpty() ? null : userOrderList.get(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<UserOrder> findAllCompletedOrCarried() {
+        return (List<UserOrder>) getSession()
+                .createQuery("from UserOrder where status=?1 or status=?2 order by id DESC")
+                .setParameter(1, UserOrderStatus.COMPLETED)
+                .setParameter(2,UserOrderStatus.TAKEN).list();
     }
 }

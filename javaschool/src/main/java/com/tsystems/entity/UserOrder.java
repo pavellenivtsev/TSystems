@@ -38,7 +38,7 @@ public class UserOrder implements Serializable {
     private DateTime creationDate;
 
     @OneToOne
-    @JoinColumn(name = "truck_id")
+    @JoinColumn(name = "truck_id", referencedColumnName = "id")
     private Truck truck;
 
     @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)

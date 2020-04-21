@@ -50,7 +50,6 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return "sign/registration";
         }
-
         if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
             model.addAttribute("passwordError", "Passwords don't match");
             return "sign/registration";
@@ -59,7 +58,6 @@ public class RegistrationController {
             model.addAttribute("usernameError", "A user with this name already exists");
             return "sign/registration";
         }
-
         return "redirect:/cabinet";
     }
 
@@ -84,7 +82,7 @@ public class RegistrationController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         for (GrantedAuthority grantedAuthority : userDetails.getAuthorities()) {
             if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
-                return "redirect:/admin/user/all";
+                return "redirect:/admin/users";
             }
             if (grantedAuthority.getAuthority().equals("ROLE_MANAGER")) {
                 return "redirect:/dispatcher/cabinet";

@@ -37,4 +37,8 @@ public class CargoPair {
     public double getUnloadingLongitude(){
         return cargoDto.getUnloadingLongitude();
     }
+
+    public double getWeight(){
+        return cargoDto.getWeight();
+    }
 }

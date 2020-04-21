@@ -28,4 +28,23 @@ public class TruckDaoImpl extends AbstractGenericDao<Truck> implements TruckDao 
                 .setParameter(1, TruckStatus.ON_DUTY)
                 .list();
     }
+
+    @Override
+    public Long getTrucksCount() {
+        return (Long) getSession().createQuery("select count(*) from Truck").list().get(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Long getCarryingOrderTrucksCount() {
+        return (Long) getSession().createQuery("select count(*) from UserOrder where truck is not null").list().get(0);
+    }
+
+
+    @Override
+    public Long getFaultyTrucksCount() {
+        return (Long) getSession().createQuery("select count(*) from Truck where status=?1")
+                .setParameter(1, TruckStatus.FAULTY)
+                .list().get(0);
+    }
 }

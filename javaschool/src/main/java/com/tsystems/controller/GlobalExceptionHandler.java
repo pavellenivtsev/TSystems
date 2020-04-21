@@ -31,15 +31,15 @@ public class GlobalExceptionHandler {
         return "error/405";
     }
 
-    /**
-     * Default handler for all exceptions
-     *
-     * @param e - exception
-     * @return error/error.jsp
-     */
-    @ExceptionHandler(value = Exception.class)
-    public String defaultHandlerException(HttpServletRequest request, Exception e) {
-        LOGGER.error("Request: " + request.getRequestURL() + " raised " + e);
-        return "error/error";
-    }
+//    /**
+//     * Default handler for all exceptions
+//     *
+//     * @param e - exception
+//     * @return error/error.jsp
+//     */
+//    @ExceptionHandler(value = Exception.class)
+//    public String defaultHandlerException(HttpServletRequest request, Exception e) {
+//        LOGGER.error("Request: " + request.getRequestURL() + " raised " + e);
+//        return "error/error";
+//    }
 }

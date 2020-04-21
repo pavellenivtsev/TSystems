@@ -2,6 +2,7 @@ package com.tsystems.dao.impl;
 
 import com.tsystems.dao.api.DriverDao;
 import com.tsystems.entity.Driver;
+import com.tsystems.enumaration.DriverStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,5 +25,24 @@ public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverD
                 .setParameter(0, personalNumber)
                 .list();
         return driverList.isEmpty() ? null : driverList.get(0);
+    }
+
+    @Override
+    public Long getDriversCount() {
+        return (Long) getSession().createQuery("select count(*) from Driver").list().get(0);
+    }
+
+    @Override
+    public Long getRestDriversCount() {
+        return (Long) getSession().createQuery("select count(*) from Driver where status=?1")
+                .setParameter(1, DriverStatus.REST)
+                .list().get(0);
+    }
+
+    @Override
+    public Long getOnShiftDriversCount() {
+        return (Long) getSession().createQuery("select count(*) from Driver where status=?1")
+                .setParameter(1, DriverStatus.ON_SHIFT)
+                .list().get(0);
     }
 }

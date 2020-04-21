@@ -10,6 +10,7 @@ import com.tsystems.enumaration.TruckStatus;
 import com.tsystems.enumaration.UserOrderStatus;
 import com.tsystems.exception.DataChangingException;
 import com.tsystems.service.api.CargoService;
+import com.tsystems.service.api.JMSSenderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -31,10 +32,13 @@ public class CargoServiceImpl implements CargoService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private JMSSenderService jmsSenderService;
+
     /**
      * Finds cargo by id
      *
-     * @param id cargo id
+     * @param id - cargo id
      * @return CargoDto
      */
     @Override
@@ -46,8 +50,8 @@ public class CargoServiceImpl implements CargoService {
     /**
      * Adds cargo to order by order id
      *
-     * @param cargoDto cargo
-     * @param orderId  order id
+     * @param cargoDto - cargo
+     * @param orderId  - order id
      * @return true if cargo is added
      */
     @Override
@@ -69,7 +73,7 @@ public class CargoServiceImpl implements CargoService {
     /**
      * Edit cargo
      *
-     * @param cargoDto cargo
+     * @param cargoDto - cargo
      * @return true if cargo was edited
      */
     @Override
@@ -88,14 +92,13 @@ public class CargoServiceImpl implements CargoService {
         cargo.setUnloadingAddress(cargoDto.getUnloadingAddress());
         cargo.setUnloadingLatitude(cargoDto.getUnloadingLatitude());
         cargo.setUnloadingLongitude(cargoDto.getUnloadingLongitude());
-        cargoDao.update(cargo);
         return true;
     }
 
     /**
      * Delete cargo
      *
-     * @param cargoId cargo id
+     * @param cargoId - cargo id
      * @return true if cargo was deleted
      */
     @Override
@@ -115,7 +118,7 @@ public class CargoServiceImpl implements CargoService {
     /**
      * Changes the cargo status to "delivered"
      *
-     * @param id cargo id
+     * @param id - cargo id
      * @return true if status was changed
      */
     @Override
@@ -128,16 +131,19 @@ public class CargoServiceImpl implements CargoService {
             throw new DataChangingException("Status changing error");
         }
         cargo.setStatus(CargoStatus.DELIVERED);
+        cargo.getUserOrder().getTruck().setAddress(cargo.getUnloadingAddress());
+        cargo.getUserOrder().getTruck().setLatitude(cargo.getUnloadingLatitude());
+        cargo.getUserOrder().getTruck().setLongitude(cargo.getUnloadingLongitude());
         LOGGER.info("For an order with the number " + cargo.getUserOrder().getUniqueNumber() +
                 ", a cargo with the name " + cargo.getName() + " was delivered");
-        cargoDao.update(cargo);
+        jmsSenderService.sendMessage();
         return true;
     }
 
     /**
      * Changes the cargo status to "shipped"
      *
-     * @param id cargo id
+     * @param id - cargo id
      * @return true if status was changed
      */
     @Override
@@ -150,9 +156,12 @@ public class CargoServiceImpl implements CargoService {
             throw new DataChangingException("Status changing error");
         }
         cargo.setStatus(CargoStatus.SHIPPED);
+        cargo.getUserOrder().getTruck().setAddress(cargo.getLoadingAddress());
+        cargo.getUserOrder().getTruck().setLatitude(cargo.getLoadingLatitude());
+        cargo.getUserOrder().getTruck().setLongitude(cargo.getLoadingLongitude());
         LOGGER.info("For an order with the number " + cargo.getUserOrder().getUniqueNumber() +
                 ", a cargo with the name " + cargo.getName() + " was shipped");
-        cargoDao.update(cargo);
+        jmsSenderService.sendMessage();
         return true;
     }
 }

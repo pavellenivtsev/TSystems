@@ -7,6 +7,7 @@ import com.tsystems.entity.Driver;
 import com.tsystems.entity.Role;
 import com.tsystems.entity.User;
 import com.tsystems.enumaration.DriverStatus;
+import com.tsystems.exception.DataChangingException;
 import com.tsystems.service.api.AdminService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,9 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private JMSSenderServiceImpl jmsSenderService;
+
     /**
      * Get all users from DB
      *
@@ -51,7 +55,7 @@ public class AdminServiceImpl implements AdminService {
     /**
      * Deletes user by id
      *
-     * @param id
+     * @param id - user id
      * @return true if user was deleted
      */
     @Override
@@ -66,37 +70,41 @@ public class AdminServiceImpl implements AdminService {
     /**
      * Appoints user as admin
      *
-     * @param id
+     * @param id - user id
      */
     @Override
     @Transactional
     public void appointAsAdmin(long id) {
         User user = userDao.findById(id);
+        if (isDriver(user)) {
+            deleteDriver(user);
+            jmsSenderService.sendMessage();
+        }
         grantRole(user, new Role(2L, "ROLE_ADMIN"));
-        userDao.update(user);
-
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as admin.");
     }
 
     /**
      * Appoints user as manager
      *
-     * @param id
+     * @param id - user id
      */
     @Override
     @Transactional
     public void appointAsManager(long id) {
         User user = userDao.findById(id);
+        if (isDriver(user)) {
+            deleteDriver(user);
+            jmsSenderService.sendMessage();
+        }
         grantRole(user, new Role(3L, "ROLE_MANAGER"));
-        userDao.update(user);
-
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as manager.");
     }
 
     /**
      * Appoints user as driver
      *
-     * @param id
+     * @param id - user id
      */
     @Override
     @Transactional
@@ -105,10 +113,11 @@ public class AdminServiceImpl implements AdminService {
         while (driverDao.findByPersonalNumber(uniqueNumber) != null) {
             uniqueNumber = generatePersonalNumber();
         }
-
         User user = userDao.findById(id);
+        if (isDriver(user)) {
+            throw new DataChangingException("This user is already a driver");
+        }
         grantRole(user, new Role(4L, "ROLE_DRIVER"));
-
         Driver driver = new Driver();
         driver.setHoursThisMonth(0.0);
         driver.setStatus(DriverStatus.REST);
@@ -117,13 +126,29 @@ public class AdminServiceImpl implements AdminService {
         driver.setUser(user);
         driverDao.save(driver);
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as driver.");
+        jmsSenderService.sendMessage();
+    }
+
+    /**
+     * Deletes driver
+     *
+     * @param user - user
+     */
+    private void deleteDriver(User user){
+        if (user.getDriver().getTruck() != null &&
+                user.getDriver().getTruck().getUserOrder() != null) {
+            throw new DataChangingException("The driver completes the order");
+        }
+        Driver driver =user.getDriver();
+        user.setDriver(null);
+        driverDao.delete(driver);
     }
 
     /**
      * Grants role to user
      *
-     * @param user
-     * @param role
+     * @param user - user
+     * @param role - role
      */
     private void grantRole(User user, Role role) {
         user.setRoles(null);
@@ -144,4 +169,15 @@ public class AdminServiceImpl implements AdminService {
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();
     }
+
+    /**
+     * Checks whether the user is a driver
+     *
+     * @param user - user
+     * @return true if user is a driver
+     */
+    private boolean isDriver(User user) {
+        return user.getDriver() != null;
+    }
 }
+

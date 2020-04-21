@@ -8,4 +8,10 @@ public interface TruckDao extends GenericDao<Truck> {
     Truck findByRegistrationNumber(String registrationNumber);
 
     List<Truck> findAllAvailable();
+
+    Long getTrucksCount();
+
+    Long getCarryingOrderTrucksCount();
+
+    Long getFaultyTrucksCount();
 }

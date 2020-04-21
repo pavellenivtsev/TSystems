@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Lato|Raleway&display=swap');
 
-body{
-    background: url("/resources/img/road.jpg") no-repeat center top;
+body {
+    background: url("/resources/img/road.jpg") repeat center top;
     color: #f2f2f2;
     font-family: "Lato";
     font-weight: 300;
@@ -14,31 +14,32 @@ body{
     margin-top: 70px;
 }
 
-h1, h2, h3, h4, h5, h6{
+h1, h2, h3, h4, h5, h6 {
     font-family: "Raleway";
     font-weight: 300;
     color: #333;
 }
 
-p{
+p {
     line-height: 28px;
     margin-bottom: 25px;
 }
-.centered{
+
+.centered {
     text-align: center;
 }
 
-a{
+a {
     color: #f85c37;
 }
 
-a:hover, a:focus{
+a:hover, a:focus {
     color: #7b7b7b;
     text-decoration: none;
     outline: 0;
 }
 
-hr{
+hr {
     display: block;
     height: 1px;
     border: 0;
@@ -47,14 +48,14 @@ hr{
     padding: 0;
 }
 
-.navbar{
+.navbar {
     font-weight: 800;
     font-size: 14px;
     padding-top: 15px;
     padding-bottom: 15px;
 }
 
-.navbar-inverse{
+.navbar-inverse {
     background: #2d2d2d;
     border-color: #2d2d2d;
 }
@@ -63,18 +64,18 @@ hr{
     background-color: #ff7878;
 }
 
-.navbar-inverse .navbar-brand{
+.navbar-inverse .navbar-brand {
     color: #999;
     font-weight: bolder;
     font-size: 22px;
     letter-spacing: 1px;
 }
 
-.navbar-inverse .navbar-brand > .logout > a{
+.navbar-inverse .navbar-brand > .logout > a {
     background-color: white;
 }
 
-#headerwrap{
+#headerwrap {
     /*background: url(../resources/img/road.jpg) no-repeat center top;*/
     color: #f2f2f2;;
     margin-top: -10px;
@@ -100,6 +101,13 @@ hr{
     margin-right: auto;
 }
 
+#driver-map {
+    height: 500px;
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #cssTable td {
     text-align: center;
     vertical-align: middle;
@@ -110,7 +118,7 @@ hr{
     vertical-align: middle;
 }
 
-#main-container{
+#main-container {
     background-color: white;
     /*background-color: rgba(0, 255, 0, 0.2);*/
     border-radius: 10px;
@@ -120,6 +128,6 @@ form .error {
     color: #ff0000;
 }
 
-#warning-message{
+#warning-message {
     color: #ff0000;
 }

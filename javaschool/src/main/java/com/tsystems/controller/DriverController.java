@@ -1,15 +1,13 @@
 package com.tsystems.controller;
 
+import com.tsystems.dto.DriverDto;
 import com.tsystems.service.api.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/driver")
@@ -20,49 +18,48 @@ public class DriverController {
     /**
      * Get driver cabinet
      *
-     * @param authentication authentication
-     * @param model model
+     * @param principal - principal
+     * @param model     - model
      * @return driver/cabinet.jsp
      */
     @GetMapping("/cabinet")
-    public String getDriverCabinet(Authentication authentication, Model model) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        model.addAttribute("driver", driverService.findByUsername(userDetails.getUsername()));
+    public String getDriverCabinet(Principal principal, Model model) {
+        model.addAttribute("driver", driverService.findByUsername(principal.getName()));
         return "driver/cabinet";
     }
 
     /**
      * Get driver truck
      *
-     * @param authentication authentication
-     * @param model model
+     * @param principal - principal
+     * @param model     - model
      * @return driver/truck.jsp
      */
     @GetMapping("/truck")
-    public String getDriverTruck(Authentication authentication, Model model) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        model.addAttribute("driver", driverService.findByUsername(userDetails.getUsername()));
+    public String getDriverTruck(Principal principal, Model model) {
+        model.addAttribute("driver", driverService.findByUsername(principal.getName()));
         return "driver/truck";
     }
 
     /**
      * Get driver order
      *
-     * @param authentication authentication
-     * @param model model
+     * @param principal - principal
+     * @param model     - model
      * @return driver/order.jsp
      */
     @GetMapping("/order")
-    public String getDriverOrder(Authentication authentication, Model model) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        model.addAttribute("driver", driverService.findByUsername(userDetails.getUsername()));
+    public String getDriverOrder(Principal principal, Model model) {
+        DriverDto driverDto = driverService.findByUsername(principal.getName());
+        model.addAttribute("driver", driverDto);
+        model.addAttribute("truck", driverService.getTruckJson(driverDto));
         return "driver/order";
     }
 
     /**
      * Change driver status to ON_SHIFT
      *
-     * @param driverId driver id
+     * @param driverId - driver id
      * @return driver/cabinet.jsp
      */
     @PostMapping("/status/start")
@@ -74,7 +71,7 @@ public class DriverController {
     /**
      * Change driver status to REST
      *
-     * @param driverId driver id
+     * @param driverId - driver id
      * @return driver/cabinet.jsp
      */
     @PostMapping("/status/finish")
@@ -86,32 +83,31 @@ public class DriverController {
     /**
      * Change truck status to ON_DUTY
      *
-     * @param driverId driver id
+     * @param driverId - driver id
      * @return driver/truck.jsp
      */
     @PostMapping("/truck/status/onDuty")
     public String changeTruckStatusToOnDuty(@RequestParam long driverId) {
-       driverService.changeTruckStatusToOnDuty(driverId);
+        driverService.changeTruckStatusToOnDuty(driverId);
         return "redirect:/driver/truck";
     }
 
     /**
      * Change truck status to FAULTY
      *
-     * @param driverId driver id
+     * @param driverId - driver id
      * @return driver/truck.jsp
      */
     @PostMapping("/truck/status/faulty")
     public String changeTruckStatusToFaulty(@RequestParam long driverId) {
-       driverService.changeTruckStatusToFaulty(driverId);
-
+        driverService.changeTruckStatusToFaulty(driverId);
         return "redirect:/driver/truck";
     }
 
     /**
      * Change truck status to FAULTY
      *
-     * @param userOrderId order id
+     * @param userOrderId - order id
      * @return driver/cabinet.jsp
      */
     @PostMapping("/order/status/completed")

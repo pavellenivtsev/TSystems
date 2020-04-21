@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping(value = "/cargo")
 public class CargoController {
@@ -16,8 +18,8 @@ public class CargoController {
     /**
      * Add new cargo
      *
-     * @param orderId order id
-     * @param model model
+     * @param orderId - order id
+     * @param model   - model
      * @return addCargo.jsp
      */
     @GetMapping(value = "/add")
@@ -30,12 +32,12 @@ public class CargoController {
     /**
      * Add new cargo
      *
-     * @param cargoDto cargo
-     * @param orderId order id
+     * @param cargoDto - cargo
+     * @param orderId  - order id
      * @return allOrders.jsp
      */
     @PostMapping(value = "/add")
-    public String addCargo(@ModelAttribute("cargo") CargoDto cargoDto,
+    public String addCargo(@ModelAttribute("cargo") @Valid CargoDto cargoDto,
                            @RequestParam("orderId") long orderId) {
         cargoService.addCargoToOrder(cargoDto, orderId);
         return "redirect:/order/all";
@@ -44,8 +46,8 @@ public class CargoController {
     /**
      * Edit cargo
      *
-     * @param cargoId cargo id
-     * @param model model
+     * @param cargoId - cargo id
+     * @param model   - model
      * @return edit.jsp
      */
     @GetMapping(value = "/edit")
@@ -57,11 +59,11 @@ public class CargoController {
     /**
      * Edit cargo
      *
-     * @param cargoDto cargo
+     * @param cargoDto - cargo
      * @return allOrders.jsp
      */
     @PostMapping(value = "/edit")
-    public String editCargo(@ModelAttribute("cargo") CargoDto cargoDto) {
+    public String editCargo(@ModelAttribute("cargo") @Valid CargoDto cargoDto) {
         cargoService.editCargo(cargoDto);
         return "redirect:/order/all";
     }
@@ -69,7 +71,7 @@ public class CargoController {
     /**
      * Delete cargo
      *
-     * @param cargoId cargo id
+     * @param cargoId - cargo id
      * @return allOrders.jsp
      */
     @PostMapping(value = "/delete")
@@ -81,7 +83,7 @@ public class CargoController {
     /**
      * Change cargo status to delivered
      *
-     * @param id cargo id
+     * @param id - cargo id
      * @return driver/order.jsp
      */
     @PostMapping("/delivered")
@@ -93,7 +95,7 @@ public class CargoController {
     /**
      * Change cargo status to shipped
      *
-     * @param id cargo id
+     * @param id - cargo id
      * @return driver/order.jsp
      */
     @PostMapping("/shipped")

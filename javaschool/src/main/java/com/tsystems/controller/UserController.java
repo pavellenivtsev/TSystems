@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -18,8 +20,8 @@ public class UserController {
     /**
      * Get user cabinet
      *
-     * @param model
-     * @param authentication
+     * @param model - model
+     * @param authentication - authentication
      * @return user/cabinet.jsp
      */
     @GetMapping("/cabinet")
@@ -32,8 +34,8 @@ public class UserController {
     /**
      * Edit user
      *
-     * @param id
-     * @param model
+     * @param id - user id
+     * @param model - model
      * @return user/edit.jsp
      */
     @GetMapping("/edit")
@@ -45,11 +47,11 @@ public class UserController {
     /**
      * Edit user information
      *
-     * @param userDto user
+     * @param userDto - user
      * @return user/cabinet.jsp
      */
     @PostMapping("/edit")
-    public String editUser(@ModelAttribute("user") UserDto userDto) {
+    public String editUser(@ModelAttribute("user") @Valid UserDto userDto) {
         userService.update(userDto);
         return "redirect:/user/cabinet";
     }

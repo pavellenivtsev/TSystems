@@ -26,6 +26,7 @@ public class UserOrderController {
     /**
      * Delete order by id.
      *
+     * @param id - order id
      * @return order/allOrders.jsp
      */
     @PostMapping(value = "/delete")
@@ -44,36 +45,4 @@ public class UserOrderController {
         userOrderService.addOrder();
         return "redirect:/order/all";
     }
-
-//    /**
-//     * Add truck to order.
-//     *
-//     * @return order/addTruck.jsp
-//     */
-//    @GetMapping(value = "/add/truck")
-//    public ModelAndView addTruckToOrderPage(@RequestParam long id) {
-//        UserOrderDto userOrderDto = userOrderService.findById(id);
-//        List<TruckDto> truckDtoList = truckService.findAllAvailable(userOrderDto);
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("order/addTruck");
-//        modelAndView.addObject("order", userOrderDto);
-//        modelAndView.addObject("trucks", truckDtoList);
-//        return modelAndView;
-//    }
-//
-//    /**
-//     * Add truck to order.
-//     *
-//     * @return order/allOrders.jsp
-//     */
-//    @PostMapping(value = "/add/truck")
-//    public String addTruckToOrder(@RequestParam("orderId") long orderId,
-//                                  @RequestParam("truckId") long truckId,
-//                                  Model model) {
-//        if (!userOrderService.addTruck(userOrderService.findById(orderId), truckId)) {
-//            model.addAttribute("addTruckToOrderError", "Cant add truck to this order");
-//            return "redirect:/order/all";
-//        }
-//        return "redirect:/order/all";
-//    }
 }

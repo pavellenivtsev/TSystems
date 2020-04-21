@@ -18,7 +18,7 @@ public class TruckController {
     /**
      * Delete truck by id.
      *
-     * @param id truck id
+     * @param id - truck id
      * @return office/allOffices.jsp
      */
     @PostMapping("/delete")
@@ -30,8 +30,8 @@ public class TruckController {
     /**
      * Add new truck.
      *
-     * @param officeId office id
-     * @param model    model
+     * @param officeId - office id
+     * @param model    - model
      * @return truck/addTruck.jsp
      */
     @GetMapping("/add")
@@ -44,9 +44,9 @@ public class TruckController {
     /**
      * Add new truck.
      *
-     * @param truckDto truck
-     * @param officeId office id
-     * @param model    model
+     * @param truckDto - truck
+     * @param officeId - office id
+     * @param model    - model
      * @return previous page
      */
     @PostMapping("/add")
@@ -63,8 +63,8 @@ public class TruckController {
     /**
      * Edit the truck
      *
-     * @param id    truck id
-     * @param model model
+     * @param id    - truck id
+     * @param model - model
      * @return truck/editTruck.jsp
      */
     @GetMapping("/edit")
@@ -76,8 +76,8 @@ public class TruckController {
     /**
      * Edit the truck
      *
-     * @param truckDto truck
-     * @param model    model
+     * @param truckDto - truck
+     * @param model    - model
      * @return view
      */
     @PostMapping("/edit")
@@ -104,8 +104,8 @@ public class TruckController {
     /**
      * Get add driver to truck page
      *
-     * @param truckId truck id
-     * @param model   model
+     * @param truckId - truck id
+     * @param model   - model
      * @return truck/addDriver.jsp
      */
     @GetMapping("/add/driver")
@@ -118,8 +118,8 @@ public class TruckController {
     /**
      * Add driver to truck
      *
-     * @param truckId  truck id
-     * @param driverId driver id
+     * @param truckId  - truck id
+     * @param driverId - driver id
      * @return truck/truck.jsp
      */
     @PostMapping("/add/driver")
@@ -132,8 +132,8 @@ public class TruckController {
     /**
      * Remove the driver from the truck
      *
-     * @param truckId  truck id
-     * @param driverId driver id
+     * @param truckId  - truck id
+     * @param driverId - driver id
      * @return truck/truck.jsp
      */
     @PostMapping("/remove/driver")
@@ -146,8 +146,8 @@ public class TruckController {
     /**
      * Find all available trucks for this order
      *
-     * @param orderId order id
-     * @param model   model
+     * @param orderId - order id
+     * @param model   -  model
      * @return truck/allAvailable.jsp
      */
     @GetMapping("/add/order")
@@ -160,8 +160,8 @@ public class TruckController {
     /**
      * Add truck to order
      *
-     * @param orderId order id
-     * @param truckId truck id
+     * @param orderId - order id
+     * @param truckId - truck id
      * @return order/allOrders.jsp
      */
     @PostMapping("add/order")

@@ -1,9 +1,7 @@
 package com.tsystems;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tsystems.dto.DriverDto;
 import com.tsystems.dto.EntryDto;
-import com.tsystems.dto.TruckDto;
 import com.tsystems.dto.UserOrderDto;
 import com.tsystems.service.api.RestService;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -36,15 +34,11 @@ public class MemoryBean {
     private PushContext pushContext;
 
     private List<UserOrderDto> userOrderDtoList;
-    private List<DriverDto> driverDtoList;
-    private List<TruckDto> truckDtoList;
     private List<EntryDto> countTable;
 
-//    failover://(tcp://activemq:61616)?initialReconnectDelay=2000&maxReconnectAttempts=5
-//    tcp://localhost:61616
     @PostConstruct
     public void init() {
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("failover://(tcp://activemq:61616)?maxReconnectAttempts=5");
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("failover://(tcp://localhost:61616)?initialReconnectDelay=2000&maxReconnectAttempts=5");
         Connection connection;
         try {
             connection = connectionFactory.createConnection();
@@ -52,18 +46,13 @@ public class MemoryBean {
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Queue queue = session.createQueue("testQ");
             MessageConsumer consumer = session.createConsumer(queue);
-
             consumer.setMessageListener(message -> {
                 if (message instanceof TextMessage) {
                     TextMessage msg = (TextMessage) message;
                     try {
                         LOGGER.info("Received Message from queue: " + msg.getText());
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    }
-                    try {
                         refreshData();
-                    } catch (IOException e) {
+                    } catch (JMSException | IOException e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -84,68 +73,11 @@ public class MemoryBean {
                 UserOrderDto[].class)));
         pushContext.send("updateOrders");
 
-        //update drivers
-        driverDtoList = new LinkedList<>();
-        driverDtoList.addAll(Arrays.asList(objectMapper.readValue(
-                restService.executeRequest("http://localhost:8081/secondapp/drivers"),
-                DriverDto[].class)));
-        pushContext.send("updateDrivers");
-
-        //update trucks
-        truckDtoList = new LinkedList<>();
-        truckDtoList.addAll(Arrays.asList(objectMapper.readValue(
-                restService.executeRequest("http://localhost:8081/secondapp/trucks"),
-                TruckDto[].class)));
-        pushContext.send("updateTrucks");
-
         //update count table
-        int totalDriversCount = driverDtoList.size();
-
-
-        final int[] driversOnShift = {0};
-        final int[] driversRest = {0};
-
-        driverDtoList.forEach(driverDto -> {
-            switch (driverDto.getStatus()) {
-                case ON_SHIFT:
-                    driversOnShift[0]++;
-                    break;
-                case REST:
-                    driversRest[0]++;
-                    break;
-                default:
-                    LOGGER.error("Driver status is incorrect");
-            }
-        });
-
-        final int[] trucksCarryingCargo = {0};
-        final int[] freeTrucks = {0};
-        final int[] faultyTrucks = {0};
-
-        truckDtoList.forEach(truckDto -> {
-            switch (truckDto.getStatus()) {
-                case ON_DUTY:
-                    if (truckDto.getUserOrder() == null) {
-                        freeTrucks[0]++;
-                    } else {
-                        trucksCarryingCargo[0]++;
-                    }
-                    break;
-                case FAULTY:
-                    faultyTrucks[0]++;
-                    break;
-                default:
-                    LOGGER.error("Truck status is incorrect");
-            }
-        });
-
-        countTable.add(new EntryDto("Total drivers count", totalDriversCount));
-        countTable.add(new EntryDto("Drivers on shift", driversOnShift[0]));
-        countTable.add(new EntryDto("Drivers on vacation", driversRest[0]));
-        countTable.add(new EntryDto("Trucks carrying an order", trucksCarryingCargo[0]));
-        countTable.add(new EntryDto("Free trucks", freeTrucks[0]));
-        countTable.add(new EntryDto("Faulty trucks", faultyTrucks[0]));
-
+        countTable= new LinkedList<>();
+        countTable.addAll(Arrays.asList(objectMapper.readValue(
+                restService.executeRequest("http://localhost:8081/secondapp/count-table"),
+                EntryDto[].class)));
         pushContext.send("updateCountTable");
     }
 
@@ -155,22 +87,6 @@ public class MemoryBean {
 
     public void setUserOrderDtoList(List<UserOrderDto> userOrderDtoList) {
         this.userOrderDtoList = userOrderDtoList;
-    }
-
-    public List<DriverDto> getDriverDtoList() {
-        return driverDtoList;
-    }
-
-    public void setDriverDtoList(List<DriverDto> driverDtoList) {
-        this.driverDtoList = driverDtoList;
-    }
-
-    public List<TruckDto> getTruckDtoList() {
-        return truckDtoList;
-    }
-
-    public void setTruckDtoList(List<TruckDto> truckDtoList) {
-        this.truckDtoList = truckDtoList;
     }
 
     public List<EntryDto> getCountTable() {

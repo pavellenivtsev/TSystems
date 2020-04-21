@@ -16,6 +16,7 @@
         <tr>
             <td>${office.title}</td>
             <td>${office.address}</td>
+            <c:if test="${office.truckList.isEmpty()}">
             <td>
                 <c:url value="/office/delete" var="deleteOffice"/>
                 <form name="deleteOffice" method="post" action="${deleteOffice}">
@@ -23,12 +24,14 @@
                     <button class="btn btn-default" type="submit">Delete</button>
                 </form>
             </td>
+            </c:if>
         </tr>
     </table>
     <br><br>
     <h2 class="text-center">Trucks registered in this office</h2>
     <table class="table table-striped" id="cssTable2">
         <tr>
+            <td></td>
             <td>Registration number</td>
             <td>Driver shift size</td>
             <td>Weight capacity</td>
@@ -38,6 +41,11 @@
         </tr>
         <c:forEach var="truck" items="${office.truckList}">
             <tr>
+                <td>
+                    <c:if test="${truck.userOrder!=null}">
+                        The truck fulfills the order
+                    </c:if>
+                </td>
                 <td>${truck.registrationNumber}</td>
                 <td>${truck.driverShiftSize}</td>
                 <td>${truck.weightCapacity}</td>

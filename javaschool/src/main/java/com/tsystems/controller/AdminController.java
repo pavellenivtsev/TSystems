@@ -22,7 +22,7 @@ public class AdminController {
      *
      * @return allUsers.jsp
      */
-    @GetMapping("/user/all")
+    @GetMapping("/users")
     public String userList(Model model) {
         model.addAttribute("users", adminService.findAll());
         return "admin/allUsers";
@@ -36,7 +36,7 @@ public class AdminController {
     @PostMapping("/user/delete")
     public String deleteUser(@RequestParam long id) {
         adminService.deleteById(id);
-        return "redirect:/admin/user/all";
+        return "redirect:/admin/users";
     }
 
     /**
@@ -47,7 +47,7 @@ public class AdminController {
     @PostMapping("/appoint/admin")
     public String appointAsAdmin(@RequestParam long id) {
         adminService.appointAsAdmin(id);
-        return "redirect:/admin/user/all";
+        return "redirect:/admin/users";
     }
 
     /**
@@ -58,7 +58,7 @@ public class AdminController {
     @PostMapping("/appoint/manager")
     public String appointAsManager(@RequestParam long id) {
         adminService.appointAsManager(id);
-        return "redirect:/admin/user/all";
+        return "redirect:/admin/users";
     }
 
     /**
@@ -69,6 +69,6 @@ public class AdminController {
     @PostMapping("/appoint/driver")
     public String appointAsDriver(@RequestParam("id") long id) {
         adminService.appointAsDriver(id);
-        return "redirect:/admin/user/all";
+        return "redirect:/admin/users";
     }
 }

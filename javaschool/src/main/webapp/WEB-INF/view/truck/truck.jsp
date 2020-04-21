@@ -10,34 +10,42 @@
     <h2 class="text-center">Truck information</h2>
     <table class="table table-striped" id="cssTable">
         <tr>
+            <td></td>
             <td>Registration number</td>
             <td>Driver shift size</td>
             <td>Weight capacity</td>
             <td>Status</td>
-            <td>Address</td>
-            <td></td>
+            <td>Current address</td>
+            <c:if test="${truck.userOrder==null}">
+                <td></td>
+            </c:if>
         </tr>
         <tr>
+            <td><c:if test="${truck.userOrder!=null}">
+                The truck fulfills the order
+            </c:if></td>
             <td>${truck.registrationNumber}</td>
             <td>${truck.driverShiftSize}</td>
             <td>${truck.weightCapacity}</td>
             <td>${truck.status.name().toLowerCase().replaceAll("_"," ")}</td>
             <td>${truck.address}</td>
-            <td>
+            <c:if test="${truck.userOrder==null}">
+                <td>
+                    <c:url value="/truck/edit" var="edit"/>
+                    <form name="edit" method="get" action="${edit}">
+                        <input type="hidden" name="id" value="${truck.id}">
+                        <button class="btn btn-default" type="submit">Edit</button>
+                    </form>
 
-                <c:url value="/truck/edit" var="edit"/>
-                <form name="edit" method="get" action="${edit}">
-                    <input type="hidden" name="id" value="${truck.id}">
-                    <button class="btn btn-default" type="submit">Edit</button>
-                </form>
-
-                <c:url value="/truck/delete" var="delete"/>
-                <form name="delete" method="post" action="${delete}">
-                    <input type="hidden" name="id" value="${truck.id}">
-                    <button class="btn btn-default" type="submit">Delete</button>
-                </form>
-
-            </td>
+                    <c:if test="${truck.driverList.isEmpty()}">
+                        <c:url value="/truck/delete" var="delete"/>
+                        <form name="delete" method="post" action="${delete}">
+                            <input type="hidden" name="id" value="${truck.id}">
+                            <button class="btn btn-default" type="submit">Delete</button>
+                        </form>
+                    </c:if>
+                </td>
+            </c:if>
         </tr>
     </table>
     <br><br>
@@ -63,26 +71,30 @@
                 <td>${driver.status.name().toLowerCase().replaceAll("_"," ")}</td>
                 <td>${driver.user.phoneNumber}</td>
                 <td>${driver.user.email}</td>
-                <td>
 
-                    <c:url value="/truck/remove/driver" var="remove"/>
-                    <form name="delete" method="post" action="${remove}">
-                        <input type="hidden" name="truckId" value="${truck.id}">
-                        <input type="hidden" name="driverId" value="${driver.id}">
-                        <button class="btn btn-default" type="submit">Remove</button>
-                    </form>
-                </td>
+                <c:if test="${truck.userOrder==null}">
+                    <td>
+                        <c:url value="/truck/remove/driver" var="remove"/>
+                        <form name="delete" method="post" action="${remove}">
+                            <input type="hidden" name="truckId" value="${truck.id}">
+                            <input type="hidden" name="driverId" value="${driver.id}">
+                            <button class="btn btn-default" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </c:if>
             </tr>
         </c:forEach>
     </table>
 
-    <c:url value="/truck/add/driver" var="add"/>
-    <div class="text-center">
-        <form name="add" method="get" action="${add}">
-            <input type="hidden" name="truckId" value="${truck.id}">
-            <button class="btn btn-default" type="submit">Add driver</button>
-        </form>
-    </div>
+    <c:if test="${truck.userOrder==null}">
+        <c:url value="/truck/add/driver" var="add"/>
+        <div class="text-center">
+            <form name="add" method="get" action="${add}">
+                <input type="hidden" name="truckId" value="${truck.id}">
+                <button class="btn btn-default" type="submit">Add driver</button>
+            </form>
+        </div>
+    </c:if>
 </div>
 </body>
 </html>

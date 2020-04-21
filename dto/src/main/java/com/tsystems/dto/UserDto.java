@@ -1,5 +1,8 @@
 package com.tsystems.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -9,6 +12,9 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property  = "id",
+        scope=UserDto.class)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,10 +41,12 @@ public class UserDto implements Serializable {
     @Size(min=2, message = "At least 2 characters")
     private String username;
 
+    @JsonIgnore
     @NotBlank
     @Size(min=5, message = "At least 5 characters")
     private String password;
 
+    @JsonIgnore
     @NotBlank
     private String passwordConfirm;
 

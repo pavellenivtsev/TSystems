@@ -24,7 +24,7 @@
                 <td>${hoursThisMonth}</td>
                 <td>${driver.status.name().toLowerCase().replaceAll("_"," ")}</td>
                 <td>
-                    <c:if test="${!(driver.truck==null)}">
+                    <c:if test="${driver.truck!=null}">
                         <c:if test="${driver.status.name().equals('REST')}">
                             <c:url value="/driver/status/start" var="start"/>
                             <form method="post" action="${start}">

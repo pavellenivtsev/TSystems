@@ -28,13 +28,14 @@
                                 <button class="btn btn-default" type="submit">Set status on duty</button>
                             </form>
                         </c:if>
-
-                        <c:if test="${driver.truck.status.name().equals('ON_DUTY')}">
-                            <c:url value="/driver/truck/status/faulty" var="truckFaulty"/>
-                            <form method="post" action="${truckFaulty}">
-                                <input type="hidden" name="driverId" value="${driver.id}">
-                                <button class="btn btn-default" type="submit">Set faulty status</button>
-                            </form>
+                        <c:if test="${driver.truck.userOrder==null}">
+                            <c:if test="${driver.truck.status.name().equals('ON_DUTY')}">
+                                <c:url value="/driver/truck/status/faulty" var="truckFaulty"/>
+                                <form method="post" action="${truckFaulty}">
+                                    <input type="hidden" name="driverId" value="${driver.id}">
+                                    <button class="btn btn-default" type="submit">Set faulty status</button>
+                                </form>
+                            </c:if>
                         </c:if>
                     </td>
                 </tr>
