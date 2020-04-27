@@ -10,6 +10,12 @@ import java.util.List;
 @Repository
 public class TruckDaoImpl extends AbstractGenericDao<Truck> implements TruckDao {
 
+    /**
+     * Finds truck by registration number
+     *
+     * @param registrationNumber - registration number
+     * @return Truck
+     */
     @SuppressWarnings("unchecked")
     @Override
     public Truck findByRegistrationNumber(String registrationNumber) {
@@ -20,6 +26,11 @@ public class TruckDaoImpl extends AbstractGenericDao<Truck> implements TruckDao 
         return truckList.isEmpty() ? null : truckList.get(0);
     }
 
+    /**
+     * Finds all trucks that have at least 1 driver and a working status
+     *
+     * @return List<Truck>
+     */
     @SuppressWarnings("unchecked")
     @Override
     public List<Truck> findAllAvailable() {
@@ -29,18 +40,32 @@ public class TruckDaoImpl extends AbstractGenericDao<Truck> implements TruckDao 
                 .list();
     }
 
+    /**
+     * Returns the number of trucks
+     *
+     * @return all trucks count
+     */
     @Override
     public Long getTrucksCount() {
         return (Long) getSession().createQuery("select count(*) from Truck").list().get(0);
     }
 
+    /**
+     * Returns the number of trucks that complete the order
+     *
+     * @return count of trucks that complete the order
+     */
     @SuppressWarnings("unchecked")
     @Override
     public Long getCarryingOrderTrucksCount() {
         return (Long) getSession().createQuery("select count(*) from UserOrder where truck is not null").list().get(0);
     }
 
-
+    /**
+     * Returns the number of faulty trucks
+     *
+     * @return faulty trucks count
+     */
     @Override
     public Long getFaultyTrucksCount() {
         return (Long) getSession().createQuery("select count(*) from Truck where status=?1")

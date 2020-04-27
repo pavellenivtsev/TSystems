@@ -13,8 +13,8 @@ import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,9 +38,41 @@ public class UserOrderServiceImpl implements UserOrderService {
      * @return List<UserOrderDto>
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserOrderDto> findAllSortedByDate() {
         List<UserOrder> userOrderList = userOrderDao.findAllSortedByDate();
+        return userOrderList.stream()
+                .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Finds all completed orders
+     *
+     * @return List<UserOrderDto>
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserOrderDto> findAllCompletedSortedByDate() {
+        List<UserOrder> userOrderList = userOrderDao.findAllCompletedSortedByDate();
+        return userOrderList.stream()
+                .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserOrderDto> findAllTakenSortedByDate() {
+        List<UserOrder> userOrderList = userOrderDao.findAllTakenSortedByDate();
+        return userOrderList.stream()
+                .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserOrderDto> findAllNotTakenSortedByDate() {
+        List<UserOrder> userOrderList = userOrderDao.findAllNotTakenSortedByDate();
         return userOrderList.stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
                 .collect(Collectors.toList());
@@ -74,7 +106,7 @@ public class UserOrderServiceImpl implements UserOrderService {
      * @return UserOrderDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserOrderDto findById(long id) {
         return modelMapper.map(userOrderDao.findById(id), UserOrderDto.class);
     }

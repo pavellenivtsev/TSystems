@@ -136,7 +136,7 @@ public class CountingServiceImpl implements CountingService {
                 minDistanceCargo.setDistanceToCurrentPoint(Integer.MAX_VALUE);
             } while (!cargoPairs.isEmpty());
 
-            //adds distance between the last unloading point and the offi`ce
+            //adds distance between the last unloading point and the office
             approximatelyTotalDistance += getDistanceLength(
                     currentPoint.getLatitude(),
                     currentPoint.getLongitude(),

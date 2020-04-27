@@ -50,5 +50,4 @@ public class CargoDto implements Serializable {
 
     @JsonIgnore
     private UserOrderDto userOrder;
-
 }

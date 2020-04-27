@@ -3,12 +3,13 @@ package com.tsystems.service.impl;
 import com.tsystems.dao.api.OfficeDao;
 import com.tsystems.dto.OfficeDto;
 import com.tsystems.entity.Office;
+import com.tsystems.exception.DataChangingException;
 import com.tsystems.service.api.OfficeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class OfficeServiceImpl implements OfficeService {
      * @return List<OfficeDto>
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<OfficeDto> findAll() {
         List<Office> offices = officeDao.findAll();
         return offices.stream()
@@ -42,7 +43,7 @@ public class OfficeServiceImpl implements OfficeService {
      * @return OfficeDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public OfficeDto findById(long id) {
         return modelMapper.map(officeDao.findById(id), OfficeDto.class);
     }
@@ -72,7 +73,7 @@ public class OfficeServiceImpl implements OfficeService {
     public boolean deleteById(long id) {
         Office office = officeDao.findById(id);
         if (!office.getTruckList().isEmpty()) {
-            return false;
+            throw new DataChangingException("There are trucks in this office");
         }
         officeDao.delete(office);
         return true;

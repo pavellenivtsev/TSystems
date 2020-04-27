@@ -2,11 +2,11 @@ package com.tsystems.controller;
 
 import com.tsystems.service.api.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @RequestMapping(value = "/admin")
 public class AdminController {
 
@@ -23,52 +23,65 @@ public class AdminController {
      * @return allUsers.jsp
      */
     @GetMapping("/users")
-    public String userList(Model model) {
-        model.addAttribute("users", adminService.findAll());
-        return "admin/allUsers";
+    public ModelAndView userList() {
+        ModelAndView model = new ModelAndView("admin/allUsers");
+        model.addObject("users", adminService.findAll());
+        return model;
     }
 
     /**
      * Delete user by id.
      *
+     * @param id - user id
      * @return allUsers.jsp
      */
     @PostMapping("/user/delete")
-    public String deleteUser(@RequestParam long id) {
+    public ModelAndView deleteUser(@RequestParam long id) {
         adminService.deleteById(id);
-        return "redirect:/admin/users";
+        return new ModelAndView("redirect:/admin/users");
     }
 
     /**
      * Appoint user as admin.
      *
+     * @param id - user id
      * @return allUsers.jsp
      */
     @PostMapping("/appoint/admin")
-    public String appointAsAdmin(@RequestParam long id) {
-        adminService.appointAsAdmin(id);
-        return "redirect:/admin/users";
+    public boolean appointAsAdmin(@RequestParam long id) {
+        return adminService.appointAsAdmin(id);
     }
 
     /**
      * Appoint user as manager.
      *
+     * @param id - user id
      * @return allUsers.jsp
      */
     @PostMapping("/appoint/manager")
-    public String appointAsManager(@RequestParam long id) {
-        adminService.appointAsManager(id);
-        return "redirect:/admin/users";
+    public boolean appointAsManager(@RequestParam long id) {
+        return adminService.appointAsManager(id);
     }
 
     /**
      * Appoint user as driver.
      *
+     * @param id - user id
      * @return allUsers.jsp
      */
     @PostMapping("/appoint/driver")
-    public String appointAsDriver(@RequestParam("id") long id) {
-        adminService.appointAsDriver(id);
-        return "redirect:/admin/users";
+    public boolean appointAsDriver(@RequestParam long id) {
+        return adminService.appointAsDriver(id);
+    }
+
+    /**
+     * Appoint user as user.
+     *
+     * @param id - user id
+     * @return allUsers.jsp
+     */
+    @PostMapping("/appoint/user")
+    public boolean appointAsUser(@RequestParam long id) {
+        return adminService.appointAsUser(id);
     }
 }

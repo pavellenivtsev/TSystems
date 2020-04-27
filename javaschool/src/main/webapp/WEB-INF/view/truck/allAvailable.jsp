@@ -14,20 +14,22 @@
             <td>Weight capacity</td>
             <td>Status</td>
             <td>Current city</td>
+            <td>Approximately distance</td>
             <td></td>
         </tr>
-        <c:forEach var="truck" items="${trucks}">
+        <c:forEach var="truckPair" items="${truckPairs}">
             <tr>
-                <td>${truck.registrationNumber}</td>
-                <td>${truck.driverShiftSize}</td>
-                <td>${truck.weightCapacity}</td>
-                <td>${truck.status.name().toLowerCase().replaceAll("_"," ")}</td>
-                <td>${truck.address}</td>
+                <td>${truckPair.truckDto.registrationNumber}</td>
+                <td>${truckPair.truckDto.driverShiftSize}</td>
+                <td>${truckPair.truckDto.weightCapacity}</td>
+                <td>${truckPair.truckDto.status.name().toLowerCase().replaceAll("_"," ")}</td>
+                <td>${truckPair.truckDto.address}</td>
+                <td>${truckPair.approximatelyTotalDistanceForTruckAndOrder}</td>
                 <td>
                     <c:url value="/truck/add/order" var="addTruck"/>
                     <form name="edit" method="post" action="${addTruck}">
                         <input type="hidden" name="orderId" value="${orderId}">
-                        <input type="hidden" name="truckId" value="${truck.id}">
+                        <input type="hidden" name="truckId" value="${truckPair.truckDto.id}">
                         <button class="btn btn-default" type="submit">Add truck</button>
                     </form>
                 </td>

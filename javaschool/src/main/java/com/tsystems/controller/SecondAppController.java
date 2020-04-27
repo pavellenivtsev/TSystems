@@ -1,11 +1,11 @@
 package com.tsystems.controller;
 
+import com.tsystems.dto.CargoDto;
 import com.tsystems.dto.EntryDto;
 import com.tsystems.dto.UserOrderDto;
 import com.tsystems.service.api.SecondAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -24,6 +24,11 @@ public class SecondAppController {
     @GetMapping(value = "secondapp/orders", produces = "application/json;charset=utf8")
     public List<UserOrderDto> getAllCompletedOrCarriedOrders() {
         return secondAppService.findAllCompletedOrCarriedOrders();
+    }
+
+    @GetMapping(value = "secondapp/cargo", produces = "application/json;charset=utf8")
+    public List<CargoDto> getAllCargoForCompletedOrCarriedOrders() {
+        return secondAppService.findAllCargoForCompletedOrCarriedOrders();
     }
 
     /**

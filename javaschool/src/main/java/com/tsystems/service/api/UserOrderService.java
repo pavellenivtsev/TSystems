@@ -11,7 +11,11 @@ public interface UserOrderService {
 
     boolean deleteById(long id);
 
-//    boolean addTruck(UserOrderDto userOrderDto, long truckId);
-
     boolean addOrder();
+
+    List<UserOrderDto> findAllCompletedSortedByDate();
+
+    List<UserOrderDto> findAllTakenSortedByDate();
+
+    List<UserOrderDto> findAllNotTakenSortedByDate();
 }

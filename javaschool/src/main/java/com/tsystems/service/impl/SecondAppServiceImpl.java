@@ -1,17 +1,21 @@
 package com.tsystems.service.impl;
 
+import com.tsystems.dao.api.CargoDao;
 import com.tsystems.dao.api.DriverDao;
 import com.tsystems.dao.api.TruckDao;
 import com.tsystems.dao.api.UserOrderDao;
+import com.tsystems.dto.CargoDto;
 import com.tsystems.dto.EntryDto;
 import com.tsystems.dto.UserOrderDto;
+import com.tsystems.entity.Cargo;
 import com.tsystems.entity.UserOrder;
 import com.tsystems.service.api.SecondAppService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +32,8 @@ public class SecondAppServiceImpl implements SecondAppService {
     @Autowired
     private TruckDao truckDao;
 
+    @Autowired
+    private CargoDao cargoDao;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -38,11 +44,25 @@ public class SecondAppServiceImpl implements SecondAppService {
      * @return List<UserOrderDto>
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<UserOrderDto> findAllCompletedOrCarriedOrders() {
         List<UserOrder> userOrderList = userOrderDao.findAllCompletedOrCarried();
         return userOrderList.stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Finds all cargo
+     *
+     * @return List<CargoDto>
+     */
+    @Override
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    public List<CargoDto> findAllCargoForCompletedOrCarriedOrders() {
+        List<Cargo> cargoList =cargoDao.findAllCargoForCompletedOrCarriedOrders();
+        return cargoList.stream()
+                .map(cargo -> modelMapper.map(cargo,CargoDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +72,7 @@ public class SecondAppServiceImpl implements SecondAppService {
      * @return List<EntryDto>
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<EntryDto> createCountTable() {
         List<EntryDto> countTable = new LinkedList<>();
         Long trucksCount = truckDao.getTrucksCount();

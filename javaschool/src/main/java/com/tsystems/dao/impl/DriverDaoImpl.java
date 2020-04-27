@@ -10,6 +10,11 @@ import java.util.List;
 @Repository
 public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverDao {
 
+    /**
+     * Finds all drivers without truck
+     *
+     * @return List<Driver>
+     */
     @SuppressWarnings("unchecked")
     @Override
     public List<Driver> findAllDriversWithoutTruck() {
@@ -18,6 +23,12 @@ public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverD
                 .list();
     }
 
+    /**
+     * Find driver by personal number
+     *
+     * @param personalNumber - personalNumber
+     * @return Driver
+     */
     @SuppressWarnings("unchecked")
     @Override
     public Driver findByPersonalNumber(String personalNumber) {
@@ -27,11 +38,21 @@ public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverD
         return driverList.isEmpty() ? null : driverList.get(0);
     }
 
+    /**
+     * Returns the number of drivers
+     *
+     * @return all drivers count
+     */
     @Override
     public Long getDriversCount() {
         return (Long) getSession().createQuery("select count(*) from Driver").list().get(0);
     }
 
+    /**
+     * Returns the number of rest drivers
+     *
+     * @return rest drivers count
+     */
     @Override
     public Long getRestDriversCount() {
         return (Long) getSession().createQuery("select count(*) from Driver where status=?1")
@@ -39,6 +60,11 @@ public class DriverDaoImpl extends AbstractGenericDao<Driver> implements DriverD
                 .list().get(0);
     }
 
+    /**
+     * Returns the number of drivers on shift
+     *
+     * @return on shift drivers count
+     */
     @Override
     public Long getOnShiftDriversCount() {
         return (Long) getSession().createQuery("select count(*) from Driver where status=?1")

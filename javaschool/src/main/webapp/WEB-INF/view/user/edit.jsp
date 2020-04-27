@@ -2,12 +2,15 @@
 <head>
     <%@include file="../common/common.jsp" %>
     <title>Edit information</title>
+    <script src="/resources/js/jquery.validate.min.js"></script>
+    <script src="/resources/js/additional-methods.min.js"></script>
 </head>
 <body>
 <%@include file="../common/navbar.jsp" %>
 <div class="container" id="main-container">
     <h2 class="text-center">Edit your information</h2>
-    <form class="form-horizontal" action="/user/edit" method="post">
+    <c:url var="edit" value="/user/edit"/>
+    <form class="form-horizontal" action="${edit}" method="post" id="form">
         <input type="hidden" id="id" name="id" value="${user.id}" required>
         <div class="form-group">
             <label for="firstName" class="col-sm-2 control-label">First name</label>
@@ -40,5 +43,14 @@
         </div>
     </form>
 </div>
+<script>
+    $(function () {
+        $('#form').validate({
+            errorPlacement: function (error, element) {
+                element.after(error);
+            },
+        });
+    });
+</script>
 </body>
 </html>

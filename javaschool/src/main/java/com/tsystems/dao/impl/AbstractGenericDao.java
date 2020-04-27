@@ -11,6 +11,11 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+/**
+ * Implements simple methods for accessing the database
+ *
+ * @param <E>
+ */
 @SuppressWarnings("unchecked")
 public abstract class AbstractGenericDao<E> implements GenericDao<E> {
     private final Class<E> entityClass;

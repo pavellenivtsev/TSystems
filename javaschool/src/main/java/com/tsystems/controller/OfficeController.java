@@ -65,4 +65,16 @@ public class OfficeController {
         model.addAttribute("office", officeService.findById(id));
         return "office/office";
     }
+
+    /**
+     * Delete office
+     *
+     * @param id - office id
+     * @return office/allOffices.jsp
+     */
+    @PostMapping("/delete")
+    public String deleteOffice(@RequestParam("id") long id) {
+        officeService.deleteById(id);
+        return "redirect:/office/all";
+    }
 }

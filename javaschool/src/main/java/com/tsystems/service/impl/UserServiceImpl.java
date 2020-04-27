@@ -19,8 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * @return UserDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDto findByUsername(String username) {
         return modelMapper.map(userDao.findByUsername(username), UserDto.class);
     }
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * @throws UsernameNotFoundException
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username);
         if (user == null) {
@@ -67,9 +67,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         user.getRoles().forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
-//        for (Role role : user.getRoles()) {
-//            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-//        }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 
@@ -120,7 +117,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * @return UserDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDto findById(long id) {
         return modelMapper.map(userDao.findById(id), UserDto.class);
     }

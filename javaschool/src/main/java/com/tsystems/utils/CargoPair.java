@@ -4,6 +4,9 @@ import com.tsystems.dto.CargoDto;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Used for implementing the nearest neighbor algorithm
+ */
 @Getter
 @Setter
 public class CargoPair {

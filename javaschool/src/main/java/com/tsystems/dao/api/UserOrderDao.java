@@ -10,4 +10,10 @@ public interface UserOrderDao extends GenericDao<UserOrder> {
     UserOrder findByUniqueNumber(String uniqueNumber);
 
     List<UserOrder> findAllCompletedOrCarried();
+
+    List<UserOrder> findAllCompletedSortedByDate();
+
+    List<UserOrder> findAllTakenSortedByDate();
+
+    List<UserOrder> findAllNotTakenSortedByDate();
 }

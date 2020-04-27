@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql
+    container_name: db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 6080:6080
+
+  spring-application:
+    build: ./javaschool
+    container_name: spring-app
+    ports:
+      - "8080:8080"

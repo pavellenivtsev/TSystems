@@ -6,5 +6,6 @@
 <link rel="icon" href="/resources/img/favicon.ico" type="images/x-icon">
 <link rel="stylesheet" href="/resources/css/main.css">
 <link rel="stylesheet" href="/resources/css/bootstrap.css">
+<script src="https://kit.fontawesome.com/4972501d45.js" crossorigin="anonymous"></script>
 <script src="/resources/js/jquery.min.js"></script>
 <script src="/resources/js/bootstrap.min.js"></script>

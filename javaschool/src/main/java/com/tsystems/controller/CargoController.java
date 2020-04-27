@@ -40,7 +40,7 @@ public class CargoController {
     public String addCargo(@ModelAttribute("cargo") @Valid CargoDto cargoDto,
                            @RequestParam("orderId") long orderId) {
         cargoService.addCargoToOrder(cargoDto, orderId);
-        return "redirect:/order/all";
+        return "redirect:/orders/not-taken";
     }
 
     /**

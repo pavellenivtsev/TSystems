@@ -30,15 +30,15 @@ public class MemoryBean {
     private RestService restService;
 
     @Inject
-    @Push(channel = "someChannel")
-    private PushContext pushContext;
+    @Push
+    private PushContext push;
 
     private List<UserOrderDto> userOrderDtoList;
     private List<EntryDto> countTable;
 
     @PostConstruct
     public void init() {
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("failover://(tcp://localhost:61616)?initialReconnectDelay=2000&maxReconnectAttempts=5");
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("failover://(tcp://localhost:61616)");
         Connection connection;
         try {
             connection = connectionFactory.createConnection();
@@ -71,14 +71,14 @@ public class MemoryBean {
         userOrderDtoList.addAll(Arrays.asList(objectMapper.readValue(
                 restService.executeRequest("http://localhost:8081/secondapp/orders"),
                 UserOrderDto[].class)));
-        pushContext.send("updateOrders");
+        push.send("updateOrders");
 
         //update count table
         countTable= new LinkedList<>();
         countTable.addAll(Arrays.asList(objectMapper.readValue(
                 restService.executeRequest("http://localhost:8081/secondapp/count-table"),
                 EntryDto[].class)));
-        pushContext.send("updateCountTable");
+        push.send("updateCountTable");
     }
 
     public List<UserOrderDto> getUserOrderDtoList() {

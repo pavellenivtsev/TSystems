@@ -2,7 +2,6 @@ package com.tsystems.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.tsystems.dao.api.DriverDao;
 import com.tsystems.dao.api.UserDao;
 import com.tsystems.dao.api.UserOrderDao;
@@ -25,8 +24,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -58,7 +57,7 @@ public class DriverServiceImpl implements DriverService {
      * @return DriverDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public DriverDto findByUsername(String username) {
         User user = userDao.findByUsername(username);
         if (user == null) {
@@ -79,7 +78,7 @@ public class DriverServiceImpl implements DriverService {
      * @return DriverDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public DriverDto findById(long id) {
         Driver driver = driverDao.findById(id);
         return modelMapper.map(driver, DriverDto.class);

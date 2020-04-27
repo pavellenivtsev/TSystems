@@ -10,12 +10,12 @@
 <%@ include file="../common/navbar.jsp" %>
 <div class="container" id="main-container">
     <c:url value="/truck/edit" var="var"/>
-    <form action="${var}" method="post" id="form">
+    <form action="${var}" method="post" id="form" class="form-horizontal">
         <h2 class="text-center">Edit the truck</h2>
         <c:if test="${(editTruckError!=null)}">
             <div class="text-center" id="warning-message">${editTruckError}</div>
         </c:if>
-        <div class="form row">
+        <div class="form-group">
             <input type="hidden" name="id" id="id" value="${truck.id}" class="form-control"/>
         </div>
         <div class="form row">
@@ -27,7 +27,7 @@
                        placeholder="AA12345" required/>
             </div>
         </div>
-        <div class="form row">
+        <div class="form-group">
             <label for="driverShiftSize" class="col-sm-2 col-form-label">Driver shift size, hours</label>
             <div class="col-sm-10">
                 <input type="text" name="driverShiftSize" id="driverShiftSize" class="form-control"
@@ -36,7 +36,7 @@
                        placeholder="Integer or decimal number" required/>
             </div>
         </div>
-        <div class="form row">
+        <div class="form-group">
             <label for="weightCapacity" class="col-sm-2 col-form-label">Weight capacity, kg</label>
             <div class="col-sm-10">
                 <input type="text" name="weightCapacity" id="weightCapacity" class="form-control"
@@ -45,8 +45,10 @@
                        placeholder="Integer or decimal number" required/>
             </div>
         </div>
-        <div class="text-center">
-            <button class="btn btn-default" type="submit">Edit truck</button>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-default" type="submit">Edit truck</button>
+            </div>
         </div>
     </form>
 </div>
@@ -54,7 +56,7 @@
     $(function () {
         $('#form').validate({
             errorPlacement: function (error, element) {
-                    element.after(error);
+                element.after(error);
             },
         });
     });

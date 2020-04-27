@@ -30,7 +30,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-default" type="submit">Log in</button>
+                <button class="btn btn-default" type="submit" id="form_login">Log in</button>
             </div>
         </div>
         <c:url value="/registration" var="registration"/>

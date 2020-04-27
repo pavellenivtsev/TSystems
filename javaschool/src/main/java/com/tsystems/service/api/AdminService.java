@@ -9,9 +9,11 @@ public interface AdminService {
 
     List<UserDto> findAll();
 
-    void appointAsAdmin(long id);
+    boolean appointAsAdmin(long id);
 
-    void appointAsManager(long id);
+    boolean appointAsManager(long id);
 
-    void appointAsDriver(long userId);
+    boolean appointAsDriver(long userId);
+
+    boolean appointAsUser(long id);
 }

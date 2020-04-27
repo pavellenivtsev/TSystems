@@ -9,6 +9,12 @@ import java.util.List;
 @Repository
 public class UserDaoImpl extends AbstractGenericDao<User> implements UserDao {
 
+    /**
+     * Finds user by username
+     *
+     * @param username - username
+     * @return User
+     */
     @SuppressWarnings("unchecked")
     @Override
     public User findByUsername(String username) {

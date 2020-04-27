@@ -153,7 +153,7 @@ public class TruckController {
     @GetMapping("/add/order")
     public String addTruckToOrderPage(@RequestParam long orderId, Model model) {
         model.addAttribute("orderId", orderId);
-        model.addAttribute("trucks", truckService.findAllAvailable(orderId));
+        model.addAttribute("truckPairs", truckService.findAllAvailable(orderId));
         return "truck/allAvailable";
     }
 
@@ -162,22 +162,12 @@ public class TruckController {
      *
      * @param orderId - order id
      * @param truckId - truck id
-     * @return order/allOrders.jsp
+     * @return order/notTakenOrders.jsp
      */
     @PostMapping("add/order")
     public String addTruckToOrder(@RequestParam long orderId,
                                   @RequestParam long truckId) {
         truckService.addOrder(truckId, orderId);
-        return "redirect:/order/all";
+        return "redirect:/orders/not-taken";
     }
-
-//    /**
-//     * Returns the viewName to return for coming back to the sender url
-//     *
-//     * @param request Instance of {@link HttpServletRequest}
-//     * @return Optional with the view name.
-//     */
-//    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
-//        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
-//    }
 }

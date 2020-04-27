@@ -16,8 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CargoServiceImpl implements CargoService {
@@ -42,7 +41,7 @@ public class CargoServiceImpl implements CargoService {
      * @return CargoDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public CargoDto findById(long id) {
         return modelMapper.map(cargoDao.findById(id), CargoDto.class);
     }

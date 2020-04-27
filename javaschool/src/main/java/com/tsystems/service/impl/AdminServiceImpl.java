@@ -15,8 +15,8 @@ import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -44,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
      * @return List<UserDto>
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserDto> findAll() {
         List<User> users = userDao.findAll();
         return users.stream()
@@ -74,14 +74,19 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public void appointAsAdmin(long id) {
+    public boolean appointAsAdmin(long id) {
         User user = userDao.findById(id);
         if (isDriver(user)) {
-            deleteDriver(user);
+            try {
+                deleteDriver(user);
+            } catch (DataChangingException e) {
+                return false;
+            }
             jmsSenderService.sendMessage();
         }
         grantRole(user, new Role(2L, "ROLE_ADMIN"));
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as admin.");
+        return true;
     }
 
     /**
@@ -91,14 +96,19 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public void appointAsManager(long id) {
+    public boolean appointAsManager(long id) {
         User user = userDao.findById(id);
         if (isDriver(user)) {
-            deleteDriver(user);
+            try {
+                deleteDriver(user);
+            } catch (DataChangingException e) {
+                return false;
+            }
             jmsSenderService.sendMessage();
         }
         grantRole(user, new Role(3L, "ROLE_MANAGER"));
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as manager.");
+        return true;
     }
 
     /**
@@ -108,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public void appointAsDriver(long id) {
+    public boolean appointAsDriver(long id) {
         String uniqueNumber = generatePersonalNumber();
         while (driverDao.findByPersonalNumber(uniqueNumber) != null) {
             uniqueNumber = generatePersonalNumber();
@@ -127,6 +137,29 @@ public class AdminServiceImpl implements AdminService {
         driverDao.save(driver);
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as driver.");
         jmsSenderService.sendMessage();
+        return true;
+    }
+
+    /**
+     * Appoints user as user
+     *
+     * @param id - user id
+     */
+    @Override
+    @Transactional
+    public boolean appointAsUser(long id) {
+        User user = userDao.findById(id);
+        if (isDriver(user)) {
+            try {
+                deleteDriver(user);
+            } catch (DataChangingException e) {
+                return false;
+            }
+            jmsSenderService.sendMessage();
+        }
+        grantRole(user, new Role(1L, "ROLE_USER"));
+        LOGGER.info("A user with username " + user.getUsername() + " was appointed as manager.");
+        return true;
     }
 
     /**
@@ -134,12 +167,12 @@ public class AdminServiceImpl implements AdminService {
      *
      * @param user - user
      */
-    private void deleteDriver(User user){
+    private void deleteDriver(User user) {
         if (user.getDriver().getTruck() != null &&
                 user.getDriver().getTruck().getUserOrder() != null) {
             throw new DataChangingException("The driver completes the order");
         }
-        Driver driver =user.getDriver();
+        Driver driver = user.getDriver();
         user.setDriver(null);
         driverDao.delete(driver);
     }

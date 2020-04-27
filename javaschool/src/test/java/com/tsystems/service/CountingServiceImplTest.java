@@ -40,8 +40,6 @@ public class CountingServiceImplTest {
                 .longitude(30.316229)
                 .build();
 
-//            .latitude(59.938732)
-//                .longitude(30.316229)
         TruckDto truckDto3 = TruckDto.builder()
                 .registrationNumber("CC11111")
                 .weightCapacity(120)

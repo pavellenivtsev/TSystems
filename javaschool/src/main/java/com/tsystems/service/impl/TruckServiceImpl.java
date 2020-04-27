@@ -27,8 +27,7 @@ import org.joda.time.Days;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -136,14 +135,14 @@ public class TruckServiceImpl implements TruckService {
     }
 
     /**
-     * Finds all available trucks for this order and sort and sorts them in order of increasing distance
+     * Finds all available trucks for this order and sort them in order of increasing distance
      *
      * @param orderId - order id
-     * @return List<TruckDto>
+     * @return List<TruckPair>
      */
     @Override
-    @Transactional
-    public List<TruckDto> findAllAvailable(long orderId) {
+    @Transactional(readOnly = true)
+    public List<TruckPair> findAllAvailable(long orderId) {
         UserOrder userOrder = userOrderDao.findById(orderId);
         List<Truck> trucks = truckDao.findAllAvailable();
         Predicate<Truck> haveOrder = truck -> truck.getUserOrder() != null;
@@ -158,9 +157,7 @@ public class TruckServiceImpl implements TruckService {
         Predicate<TruckPair> isLimitForDriversExceeded = this::isLimitForDriversExceeded;
         truckPairs.removeIf(isLimitForDriversExceeded);
         Collections.sort(truckPairs);
-        return truckPairs.stream()
-                .map(TruckPair::getTruckDto)
-                .collect(Collectors.toList());
+        return truckPairs;
     }
 
     /**
@@ -183,6 +180,7 @@ public class TruckServiceImpl implements TruckService {
         }
         userOrder.setTruck(truck);
         userOrder.setStatus(UserOrderStatus.TAKEN);
+        userOrderDao.update(userOrder);
         LOGGER.info("The truck with the number " + truck.getRegistrationNumber() +
                 " was assigned to the order with the number " + userOrder.getUniqueNumber());
         jmsSenderService.sendMessage();
@@ -196,7 +194,7 @@ public class TruckServiceImpl implements TruckService {
      * @return List<DriverDto>
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DriverDto> findAllAvailableDrivers(long truckId) {
         Truck truck = truckDao.findById(truckId);
         List<Driver> drivers = driverDao.findAllDriversWithoutTruck();

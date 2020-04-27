@@ -9,13 +9,13 @@
 <%@ include file="../common/navbar.jsp" %>
 <div class="container" id="main-container">
     <c:url value="/truck/add" var="var"/>
-    <form action="${var}" method="post" id="form">
+    <form action="${var}" method="post" id="form" class="form-horizontal">
         <h2 class="text-center">Add new truck</h2>
         <c:if test="${(addTruckError!=null)}">
             <div class="text-center" id="warning-message">${addTruckError}</div>
         </c:if>
-        <div class="form row">
-            <label for="registrationNumber" class="col-sm-2 col-form-label">Registration number</label>
+        <div class="form-group">
+            <label for="registrationNumber" class="col-sm-2 control-label">Registration number</label>
             <div class="col-sm-10">
                 <input type="text" id="registrationNumber" name="registrationNumber" autofocus="autofocus"
                        class="form-control"
@@ -23,16 +23,16 @@
                        placeholder="AA12345" required/>
             </div>
         </div>
-        <div class="form row">
-            <label for="driverShiftSize" class="col-sm-2 col-form-label">Driver shift size, hours</label>
+        <div class="form-group">
+            <label for="driverShiftSize" class="col-sm-2 control-label">Driver shift size, hours</label>
             <div class="col-sm-10">
                 <input type="text" id="driverShiftSize" name="driverShiftSize" class="form-control"
                        pattern="[0-9]+(\.[0-9]+)?"
                        placeholder="Integer or decimal number" required/>
             </div>
         </div>
-        <div class="form row">
-            <label for="weightCapacity" class="col-sm-2 col-form-label">Weight capacity, kg</label>
+        <div class="form-group">
+            <label for="weightCapacity" class="col-sm-2 control-label">Weight capacity, kg</label>
             <div class="col-sm-10">
                 <input type="text" id="weightCapacity" name="weightCapacity" class="form-control"
                        pattern="[0-9]+(\.[0-9]+)?"
@@ -40,8 +40,10 @@
             </div>
         </div>
         <input type="hidden" name="officeId" value="${officeId}"/>
-        <div class="text-center">
-            <button class="btn btn-default" type="submit">Add truck</button>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-default" type="submit">Add truck</button>
+            </div>
         </div>
     </form>
 </div>

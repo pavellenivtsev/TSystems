@@ -2,6 +2,7 @@ package com.tsystems.service.api;
 
 import com.tsystems.dto.DriverDto;
 import com.tsystems.dto.TruckDto;
+import com.tsystems.utils.TruckPair;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface TruckService {
 
     TruckDto findById(long id);
 
-    List<TruckDto> findAllAvailable(long orderId);
+    List<TruckPair> findAllAvailable(long orderId);
 
     boolean addOrder(long truckId, long orderId);
 

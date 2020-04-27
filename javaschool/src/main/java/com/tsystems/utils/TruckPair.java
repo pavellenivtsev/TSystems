@@ -3,6 +3,9 @@ package com.tsystems.utils;
 import com.tsystems.dto.TruckDto;
 import lombok.*;
 
+/**
+ * Used for sorting trucks by distance and for implementing the nearest neighbor algorithm
+ */
 @Getter
 @Setter
 @NoArgsConstructor
