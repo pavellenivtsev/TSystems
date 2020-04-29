@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.3</version>
+            <version>2.10.3</version>
         </dependency>
 
         <!-- Log4j2 -->
@@ -87,6 +87,20 @@
 
     <build>
         <plugins>
+
+            <!-- Wildfly maven plugin -->
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>1.0.2.Final</version>
+                <configuration>
+                    <hostname>localhost</hostname>
+                    <port>9990</port>
+                    <username>admin</username>
+                    <password>admin</password>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

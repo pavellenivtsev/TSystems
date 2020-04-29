@@ -13,6 +13,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 public class Driver implements Serializable{
 

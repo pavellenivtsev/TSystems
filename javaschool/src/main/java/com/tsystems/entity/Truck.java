@@ -12,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 public class Truck implements Serializable {
     @Id
