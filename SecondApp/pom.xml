@@ -99,6 +99,14 @@
                     <username>admin</username>
                     <password>admin</password>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
