@@ -1,14 +1,18 @@
 package com.tsystems;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SeleniumTest {
 
@@ -40,6 +44,7 @@ public class SeleniumTest {
         System.setProperty(
                 "webdriver.gecko.driver", "C:\\Program Files (x86)\\Mozilla Firefox\\geckodriver.exe");
         webDriver = new FirefoxDriver();
+        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         //user details
         username = "testSeleniumUser";
@@ -66,9 +71,10 @@ public class SeleniumTest {
     @Test
     public void testApp() throws InterruptedException {
         webDriver.get("http://localhost:8081/registration");
+        WebDriverWait wait = new WebDriverWait(webDriver,30);
 
         //sign up
-        Thread.sleep(2000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         webDriver.findElement(By.id("username")).sendKeys(username);
         webDriver.findElement(By.id("password")).sendKeys(password);
         webDriver.findElement(By.id("passwordConfirm")).sendKeys(password);
@@ -81,21 +87,22 @@ public class SeleniumTest {
         webDriver.findElement(By.id("address")).sendKeys(Keys.DOWN, Keys.ENTER);
         Thread.sleep(2000);
         webDriver.findElement(By.id("form_sign_up")).click();
-        Thread.sleep(4000);
 
         //login as admin
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout")));
         webDriver.findElement(By.id("logout")).click();
-        Thread.sleep(3000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login")));
         webDriver.findElement(By.id("login")).click();
-        Thread.sleep(3000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         webDriver.findElement(By.id("username")).sendKeys("admin");
         webDriver.findElement(By.id("password")).sendKeys("admin");
         Thread.sleep(2000);
         webDriver.findElement(By.id("form_login")).click();
-        Thread.sleep(4000);
+
 
         //find selenium user and appoint as a manager
         {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cssTable")));
             WebElement table = webDriver.findElement(By.id("cssTable"));
             List<WebElement> rows = table.findElements(By.tagName("tr"));
             rows.stream().skip(1).forEach(row -> {
@@ -106,23 +113,23 @@ public class SeleniumTest {
                 }
             });
             webDriver.findElement(By.id("logout")).click();
-            Thread.sleep(3000);
         }
 
         //login as selenium user
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login")));
         webDriver.findElement(By.id("login")).click();
-        Thread.sleep(3000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         webDriver.findElement(By.id("username")).sendKeys(username);
         webDriver.findElement(By.id("password")).sendKeys(password);
         Thread.sleep(2000);
         webDriver.findElement(By.id("form_login")).click();
-        Thread.sleep(4000);
 
         //create new order
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("not_taken_orders")));
         webDriver.findElement(By.id("not_taken_orders")).click();
-        Thread.sleep(3000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("add_new_order")));
         webDriver.findElement(By.id("add_new_order")).click();
-        Thread.sleep(2000);
+        Thread.sleep(4000);
 
         //add cargo to order
         {
@@ -130,9 +137,9 @@ public class SeleniumTest {
             List<WebElement> rows = table.findElements(By.tagName("tr"));
             rows.get(2).findElement(By.id("add_cargo")).click();
         }
-        Thread.sleep(3000);
 
         //create first cargo
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loadingAddress")));
         webDriver.findElement(By.id("name")).sendKeys(first_cargo_name);
         webDriver.findElement(By.id("weight")).sendKeys(Double.toString(first_cargo_weight));
         webDriver.findElement(By.id("loadingAddress")).sendKeys(first_cargo_loadingAddress);
@@ -144,17 +151,17 @@ public class SeleniumTest {
         webDriver.findElement(By.id("unloadingAddress")).sendKeys(Keys.DOWN, Keys.ENTER);
         Thread.sleep(2000);
         webDriver.findElement(By.id("form_add_cargo")).click();
-        Thread.sleep(4000);
 
         //add cargo to order
         {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cssTable")));
             WebElement table = webDriver.findElement(By.id("cssTable"));
             List<WebElement> rows = table.findElements(By.tagName("tr"));
             rows.get(2).findElement(By.id("add_cargo")).click();
         }
-        Thread.sleep(3000);
 
         //create second cargo
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loadingAddress")));
         webDriver.findElement(By.id("name")).sendKeys(second_cargo_name);
         webDriver.findElement(By.id("weight")).sendKeys(Double.toString(second_cargo_weight));
         webDriver.findElement(By.id("loadingAddress")).sendKeys(second_cargo_loadingAddress);
@@ -166,29 +173,29 @@ public class SeleniumTest {
         webDriver.findElement(By.id("unloadingAddress")).sendKeys(Keys.DOWN, Keys.ENTER);
         Thread.sleep(2000);
         webDriver.findElement(By.id("form_add_cargo")).click();
-        Thread.sleep(4000);
 
         //delete order
         {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cssTable")));
             WebElement table = webDriver.findElement(By.id("cssTable"));
             List<WebElement> rows = table.findElements(By.tagName("tr"));
             rows.get(2).findElement(By.id("delete_order")).click();
         }
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         webDriver.findElement(By.id("logout")).click();
-        Thread.sleep(3000);
 
         //login as admin
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login")));
         webDriver.findElement(By.id("login")).click();
-        Thread.sleep(3000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         webDriver.findElement(By.id("username")).sendKeys("admin");
         webDriver.findElement(By.id("password")).sendKeys("admin");
         Thread.sleep(2000);
         webDriver.findElement(By.id("form_login")).click();
-        Thread.sleep(4000);
 
         //delete selenium user
         {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cssTable")));
             WebElement table = webDriver.findElement(By.id("cssTable"));
             List<WebElement> rows = table.findElements(By.tagName("tr"));
             rows.stream().skip(1).forEach(row -> {
@@ -197,7 +204,13 @@ public class SeleniumTest {
                     row.findElement(By.id("delete_user")).click();
                 }
             });
+            Thread.sleep(2000);
             webDriver.findElement(By.id("logout")).click();
         }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        webDriver.quit();
     }
 }
