@@ -13,10 +13,10 @@
         <h2 class="text-center">Your information</h2>
         <table class="table table-striped" id="cssTable">
             <tr>
-                <td>Personal number</td>
-                <td>Hours worked in this month</td>
-                <td>Your status</td>
-                <td></td>
+                <th>Personal number</th>
+                <th>Hours worked in this month</th>
+                <th>Your status</th>
+                <th></th>
             </tr>
             <tr>
                 <td>${driver.personalNumber}</td>
@@ -45,14 +45,15 @@
             </tr>
         </table>
     </div>
+    <br><br>
     <c:if test="${(driver.truck.driverList.size()>1)}">
         <div>
             <h2 class="text-center">Your additional drivers</h2>
             <table class="table table-striped" id="cssTable2">
                 <tr>
-                    <td>Personal number</td>
-                    <td>First name</td>
-                    <td>Last name</td>
+                    <th>Personal number</th>
+                    <th>First name</th>
+                    <th>Last name</th>
                 </tr>
                 <c:forEach var="anotherDriver" items="${driver.truck.driverList}">
                     <c:if test="${not (anotherDriver.id==driver.id)}">

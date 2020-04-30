@@ -18,7 +18,8 @@
             <li>Email: ${user.email}</li>
         </ol>
         <div class="text-center">
-            <form action="/user/edit" method="get">
+            <c:url value="/user/edit" var="edit"/>
+            <form action="${edit}" method="get">
                 <input type="hidden" name="id" value="${user.id}">
                 <button class="btn btn-default" type="submit">Edit information</button>
             </form>

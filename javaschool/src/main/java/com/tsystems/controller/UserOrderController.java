@@ -15,18 +15,6 @@ public class UserOrderController {
     private UserOrderService userOrderService;
 
     /**
-     * Returns the allOrders page.
-     *
-     * @param model - model
-     * @return order/allOrders.jsp
-     */
-    @GetMapping("/order/all")
-    public String getOrders(Model model) {
-        model.addAttribute("orders", userOrderService.findAllSortedByDate());
-        return "order/allOrders";
-    }
-
-    /**
      * Returns the completedOrders page.
      *
      * @param model - model

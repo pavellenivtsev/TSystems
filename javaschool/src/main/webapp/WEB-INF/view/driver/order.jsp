@@ -23,17 +23,17 @@
                 <table class="table" id="cssTable2">
                     <tr>
                         <c:if test="${flag}">
-                            <td rowspan="2"></td>
+                            <th rowspan="2"></th>
                         </c:if>
-                        <td colspan="5">Cargo</td>
-                        <td rowspan="2"></td>
+                        <th colspan="5">Cargo</th>
+                        <th rowspan="2"></th>
                     </tr>
                     <tr>
-                        <td>Name</td>
-                        <td>Weight</td>
-                        <td>Place of departure</td>
-                        <td>Delivery place</td>
-                        <td>Status</td>
+                        <th>Name</th>
+                        <th>Weight</th>
+                        <th>Place of departure</th>
+                        <th>Delivery place</th>
+                        <th>Status</th>
                     </tr>
                     <tr>
                         <c:if test="${flag}">
@@ -275,10 +275,10 @@
                     url: 'http://maps.google.com/mapfiles/kml/shapes/truck.png',
                 },
                 loading: {
-                    url: '../../../resources/img/load-cargo.png',
+                    url: '${pageContext.request.contextPath}/resources/img/load-cargo.png',
                 },
                 unloading: {
-                    url: '../../../resources/img/unload-cargo.png',
+                    url: '${pageContext.request.contextPath}/resources/img/unload-cargo.png',
                 },
                 end: {
                     url: 'http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png',

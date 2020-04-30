@@ -66,7 +66,7 @@
             case 'role-user':
                 $.ajax({
                     type: "post",
-                    url: "/admin/appoint/user",
+                    url: "${pageContext.request.contextPath}/admin/appoint/user",
                     data: {
                         id: obj.options[obj.selectedIndex].value,
                     },
@@ -79,7 +79,7 @@
             case 'role-driver':
                 $.ajax({
                     type: "post",
-                    url: "/admin/appoint/driver",
+                    url: "${pageContext.request.contextPath}/admin/appoint/driver",
                     data: {
                         id: obj.options[obj.selectedIndex].value,
                     },
@@ -92,7 +92,7 @@
             case 'role-manager':
                 $.ajax({
                     type: "post",
-                    url: "/admin/appoint/manager",
+                    url: "${pageContext.request.contextPath}/admin/appoint/manager",
                     data: {
                         id: obj.options[obj.selectedIndex].value,
                     },
@@ -105,7 +105,7 @@
             case 'role-admin':
                 $.ajax({
                     type: "post",
-                    url: "/admin/appoint/admin",
+                    url: "${pageContext.request.contextPath}/admin/appoint/admin",
                     data: {
                         id: obj.options[obj.selectedIndex].value,
                     },

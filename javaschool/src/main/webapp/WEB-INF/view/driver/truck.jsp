@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <%@include file="../common/common.jsp" %>
@@ -13,9 +12,9 @@
         <c:when test="${!(driver.truck==null)}">
             <table class="table" id="cssTable">
                 <tr>
-                    <td>Truck registration number</td>
-                    <td>Truck status</td>
-                    <td></td>
+                    <th>Truck registration number</th>
+                    <th>Truck status</th>
+                    <th></th>
                 </tr>
                 <tr>
                     <td>${driver.truck.registrationNumber}</td>
@@ -42,6 +41,7 @@
             </table>
         </c:when>
         <c:otherwise>
+            <br><br>
             <div class="text-center">
                 You don't have a truck yet, please wait
             </div>

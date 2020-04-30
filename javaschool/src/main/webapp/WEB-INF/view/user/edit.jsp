@@ -2,8 +2,8 @@
 <head>
     <%@include file="../common/common.jsp" %>
     <title>Edit information</title>
-    <script src="/resources/js/jquery.validate.min.js"></script>
-    <script src="/resources/js/additional-methods.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.validate.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/additional-methods.min.js"></script>
 </head>
 <body>
 <%@include file="../common/navbar.jsp" %>

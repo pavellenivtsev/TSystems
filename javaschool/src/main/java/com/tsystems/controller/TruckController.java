@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/truck")
@@ -22,9 +24,9 @@ public class TruckController {
      * @return office/allOffices.jsp
      */
     @PostMapping("/delete")
-    public String deleteTruck(@RequestParam long id) {
+    public String deleteTruck(@RequestParam long id, HttpServletRequest request) {
         truckService.deleteById(id);
-        return "office/allOffices";
+        return getPreviousPageByRequest(request).orElse("redirect:/office/all");
     }
 
     /**
@@ -169,5 +171,15 @@ public class TruckController {
                                   @RequestParam long truckId) {
         truckService.addOrder(truckId, orderId);
         return "redirect:/orders/not-taken";
+    }
+
+    /**
+     * Returns the viewName to return for coming back to the sender url
+     *
+     * @param request - Instance of {@link HttpServletRequest}
+     * @return Optional with the view name
+     */
+    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
 }

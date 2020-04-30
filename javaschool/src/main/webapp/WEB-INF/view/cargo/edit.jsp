@@ -2,8 +2,8 @@
 <head>
     <%@include file="../common/common.jsp" %>
     <title>Edit cargo</title>
-    <script src="/resources/js/jquery.validate.min.js"></script>
-    <script src="/resources/js/additional-methods.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.validate.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/additional-methods.min.js"></script>
 </head>
 <body>
 <%@include file="../common/navbar.jsp" %>
@@ -172,10 +172,10 @@
 
     var icons = {
         loading: {
-            url: '../../../resources/img/load-cargo.png',
+            url: '${pageContext.request.contextPath}/resources/img/load-cargo.png',
         },
         unloading: {
-            url: '../../../resources/img/unload-cargo.png',
+            url: '${pageContext.request.contextPath}/resources/img/unload-cargo.png',
         },
     };
 

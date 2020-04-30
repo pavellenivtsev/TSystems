@@ -9,13 +9,13 @@
     <h2 class="text-center">Available trucks</h2>
     <table class="table table-striped" id="cssTable">
         <tr>
-            <td>Registration number</td>
-            <td>Driver shift size</td>
-            <td>Weight capacity</td>
-            <td>Status</td>
-            <td>Current city</td>
-            <td>Approximately distance</td>
-            <td></td>
+            <th>Registration number</th>
+            <th>Driver shift size</th>
+            <th>Weight capacity</th>
+            <th>Status</th>
+            <th>Current city</th>
+            <th>Approximately distance</th>
+            <th></th>
         </tr>
         <c:forEach var="truckPair" items="${truckPairs}">
             <tr>

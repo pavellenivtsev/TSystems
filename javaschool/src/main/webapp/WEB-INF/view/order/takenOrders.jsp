@@ -10,14 +10,15 @@
     <c:if test="${!orders.isEmpty()}">
         <table class="table table-striped" id="cssTable">
             <tr>
-                <td rowspan="2">Order<br>Unique number</td>
-                <td colspan="5">Cargo</td>
+                <th rowspan="2">Order<br>Unique number</th>
+                <th colspan="5">Cargo</th>
             </tr>
-            <td>Name</td>
-            <td>Weight</td>
-            <td>Status</td>
-            <td>Place of departure</td>
-            <td>Delivery place</td>
+            <tr>
+                <th>Name</th>
+                <th>Weight</th>
+                <th>Status</th>
+                <th>Place of departure</th>
+                <th>Delivery place</th>
             </tr>
             <c:forEach var="order" items="${orders}">
                 <tr>

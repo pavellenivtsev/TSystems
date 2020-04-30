@@ -16,11 +16,11 @@
     <c:if test="${!offices.isEmpty()}">
         <table class="table table-striped" id="cssTable">
             <tr>
-                <td>Name</td>
-                <td>Address</td>
-                <td>Count of trucks</td>
-                <td></td>
-                <td></td>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Count of trucks</th>
+                <th></th>
+                <th></th>
             </tr>
             <c:forEach var="office" items="${offices}">
                 <tr>

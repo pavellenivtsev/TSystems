@@ -9,13 +9,13 @@
     <h2 class="text-center">Available drivers</h2>
     <table class="table table-striped" id="cssTable">
         <tr>
-            <td>Personal number</td>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Phone number</td>
-            <td>Email</td>
-            <td>City</td>
-            <td></td>
+            <th>Personal number</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Phone number</th>
+            <th>Email</th>
+            <th>City</th>
+            <th></th>
         </tr>
         <c:forEach var="driver" items="${drivers}">
             <tr>

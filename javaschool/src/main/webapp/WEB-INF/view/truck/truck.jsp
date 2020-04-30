@@ -10,12 +10,12 @@
     <h2 class="text-center">Truck information</h2>
     <table class="table table-striped" id="cssTable">
         <tr>
-            <td></td>
-            <td>Registration number</td>
-            <td>Driver shift size</td>
-            <td>Weight capacity</td>
-            <td>Status</td>
-            <td>Current address</td>
+            <th></th>
+            <th>Registration number</th>
+            <th>Driver shift size</th>
+            <th>Weight capacity</th>
+            <th>Status</th>
+            <th>Current address</th>
             <c:if test="${truck.userOrder==null}">
                 <td></td>
             </c:if>
@@ -52,14 +52,14 @@
     <h2 class="text-center">List of drivers</h2>
     <table class="table table-striped" id="cssTable2">
         <tr>
-            <td>Personal number</td>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Hours worked this month</td>
-            <td>Status</td>
-            <td>Phone number</td>
-            <td>Email</td>
-            <td></td>
+            <th>Personal number</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Hours worked this month</th>
+            <th>Status</th>
+            <th>Phone number</th>
+            <th>Email</th>
+            <th></th>
         </tr>
         <c:forEach var="driver" items="${truck.driverList}">
             <tr>

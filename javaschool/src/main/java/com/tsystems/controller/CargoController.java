@@ -20,7 +20,7 @@ public class CargoController {
      *
      * @param orderId - order id
      * @param model   - model
-     * @return addCargo.jsp
+     * @return cargo/addCargo.jsp
      */
     @GetMapping(value = "/add")
     public String getAddPage(@RequestParam("orderId") long orderId, Model model) {
@@ -34,7 +34,7 @@ public class CargoController {
      *
      * @param cargoDto - cargo
      * @param orderId  - order id
-     * @return allOrders.jsp
+     * @return order/notTakenOrders.jsp
      */
     @PostMapping(value = "/add")
     public String addCargo(@ModelAttribute("cargo") @Valid CargoDto cargoDto,
@@ -48,7 +48,7 @@ public class CargoController {
      *
      * @param cargoId - cargo id
      * @param model   - model
-     * @return edit.jsp
+     * @return cargo/edit.jsp
      */
     @GetMapping(value = "/edit")
     public String editCargoPage(@RequestParam("cargoId") long cargoId, Model model) {
@@ -60,24 +60,24 @@ public class CargoController {
      * Edit cargo
      *
      * @param cargoDto - cargo
-     * @return allOrders.jsp
+     * @return order/notTakenOrders.jsp
      */
     @PostMapping(value = "/edit")
     public String editCargo(@ModelAttribute("cargo") @Valid CargoDto cargoDto) {
         cargoService.editCargo(cargoDto);
-        return "redirect:/order/all";
+        return "redirect:/orders/not-taken";
     }
 
     /**
      * Delete cargo
      *
      * @param cargoId - cargo id
-     * @return allOrders.jsp
+     * @return order/notTakenOrders.jsp
      */
     @PostMapping(value = "/delete")
     public String deleteCargo(@RequestParam("cargoId") long cargoId) {
         cargoService.deleteCargo(cargoId);
-        return "redirect:/order/all";
+        return "redirect:/orders/not-taken";
     }
 
     /**
