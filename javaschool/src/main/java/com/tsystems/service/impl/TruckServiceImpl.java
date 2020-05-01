@@ -107,19 +107,20 @@ public class TruckServiceImpl implements TruckService {
      * Delete truck by id
      *
      * @param id - truck id
-     * @return true if truck was deleted
+     * @return office id
      */
     @Override
     @Transactional
-    public boolean deleteById(long id) {
+    public long deleteById(long id) {
         Truck truck = truckDao.findById(id);
+        long officeId = truck.getOffice().getId();
         if (truck.getUserOrder() != null || !truck.getDriverList().isEmpty()) {
             throw new DataChangingException("Cant delete this truck");
         }
         truckDao.delete(truck);
         LOGGER.info("Deleted a truck with registration number " + truck.getRegistrationNumber());
         jmsSenderService.sendMessage();
-        return true;
+        return officeId;
     }
 
     /**

@@ -12,7 +12,7 @@ public interface TruckService {
 
     boolean update(TruckDto truckDto);
 
-    boolean deleteById(long id);
+    long deleteById(long id);
 
     TruckDto findById(long id);
 

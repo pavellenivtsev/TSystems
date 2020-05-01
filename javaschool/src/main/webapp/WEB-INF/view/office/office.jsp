@@ -71,7 +71,7 @@
                 <c:if test="${truck.userOrder==null&&truck.driverList.isEmpty()}">
                     <td>
                         <c:url value="/truck/delete" var="deleteTruck"/>
-                        <form name="edit" method="get" action="${deleteTruck}">
+                        <form name="edit" method="post" action="${deleteTruck}">
                             <input type="hidden" name="id" value="${truck.id}">
                             <button class="btn btn-default" type="submit">Delete</button>
                         </form>
