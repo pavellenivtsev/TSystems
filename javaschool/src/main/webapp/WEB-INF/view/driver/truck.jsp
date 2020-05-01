@@ -5,7 +5,6 @@
 </head>
 <body>
 <%@include file="../common/navbar.jsp" %>
-
 <div class="container" id="main-container">
     <h2 class="text-center">Truck information</h2>
     <c:choose>
@@ -41,10 +40,11 @@
             </table>
         </c:when>
         <c:otherwise>
-            <br><br>
+            <br>
             <div class="text-center">
                 You don't have a truck yet, please wait
             </div>
+            <br>
         </c:otherwise>
     </c:choose>
 </div>

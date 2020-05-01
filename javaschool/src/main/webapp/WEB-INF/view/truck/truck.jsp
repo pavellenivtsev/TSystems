@@ -50,6 +50,15 @@
     </table>
     <br><br>
     <h2 class="text-center">List of drivers</h2>
+    <c:if test="${truck.userOrder==null}">
+        <c:url value="/truck/add/driver" var="add"/>
+        <div class="text-center">
+            <form name="add" method="get" action="${add}">
+                <input type="hidden" name="truckId" value="${truck.id}">
+                <button class="btn btn-default" type="submit">Add driver</button>
+            </form>
+        </div>
+    </c:if>
     <table class="table table-striped" id="cssTable2">
         <tr>
             <th>Personal number</th>
@@ -85,16 +94,6 @@
             </tr>
         </c:forEach>
     </table>
-
-    <c:if test="${truck.userOrder==null}">
-        <c:url value="/truck/add/driver" var="add"/>
-        <div class="text-center">
-            <form name="add" method="get" action="${add}">
-                <input type="hidden" name="truckId" value="${truck.id}">
-                <button class="btn btn-default" type="submit">Add driver</button>
-            </form>
-        </div>
-    </c:if>
 </div>
 </body>
 </html>

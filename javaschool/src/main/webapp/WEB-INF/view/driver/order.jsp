@@ -102,10 +102,11 @@
                 </table>
             </c:when>
             <c:otherwise>
-                <br><br><br>
+                <br>
                 <div class="text-center">
                     You don't have an order yet, please wait
                 </div>
+                <br>
             </c:otherwise>
         </c:choose>
     </c:if>
