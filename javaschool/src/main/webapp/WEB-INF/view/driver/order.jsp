@@ -17,9 +17,7 @@
                         <c:set var="flag" value="${false}"/>
                     </c:if>
                 </c:forEach>
-                <div class="container">
-
-                </div>
+                <br>
                 <table class="table" id="cssTable2">
                     <tr>
                         <c:if test="${flag}">

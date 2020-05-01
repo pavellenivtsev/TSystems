@@ -14,16 +14,16 @@
                     <li><a href="${pageContext.request.contextPath}/admin/users"><i class="fas fa-users"></i> Users</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('MANAGER')">
-                    <li><a href="${pageContext.request.contextPath}/dispatcher/cabinet">Cabinet</a></li>
+                    <li><a href="${pageContext.request.contextPath}/dispatcher/cabinet"><i class="far fa-user"></i> Cabinet</a></li>
                     <li><a href="${pageContext.request.contextPath}/orders/completed">Completed orders</a></li>
                     <li><a href="${pageContext.request.contextPath}/orders/in-progress">Orders in progress</a></li>
                     <li><a href="${pageContext.request.contextPath}/orders/not-taken" id="not_taken_orders">Not taken orders</a></li>
                     <li><a href="${pageContext.request.contextPath}/office/all" id="offices"><i class="fas fa-building"></i> Offices</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('DRIVER')">
-                    <li><a href="${pageContext.request.contextPath}/driver/cabinet">Cabinet</a></li>
-                    <li><a href="${pageContext.request.contextPath}/driver/truck">Your truck</a></li>
-                    <li><a href="${pageContext.request.contextPath}/driver/order">Order</a></li>
+                    <li><a href="${pageContext.request.contextPath}/driver/cabinet"><i class="far fa-user"></i> Cabinet</a></li>
+                    <li><a href="${pageContext.request.contextPath}/driver/truck"><i class="fas fa-truck-moving"></i> Truck</a></li>
+                    <li><a href="${pageContext.request.contextPath}/driver/order"><i class="fas fa-file-alt"></i> Order</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('USER')">
                     <li><a href="${pageContext.request.contextPath}/user/cabinet"><i class="far fa-user"></i> Cabinet</a></li>
