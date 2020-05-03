@@ -25,7 +25,8 @@
                 <tr>
                     <td rowspan="${order.cargoList.size()}">
                         <c:url value="/order/delete" var="delete"/>
-                        <form method="post" action="${delete}">
+                        <form method="post" action="${delete}"
+                              style="margin-bottom: 0;">
                             <input type="hidden" name="id" value="${order.id}">
                             <button class="btn btn-default" type="submit">Delete order</button>
                         </form>

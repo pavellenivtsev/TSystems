@@ -14,7 +14,6 @@
                     <li><a href="${pageContext.request.contextPath}/admin/users"><i class="fas fa-users"></i> Users</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('MANAGER')">
-                    <li><a href="${pageContext.request.contextPath}/dispatcher/cabinet"><i class="far fa-user"></i> Cabinet</a></li>
                     <li><a href="${pageContext.request.contextPath}/orders/completed">Completed orders</a></li>
                     <li><a href="${pageContext.request.contextPath}/orders/in-progress">Orders in progress</a></li>
                     <li><a href="${pageContext.request.contextPath}/orders/not-taken" id="not_taken_orders">Not taken orders</a></li>

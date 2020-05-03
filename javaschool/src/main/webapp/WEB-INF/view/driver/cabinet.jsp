@@ -27,7 +27,8 @@
                     <c:if test="${driver.truck!=null}">
                         <c:if test="${driver.status.name().equals('REST')}">
                             <c:url value="/driver/status/start" var="start"/>
-                            <form method="post" action="${start}">
+                            <form method="post" action="${start}"
+                                  style="margin-bottom: 0;">
                                 <input type="hidden" name="driverId" value="${driver.id}">
                                 <button class="btn btn-default" type="submit">Start shift</button>
                             </form>
@@ -35,7 +36,8 @@
 
                         <c:if test="${driver.status.name().equals('ON_SHIFT')}">
                             <c:url value="/driver/status/finish" var="finish"/>
-                            <form method="post" action="${finish}">
+                            <form method="post" action="${finish}"
+                                  style="margin-bottom: 0;">
                                 <input type="hidden" name="driverId" value="${driver.id}">
                                 <button class="btn btn-default" type="submit">Finish shift</button>
                             </form>

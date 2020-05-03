@@ -88,6 +88,7 @@
     <br>
     <c:url value="/" var="home"/>
     <h3 class="text-center"><a href="${home}">Home page</a></h3>
+    <br>
 </div>
 <script>
     function initMap() {

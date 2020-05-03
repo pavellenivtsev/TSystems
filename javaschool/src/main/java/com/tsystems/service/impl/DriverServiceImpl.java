@@ -97,11 +97,10 @@ public class DriverServiceImpl implements DriverService {
         DateTime currentDate = new DateTime();
 
         //hours worked in this month are reset to zero for all drivers if at least one driver's status changes
+        //not including time zones
         if (!currentDate.monthOfYear().equals(driver.getShiftStartTime().monthOfYear())) {
             List<Driver> drivers = driverDao.findAll();
-            drivers.forEach(driver1 -> {
-                driver1.setHoursThisMonth(0.0);
-            });
+            drivers.forEach(driver1 -> driver1.setHoursThisMonth(0.0));
         }
 
         //driver must have REST status & must have a truck

@@ -6,19 +6,10 @@ import lombok.*;
 /**
  * Used for sorting trucks by distance and for implementing the nearest neighbor algorithm
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@Value
 public class TruckPair implements Comparable<TruckPair> {
-    private TruckDto truckDto;
-
-    int approximatelyTotalDistanceForTruckAndOrder;
-
-    public TruckPair(TruckDto truckDto) {
-        this.truckDto = truckDto;
-    }
+    private final TruckDto truckDto;
+    private final int approximatelyTotalDistanceForTruckAndOrder;
 
     @Override
     public int compareTo(TruckPair truckPair) {

@@ -9,6 +9,7 @@ import com.tsystems.entity.User;
 import com.tsystems.enumaration.DriverStatus;
 import com.tsystems.exception.DataChangingException;
 import com.tsystems.service.api.AdminService;
+import com.tsystems.service.api.GeneratorService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +37,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private JMSSenderServiceImpl jmsSenderService;
+
+    @Autowired
+    private GeneratorService generatorService;
 
     /**
      * Get all users from DB
@@ -119,9 +122,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public boolean appointAsDriver(long id) {
-        String uniqueNumber = generatePersonalNumber();
+        String uniqueNumber = generatorService.generateDriverPersonalNumber();
         while (driverDao.findByPersonalNumber(uniqueNumber) != null) {
-            uniqueNumber = generatePersonalNumber();
+            uniqueNumber = generatorService.generateDriverPersonalNumber();
         }
         User user = userDao.findById(id);
         if (isDriver(user)) {
@@ -186,21 +189,6 @@ public class AdminServiceImpl implements AdminService {
     private void grantRole(User user, Role role) {
         user.setRoles(null);
         user.setRoles(Collections.singleton(role));
-    }
-
-    /**
-     * Generates personal number for driver
-     *
-     * @return personal number
-     */
-    private String generatePersonalNumber() {
-        Random random = new Random();
-        return random.ints(48, 122)
-                .filter(i -> (i < 57 || i > 65) && (i < 90 || i > 97))
-                .mapToObj(i -> (char) i)
-                .limit(8)
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString();
     }
 
     /**

@@ -21,7 +21,8 @@
             <c:if test="${office.truckList.isEmpty()}">
                 <td>
                     <c:url value="/office/delete" var="deleteOffice"/>
-                    <form name="deleteOffice" method="post" action="${deleteOffice}">
+                    <form name="deleteOffice" method="post" action="${deleteOffice}"
+                          style="margin-bottom: 0;">
                         <input type="hidden" name="id" value="${office.id}">
                         <button class="btn btn-default" type="submit">Delete</button>
                     </form>
@@ -48,7 +49,15 @@
             <th>Status</th>
             <th>Current address</th>
             <th></th>
-            <th></th>
+            <c:set var="flag" value="${false}"/>
+            <c:forEach var="truck1" items="${office.truckList}">
+                <c:if test="${truck1.driverList.isEmpty()}">
+                    <c:set var="flag" value="${true}"/>
+                </c:if>
+            </c:forEach>
+            <c:if test="${flag}">
+                <th></th>
+            </c:if>
         </tr>
         <c:forEach var="truck" items="${office.truckList}">
             <tr>
@@ -64,14 +73,16 @@
                 <td>${truck.address}</td>
                 <td>
                     <c:url value="/truck/${truck.id}" var="getTruck"/>
-                    <form name="edit" method="get" action="${getTruck}">
+                    <form name="edit" method="get" action="${getTruck}"
+                          style="margin-bottom: 0;">
                         <button class="btn btn-default" type="submit">More information</button>
                     </form>
                 </td>
                 <c:if test="${truck.userOrder==null&&truck.driverList.isEmpty()}">
                     <td>
                         <c:url value="/truck/delete" var="deleteTruck"/>
-                        <form name="edit" method="post" action="${deleteTruck}">
+                        <form name="edit" method="post" action="${deleteTruck}"
+                              style="margin-bottom: 0;">
                             <input type="hidden" name="id" value="${truck.id}">
                             <button class="btn btn-default" type="submit">Delete</button>
                         </form>

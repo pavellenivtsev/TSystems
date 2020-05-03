@@ -16,10 +16,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+//@Service
 public class CountingServiceImpl implements CountingService {
     public static final int EARTH_RADIUS = 6371;
 
+    /**
+     * Converts degrees to radians
+     *
+     * @param value - value to convert
+     * @return converted value
+     */
     public double convertToRadians(double value) {
         return value * Math.PI / 180;
     }
@@ -59,14 +65,16 @@ public class CountingServiceImpl implements CountingService {
     }
 
     /**
-     * Calculates approximately distance for this truck and this order and checks whether the weight is exceeded
+     * Calculates approximately distance for this truck and this order
+     * using the nearest neighbor algorithm
+     * and checks whether the weight is exceeded
      *
      * @param truckDtoList - trucks
      * @param userOrderDto - order
      * @return mapping for this truck and this order
      */
     @Override
-    public List<TruckPair> getApproximatelyTotalDistanceForTruckAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto) {
+    public List<TruckPair> getApproximatelyTotalDistanceForTrucksAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto) {
         List<TruckPair> truckPairList = new ArrayList<>();
         CurrentPoint currentPoint = new CurrentPoint();
 

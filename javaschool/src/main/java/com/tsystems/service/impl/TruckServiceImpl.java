@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,7 +114,7 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public long deleteById(long id) {
         Truck truck = truckDao.findById(id);
-        long officeId = truck.getOffice().getId();
+        final long officeId = truck.getOffice().getId();
         if (truck.getUserOrder() != null || !truck.getDriverList().isEmpty()) {
             throw new DataChangingException("Cant delete this truck");
         }
@@ -144,6 +145,7 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional(readOnly = true)
     public List<TruckPair> findAllAvailable(long orderId) {
+        final int maximumDeltaDistanceForTrucks = 1000;
         UserOrder userOrder = userOrderDao.findById(orderId);
         List<Truck> trucks = truckDao.findAllAvailable();
         Predicate<Truck> haveOrder = truck -> truck.getUserOrder() != null;
@@ -151,14 +153,19 @@ public class TruckServiceImpl implements TruckService {
         List<TruckDto> truckDtoList = trucks.stream()
                 .map(truck -> modelMapper.map(truck, TruckDto.class))
                 .collect(Collectors.toList());
-        List<TruckPair> truckPairs = countingService.getApproximatelyTotalDistanceForTruckAndOrder(truckDtoList,
+        List<TruckPair> truckPairs = countingService.getApproximatelyTotalDistanceForTrucksAndOrder(truckDtoList,
                 modelMapper.map(userOrder, UserOrderDto.class));
 
         //checking that the time limit of 176 hours per month will not be exceeded for any driver
         Predicate<TruckPair> isLimitForDriversExceeded = this::isLimitForDriversExceeded;
         truckPairs.removeIf(isLimitForDriversExceeded);
         Collections.sort(truckPairs);
-        return truckPairs;
+        final int bestEstimatedDistance = truckPairs.get(0).getApproximatelyTotalDistanceForTruckAndOrder();
+        return truckPairs
+                .stream()
+                .filter(truckPair -> truckPair.getApproximatelyTotalDistanceForTruckAndOrder() - bestEstimatedDistance
+                        < maximumDeltaDistanceForTrucks)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -197,13 +204,14 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional(readOnly = true)
     public List<DriverDto> findAllAvailableDrivers(long truckId) {
+        final int cityDistance = 60;
         Truck truck = truckDao.findById(truckId);
         List<Driver> drivers = driverDao.findAllDriversWithoutTruck();
         Predicate<Driver> notSameCity = driver -> countingService.getDistanceLength(
                 driver.getUser().getLatitude(),
                 driver.getUser().getLongitude(),
                 truck.getOffice().getLatitude(),
-                truck.getOffice().getLongitude()) > 60;
+                truck.getOffice().getLongitude()) > cityDistance;
         drivers.removeIf(notSameCity);
         return drivers.stream()
                 .map(driver -> modelMapper.map(driver, DriverDto.class))
@@ -270,15 +278,14 @@ public class TruckServiceImpl implements TruckService {
      * @param truckPair - truck and distance for this truck and order
      * @return true if one of the drivers has exceeded the shift limit
      */
-    private boolean isLimitForDriversExceeded(TruckPair truckPair) {
+    private boolean isLimitForDriversExceeded(final @NonNull TruckPair truckPair) {
         //the speed of the truck in kilometers per hour
         final double truckSpeed = 90.0;
         final double maxHoursPerMonth = 176.0;
         final double hoursForOrder = (float) (truckPair.getApproximatelyTotalDistanceForTruckAndOrder() / truckSpeed);
-        double driverHoursThisMonth;
+
         for (DriverDto driverDto : truckPair.getTruckDto().getDriverList()) {
-            driverHoursThisMonth = driverDto.getHoursThisMonth();
-            if ((driverHoursThisMonth + hoursForOrder) < maxHoursPerMonth) {
+            if ((driverDto.getHoursThisMonth() + hoursForOrder) < maxHoursPerMonth) {
                 return false;
             } else {
                 DateTime currentDate = new DateTime();
@@ -294,7 +301,7 @@ public class TruckServiceImpl implements TruckService {
 
                 //even if the driver goes out to order every day
                 double maxHoursInThisMonth = daysToEndThisMonth * truckPair.getTruckDto().getDriverShiftSize();
-                return (driverHoursThisMonth + maxHoursInThisMonth) > maxHoursPerMonth;
+                return (driverDto.getHoursThisMonth() + maxHoursInThisMonth) > maxHoursPerMonth;
             }
         }
         return true;

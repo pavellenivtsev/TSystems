@@ -18,7 +18,7 @@
                     </c:if>
                 </c:forEach>
                 <br>
-                <table class="table" id="cssTable2">
+                <table class="table table-striped" id="cssTable2">
                     <tr>
                         <c:if test="${flag}">
                             <th rowspan="2"></th>
@@ -37,7 +37,8 @@
                         <c:if test="${flag}">
                             <td rowspan="${driver.truck.userOrder.cargoList.size()}">
                                 <c:url value="/driver/order/status/completed" var="orderCompleted"/>
-                                <form method="post" action="${orderCompleted}">
+                                <form method="post" action="${orderCompleted}"
+                                      style="margin-bottom: 0;">
                                     <input type="hidden" name="userOrderId"
                                            value="${driver.truck.userOrder.id}">
                                     <button class="btn btn-default" type="submit">Back in the office</button>
@@ -52,7 +53,8 @@
                         <td>
                             <c:if test="${driver.truck.userOrder.cargoList.get(0).status.name().equals('PREPARED')}">
                                 <c:url value="/cargo/shipped" var="cargoShipped"/>
-                                <form method="post" action="${cargoShipped}">
+                                <form method="post" action="${cargoShipped}"
+                                      style="margin-bottom: 0;">
                                     <input type="hidden" name="id"
                                            value="${driver.truck.userOrder.cargoList.get(0).id}">
                                     <button class="btn btn-default" type="submit">Cargo is shipped</button>
@@ -61,7 +63,8 @@
 
                             <c:if test="${driver.truck.userOrder.cargoList.get(0).status.name().equals('SHIPPED')}">
                                 <c:url value="/cargo/delivered" var="cargoDelivered"/>
-                                <form method="post" action="${cargoDelivered}">
+                                <form method="post" action="${cargoDelivered}"
+                                      style="margin-bottom: 0;">
                                     <input type="hidden" name="id"
                                            value="${driver.truck.userOrder.cargoList.get(0).id}">
                                     <button class="btn btn-default" type="submit">Cargo is delivered</button>
@@ -80,7 +83,8 @@
                                 <td>
                                     <c:if test="${cargo.status.name().equals('PREPARED')}">
                                         <c:url value="/cargo/shipped" var="cargoShipped"/>
-                                        <form method="post" action="${cargoShipped}">
+                                        <form method="post" action="${cargoShipped}"
+                                              style="margin-bottom: 0;">
                                             <input type="hidden" name="id" value="${cargo.id}">
                                             <button class="btn btn-default" type="submit">Cargo is shipped</button>
                                         </form>
@@ -88,7 +92,8 @@
 
                                     <c:if test="${cargo.status.name().equals('SHIPPED')}">
                                         <c:url value="/cargo/delivered" var="cargoDelivered"/>
-                                        <form method="post" action="${cargoDelivered}">
+                                        <form method="post" action="${cargoDelivered}"
+                                              style="margin-bottom: 0;">
                                             <input type="hidden" name="id" value="${cargo.id}">
                                             <button class="btn btn-default" type="submit">Cargo is delivered</button>
                                         </form>
@@ -112,7 +117,7 @@
 <c:if test="${!(driver.truck==null)}">
     <c:if test="${driver.truck.userOrder!=null}">
         <script>
-            var truck = JSON.parse('${truck}');
+            var truck =${truck};
             var cargoList = truck.userOrder.cargoList;
             var waypts = [];
             var cargoPairList = [];

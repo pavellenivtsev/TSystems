@@ -27,10 +27,11 @@
                 <td>${truckPair.approximatelyTotalDistanceForTruckAndOrder}</td>
                 <td>
                     <c:url value="/truck/add/order" var="addTruck"/>
-                    <form name="edit" method="post" action="${addTruck}">
+                    <form name="edit" method="post" action="${addTruck}"
+                          style="margin-bottom: 0;">
                         <input type="hidden" name="orderId" value="${orderId}">
                         <input type="hidden" name="truckId" value="${truckPair.truckDto.id}">
-                        <button class="btn btn-default" type="submit">Add truck</button>
+                        <button class="btn btn-default" type="submit">Appoint</button>
                     </form>
                 </td>
             </tr>

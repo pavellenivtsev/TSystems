@@ -29,13 +29,15 @@
                     <td>${office.truckList.size()}</td>
                     <td>
                         <c:url value="/office/${office.id}" var="getOffice"/>
-                        <form name="edit" method="get" action="${getOffice}">
+                        <form name="edit" method="get" action="${getOffice}"
+                              style="margin-bottom: 0;">
                             <button class="btn btn-default" type="submit">More information</button>
                         </form>
                     </td>
                     <td>
                         <c:url value="/truck/add" var="addTruck"/>
-                        <form name="edit" method="get" action="${addTruck}">
+                        <form name="edit" method="get" action="${addTruck}"
+                              style="margin-bottom: 0;">
                             <input type="hidden" name="officeId" value="${office.id}">
                             <button class="btn btn-default" type="submit">Add new truck</button>
                         </form>

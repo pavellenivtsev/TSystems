@@ -21,7 +21,8 @@
                     <td>
                         <c:if test="${driver.truck.status.name().equals('FAULTY')}">
                             <c:url value="/driver/truck/status/onDuty" var="truckOnDuty"/>
-                            <form method="post" action="${truckOnDuty}">
+                            <form method="post" action="${truckOnDuty}"
+                                  style="margin-bottom: 0;">
                                 <input type="hidden" name="driverId" value="${driver.id}">
                                 <button class="btn btn-default" type="submit">Set status on duty</button>
                             </form>
@@ -29,7 +30,8 @@
                         <c:if test="${driver.truck.userOrder==null}">
                             <c:if test="${driver.truck.status.name().equals('ON_DUTY')}">
                                 <c:url value="/driver/truck/status/faulty" var="truckFaulty"/>
-                                <form method="post" action="${truckFaulty}">
+                                <form method="post" action="${truckFaulty}"
+                                      style="margin-bottom: 0;">
                                     <input type="hidden" name="driverId" value="${driver.id}">
                                     <button class="btn btn-default" type="submit">Set faulty status</button>
                                 </form>

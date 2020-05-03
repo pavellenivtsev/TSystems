@@ -15,7 +15,7 @@ public interface CountingService {
     /**
      * Converts coordinates to radians
      *
-     * @param value
+     * @param value - value
      * @return radians
      */
     double convertToRadians(double value);
@@ -46,5 +46,5 @@ public interface CountingService {
      * @param userOrderDto - order
      * @return mapping for this truck and this order
      */
-    List<TruckPair> getApproximatelyTotalDistanceForTruckAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto);
+    List<TruckPair> getApproximatelyTotalDistanceForTrucksAndOrder(List<TruckDto> truckDtoList, UserOrderDto userOrderDto);
 }

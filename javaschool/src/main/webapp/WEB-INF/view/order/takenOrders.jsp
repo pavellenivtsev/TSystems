@@ -12,6 +12,7 @@
             <tr>
                 <th rowspan="2">Order<br>Unique number</th>
                 <th colspan="5">Cargo</th>
+                <th rowspan="2">Assigned truck</th>
             </tr>
             <tr>
                 <th>Name</th>
@@ -28,6 +29,7 @@
                     <td>${order.cargoList.get(0).status.name().toLowerCase().replaceAll("_"," ")}</td>
                     <td>${order.cargoList.get(0).loadingAddress}</td>
                     <td>${order.cargoList.get(0).unloadingAddress}</td>
+                    <td rowspan="${order.cargoList.size()}">${order.truck.registrationNumber}</td>
                 </tr>
                 <c:forEach var="cargo" items="${order.cargoList}" varStatus="loop">
                     <c:if test="${not loop.first}">

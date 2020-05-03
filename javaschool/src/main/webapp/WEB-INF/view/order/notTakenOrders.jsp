@@ -49,7 +49,8 @@
                             </form>
                         </c:if>
                         <c:url value="/order/delete" var="delete"/>
-                        <form method="post" action="${delete}">
+                        <form method="post" action="${delete}"
+                              style="margin-bottom: 0;">
                             <input type="hidden" name="id" value="${order.id}">
                             <button class="btn btn-default" type="submit" id="delete_order">Delete order</button>
                         </form>
@@ -69,7 +70,8 @@
                             </form>
 
                             <c:url value="/cargo/delete" var="deleteCargo"/>
-                            <form method="post" action="${deleteCargo}">
+                            <form method="post" action="${deleteCargo}"
+                                  style="margin-bottom: 0;">
                                 <input type="hidden" name="cargoId" value="${order.cargoList.get(0).id}">
                                 <button class="btn btn-default" type="submit">Delete cargo</button>
                             </form>

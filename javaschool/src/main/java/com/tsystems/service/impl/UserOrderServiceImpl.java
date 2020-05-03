@@ -5,6 +5,7 @@ import com.tsystems.dto.UserOrderDto;
 import com.tsystems.entity.UserOrder;
 import com.tsystems.enumaration.UserOrderStatus;
 import com.tsystems.exception.DataChangingException;
+import com.tsystems.service.api.GeneratorService;
 import com.tsystems.service.api.JMSSenderService;
 import com.tsystems.service.api.UserOrderService;
 import org.apache.logging.log4j.LogManager;
@@ -31,6 +32,9 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Autowired
     private JMSSenderService jmsSenderService;
+
+    @Autowired
+    private GeneratorService generatorService;
 
     /**
      * Finds all orders
@@ -86,9 +90,9 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional
     public boolean addOrder() {
-        String uniqueNumber = generateUniqueNumber();
+        String uniqueNumber = generatorService.generateOrderUniqueNumber();
         while (userOrderDao.findByUniqueNumber(uniqueNumber) != null) {
-            uniqueNumber = generateUniqueNumber();
+            uniqueNumber = generatorService.generateOrderUniqueNumber();
         }
         UserOrder userOrder = new UserOrder();
         userOrder.setCreationDate(new DateTime());
@@ -128,20 +132,5 @@ public class UserOrderServiceImpl implements UserOrderService {
         LOGGER.info("An order with unique number " + userOrder.getUniqueNumber() + " was deleted ");
         jmsSenderService.sendMessage();
         return true;
-    }
-
-    /**
-     * Generates a random sequence
-     *
-     * @return String
-     */
-    private String generateUniqueNumber() {
-        Random random = new Random();
-        return random.ints(48, 122)
-                .filter(i -> (i < 57 || i > 65) && (i < 90 || i > 97))
-                .mapToObj(i -> (char) i)
-                .limit(8)
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString();
     }
 }

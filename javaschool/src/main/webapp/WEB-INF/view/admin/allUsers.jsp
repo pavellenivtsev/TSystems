@@ -48,9 +48,10 @@
                 </td>
                 <td>
                     <c:url value="/admin/user/delete" var="delete"/>
-                    <form name="delete" method="post" action="${delete}">
+                    <form name="delete" method="post" action="${delete}"
+                          style="margin-bottom: 0;">
                         <input type="hidden" name="id" value="${user.id}">
-                        <button style="margin-top: 15px"
+                        <button
                                 <c:if test="${!isNotDisable}">disabled</c:if>
                                 class="btn btn-default" type="submit" id="delete_user">Delete
                         </button>

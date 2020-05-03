@@ -3,8 +3,11 @@ package com.tsystems.service;
 import com.tsystems.dto.CargoDto;
 import com.tsystems.dto.TruckDto;
 import com.tsystems.dto.UserOrderDto;
+import com.tsystems.service.api.CountingService;
 import com.tsystems.service.impl.CountingServiceImpl;
+import com.tsystems.service.impl.CountingServiceImpl2;
 import com.tsystems.utils.TruckPair;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
@@ -13,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class CountingServiceImplTest {
 
-    CountingServiceImpl service = new CountingServiceImpl();
+    CountingService service = new CountingServiceImpl2();
 
     @Test
     public void testGetDistanceLength() {
@@ -85,12 +88,14 @@ public class CountingServiceImplTest {
         cargoDtoList.add(cargoDto2);
         UserOrderDto userOrderDto = new UserOrderDto();
         userOrderDto.setCargoList(cargoDtoList);
-        List<TruckPair> truckPairs = service.getApproximatelyTotalDistanceForTruckAndOrder(
+        List<TruckPair> truckPairs = service.getApproximatelyTotalDistanceForTrucksAndOrder(
                 truckDtoList,
                 userOrderDto);
-        Collections.sort(truckPairs);
 
-        assertEquals("BB11111", truckPairs.get(0).getTruckDto().getRegistrationNumber());
-        assertEquals(3, truckPairs.size());
+        Collections.sort(truckPairs);
+        Assert.assertArrayEquals(
+                new String[]{"BB11111", "AA11111", "DD11111"},
+                truckPairs.stream().map(TruckPair::getTruckDto).map(TruckDto::getRegistrationNumber).toArray());
+        // 1680 1995 4269
     }
 }

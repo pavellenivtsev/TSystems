@@ -16,7 +16,7 @@
             <th>Weight capacity</th>
             <th>Status</th>
             <th>Current address</th>
-            <c:if test="${truck.userOrder==null}">
+            <c:if test="${truck.userOrder==null&&truck.driverList.isEmpty()}">
                 <td></td>
             </c:if>
         </tr>
@@ -29,7 +29,7 @@
             <td>${truck.weightCapacity}</td>
             <td>${truck.status.name().toLowerCase().replaceAll("_"," ")}</td>
             <td>${truck.address}</td>
-            <c:if test="${truck.userOrder==null}">
+            <c:if test="${truck.userOrder==null&&truck.driverList.isEmpty()}">
                 <td>
                     <c:url value="/truck/edit" var="edit"/>
                     <form name="edit" method="get" action="${edit}">
@@ -37,17 +37,18 @@
                         <button class="btn btn-default" type="submit">Edit</button>
                     </form>
 
-                    <c:if test="${truck.driverList.isEmpty()}">
-                        <c:url value="/truck/delete" var="delete"/>
-                        <form name="delete" method="post" action="${delete}">
-                            <input type="hidden" name="id" value="${truck.id}">
-                            <button class="btn btn-default" type="submit">Delete</button>
-                        </form>
-                    </c:if>
+                    <c:url value="/truck/delete" var="delete"/>
+                    <form name="delete" method="post" action="${delete}"
+                          style="margin-bottom: 0;">
+                        <input type="hidden" name="id" value="${truck.id}">
+                        <button class="btn btn-default" type="submit">Delete</button>
+                    </form>
                 </td>
             </c:if>
         </tr>
     </table>
+    <c:url value="/office/${truck.office.id}" var="office"/>
+    <h3 class="text-center"><a href="${office}">Back to office</a></h3>
     <br><br>
     <h2 class="text-center">List of drivers</h2>
     <c:if test="${truck.userOrder==null}">
@@ -68,7 +69,9 @@
             <th>Status</th>
             <th>Phone number</th>
             <th>Email</th>
-            <th></th>
+            <c:if test="${truck.userOrder==null}">
+                <th></th>
+            </c:if>
         </tr>
         <c:forEach var="driver" items="${truck.driverList}">
             <tr>
@@ -84,7 +87,8 @@
                 <c:if test="${truck.userOrder==null}">
                     <td>
                         <c:url value="/truck/remove/driver" var="remove"/>
-                        <form name="delete" method="post" action="${remove}">
+                        <form name="delete" method="post" action="${remove}"
+                              style="margin-bottom: 0;">
                             <input type="hidden" name="truckId" value="${truck.id}">
                             <input type="hidden" name="driverId" value="${driver.id}">
                             <button class="btn btn-default" type="submit">Remove</button>

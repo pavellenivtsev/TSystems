@@ -85,7 +85,7 @@ public class RegistrationController {
                 return "redirect:/admin/users";
             }
             if (grantedAuthority.getAuthority().equals("ROLE_MANAGER")) {
-                return "redirect:/dispatcher/cabinet";
+                return "redirect:/orders/not-taken";
             }
             if (grantedAuthority.getAuthority().equals("ROLE_DRIVER")) {
                 return "redirect:/driver/cabinet";
