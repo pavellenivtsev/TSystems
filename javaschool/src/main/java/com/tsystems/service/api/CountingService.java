@@ -3,13 +3,9 @@ package com.tsystems.service.api;
 import com.tsystems.dto.TruckDto;
 import com.tsystems.dto.UserOrderDto;
 import com.tsystems.entity.Driver;
-
-import com.tsystems.entity.Truck;
-import com.tsystems.entity.UserOrder;
 import com.tsystems.utils.TruckPair;
 
 import java.util.List;
-import java.util.TreeMap;
 
 public interface CountingService {
     /**

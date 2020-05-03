@@ -148,9 +148,8 @@ public class TruckServiceImpl implements TruckService {
         final int maximumDeltaDistanceForTrucks = 1000;
         UserOrder userOrder = userOrderDao.findById(orderId);
         List<Truck> trucks = truckDao.findAllAvailable();
-        Predicate<Truck> haveOrder = truck -> truck.getUserOrder() != null;
-        trucks.removeIf(haveOrder);
         List<TruckDto> truckDtoList = trucks.stream()
+                .filter(truck -> truck.getUserOrder() ==null)
                 .map(truck -> modelMapper.map(truck, TruckDto.class))
                 .collect(Collectors.toList());
         List<TruckPair> truckPairs = countingService.getApproximatelyTotalDistanceForTrucksAndOrder(truckDtoList,
@@ -159,12 +158,14 @@ public class TruckServiceImpl implements TruckService {
         //checking that the time limit of 176 hours per month will not be exceeded for any driver
         Predicate<TruckPair> isLimitForDriversExceeded = this::isLimitForDriversExceeded;
         truckPairs.removeIf(isLimitForDriversExceeded);
-        Collections.sort(truckPairs);
         final int bestEstimatedDistance = truckPairs.get(0).getApproximatelyTotalDistanceForTruckAndOrder();
         return truckPairs
                 .stream()
                 .filter(truckPair -> truckPair.getApproximatelyTotalDistanceForTruckAndOrder() - bestEstimatedDistance
                         < maximumDeltaDistanceForTrucks)
+                .sorted(Comparator
+                        .comparingInt(TruckPair::getApproximatelyTotalDistanceForTruckAndOrder)
+                        .thenComparingDouble(truckPair -> truckPair.getTruckDto().getWeightCapacity()))
                 .collect(Collectors.toList());
     }
 
