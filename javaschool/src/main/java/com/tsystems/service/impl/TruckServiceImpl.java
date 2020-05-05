@@ -1,7 +1,6 @@
 package com.tsystems.service.impl;
 
 import com.tsystems.dao.api.DriverDao;
-
 import com.tsystems.dao.api.OfficeDao;
 import com.tsystems.dao.api.TruckDao;
 import com.tsystems.dao.api.UserOrderDao;
@@ -16,10 +15,12 @@ import com.tsystems.enumaration.DriverStatus;
 import com.tsystems.enumaration.TruckStatus;
 import com.tsystems.enumaration.UserOrderStatus;
 import com.tsystems.exception.DataChangingException;
+import com.tsystems.exception.NoTrucksWereFoundException;
 import com.tsystems.service.api.CountingService;
 import com.tsystems.service.api.JMSSenderService;
 import com.tsystems.service.api.TruckService;
 import com.tsystems.utils.TruckPair;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -30,8 +31,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,7 +69,9 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional
     public boolean save(long officeId, TruckDto truckDto) {
-        Office office = officeDao.findById(officeId);
+        final Office office = Optional.of(officeId)
+                .map(officeDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Office with id: " + officeId + " does not exist"));
         if (truckDao.findByRegistrationNumber(truckDto.getRegistrationNumber()) == null) {
             Truck truck = modelMapper.map(truckDto, Truck.class);
             truck.setStatus(TruckStatus.ON_DUTY);
@@ -93,7 +96,7 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional
     public boolean update(TruckDto truckDto) {
-        Truck truck = truckDao.findById(truckDto.getId());
+        final Truck truck = findTruckById(truckDto.getId());
         if (truck.getRegistrationNumber().equals(truckDto.getRegistrationNumber())
                 || truckDao.findByRegistrationNumber(truckDto.getRegistrationNumber()) == null) {
             truck.setRegistrationNumber(truckDto.getRegistrationNumber());
@@ -113,9 +116,9 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional
     public long deleteById(long id) {
-        Truck truck = truckDao.findById(id);
+        final Truck truck = findTruckById(id);
         final long officeId = truck.getOffice().getId();
-        if (truck.getUserOrder() != null || !truck.getDriverList().isEmpty()) {
+        if (truck.getUserOrder() != null || CollectionUtils.isNotEmpty(truck.getDriverList())) {
             throw new DataChangingException("Cant delete this truck");
         }
         truckDao.delete(truck);
@@ -131,9 +134,9 @@ public class TruckServiceImpl implements TruckService {
      * @return TruckDto
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public TruckDto findById(long id) {
-        return modelMapper.map(truckDao.findById(id), TruckDto.class);
+        return modelMapper.map(findTruckById(id), TruckDto.class);
     }
 
     /**
@@ -146,22 +149,30 @@ public class TruckServiceImpl implements TruckService {
     @Transactional(readOnly = true)
     public List<TruckPair> findAllAvailable(long orderId) {
         final int maximumDeltaDistanceForTrucks = 1000;
-        UserOrder userOrder = userOrderDao.findById(orderId);
-        List<Truck> trucks = truckDao.findAllAvailable();
-        List<TruckDto> truckDtoList = trucks.stream()
-                .filter(truck -> truck.getUserOrder() ==null)
+        final UserOrder userOrder = Optional.of(orderId)
+                .map(userOrderDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Order with id: " + orderId + " does not exist"));
+        final List<Truck> trucks = truckDao.findAllAvailable();
+        final List<TruckDto> truckDtoList = trucks.stream()
+                .filter(truck -> truck.getUserOrder() == null)
                 .map(truck -> modelMapper.map(truck, TruckDto.class))
                 .collect(Collectors.toList());
-        List<TruckPair> truckPairs = countingService.getApproximatelyTotalDistanceForTrucksAndOrder(truckDtoList,
+        final List<TruckPair> truckPairs = countingService.getApproximatelyTotalDistanceForTrucksAndOrder(truckDtoList,
                 modelMapper.map(userOrder, UserOrderDto.class));
-
-        //checking that the time limit of 176 hours per month will not be exceeded for any driver
-        Predicate<TruckPair> isLimitForDriversExceeded = this::isLimitForDriversExceeded;
-        truckPairs.removeIf(isLimitForDriversExceeded);
-        final int bestEstimatedDistance = truckPairs.get(0).getApproximatelyTotalDistanceForTruckAndOrder();
-        return truckPairs
-                .stream()
-                .filter(truckPair -> truckPair.getApproximatelyTotalDistanceForTruckAndOrder() - bestEstimatedDistance
+        final int bestEstimatedDistance;
+        try {
+            final TruckPair bestTruckPair = truckPairs.stream()
+                    .sorted(Comparator.comparingInt(TruckPair::getApproximatelyTotalDistanceForTruckAndOrder))
+                    .filter(this::isLimitForDriversNotExceeded)
+                    .findFirst()
+                    .orElseThrow(NoTrucksWereFoundException::new);
+            bestEstimatedDistance = bestTruckPair.getApproximatelyTotalDistanceForTruckAndOrder();
+        } catch (NoTrucksWereFoundException e) {
+            return null;
+        }
+        return truckPairs.stream()
+                .filter(this::isLimitForDriversNotExceeded)
+                .filter(truckPair -> (truckPair.getApproximatelyTotalDistanceForTruckAndOrder() - bestEstimatedDistance)
                         < maximumDeltaDistanceForTrucks)
                 .sorted(Comparator
                         .comparingInt(TruckPair::getApproximatelyTotalDistanceForTruckAndOrder)
@@ -179,8 +190,10 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional
     public boolean addOrder(long truckId, long orderId) {
-        Truck truck = truckDao.findById(truckId);
-        UserOrder userOrder = userOrderDao.findById(orderId);
+        final Truck truck = findTruckById(truckId);
+        final UserOrder userOrder = Optional.of(orderId)
+                .map(userOrderDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Order with id: " + orderId + " does not exist"));
         if (!userOrder.getStatus().equals(UserOrderStatus.NOT_TAKEN) ||
                 userOrder.getCargoList().isEmpty() ||
                 truck.getStatus().equals(TruckStatus.FAULTY) ||
@@ -189,7 +202,6 @@ public class TruckServiceImpl implements TruckService {
         }
         userOrder.setTruck(truck);
         userOrder.setStatus(UserOrderStatus.TAKEN);
-        userOrderDao.update(userOrder);
         LOGGER.info("The truck with the number " + truck.getRegistrationNumber() +
                 " was assigned to the order with the number " + userOrder.getUniqueNumber());
         jmsSenderService.sendMessage();
@@ -206,15 +218,14 @@ public class TruckServiceImpl implements TruckService {
     @Transactional(readOnly = true)
     public List<DriverDto> findAllAvailableDrivers(long truckId) {
         final int cityDistance = 60;
-        Truck truck = truckDao.findById(truckId);
-        List<Driver> drivers = driverDao.findAllDriversWithoutTruck();
-        Predicate<Driver> notSameCity = driver -> countingService.getDistanceLength(
-                driver.getUser().getLatitude(),
-                driver.getUser().getLongitude(),
-                truck.getOffice().getLatitude(),
-                truck.getOffice().getLongitude()) > cityDistance;
-        drivers.removeIf(notSameCity);
+        final Truck truck = truckDao.findById(truckId);
+        final List<Driver> drivers = driverDao.findAllDriversWithoutTruck();
         return drivers.stream()
+                .filter(driver -> countingService.getDistanceLength(
+                        driver.getUser().getLatitude(),
+                        driver.getUser().getLongitude(),
+                        truck.getOffice().getLatitude(),
+                        truck.getOffice().getLongitude()) < cityDistance)
                 .map(driver -> modelMapper.map(driver, DriverDto.class))
                 .collect(Collectors.toList());
     }
@@ -229,8 +240,10 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional
     public boolean addDriver(long truckId, long driverId) {
-        Driver driver = driverDao.findById(driverId);
-        Truck truck = truckDao.findById(truckId);
+        final Driver driver = Optional.of(driverId)
+                .map(driverDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Driver with id: " + driverId + " does not exist"));
+        final Truck truck = findTruckById(truckId);
 
         //the truck does not fulfill the order and the driver does not have a car
         if (truck.getUserOrder() != null || driver.getTruck() != null) {
@@ -252,16 +265,18 @@ public class TruckServiceImpl implements TruckService {
     @Override
     @Transactional
     public boolean removeDriver(long truckId, long driverId) {
-        Truck truck = truckDao.findById(truckId);
-        Driver driver = driverDao.findById(driverId);
+        final Truck truck = findTruckById(truckId);
+        final Driver driver = Optional.of(driverId)
+                .map(driverDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Driver with id: " + driverId + " does not exist"));
         if (truck.getUserOrder() != null) {
             throw new DataChangingException("Cant remove this driver because this driver is carrying an order");
         }
 
         //change driver status to rest
         if (!driver.getStatus().equals(DriverStatus.REST)) {
-            double hoursThisMonth = driver.getHoursThisMonth();
-            double hoursWorked = countingService.getDriverHours(driver);
+            final double hoursThisMonth = driver.getHoursThisMonth();
+            final double hoursWorked = countingService.getDriverHours(driver);
             driver.setHoursThisMonth(hoursThisMonth + hoursWorked);
             driver.setStatus(DriverStatus.REST);
             LOGGER.info("The status of the driver with the number " +
@@ -279,7 +294,7 @@ public class TruckServiceImpl implements TruckService {
      * @param truckPair - truck and distance for this truck and order
      * @return true if one of the drivers has exceeded the shift limit
      */
-    private boolean isLimitForDriversExceeded(final @NonNull TruckPair truckPair) {
+    private boolean isLimitForDriversNotExceeded(final @NonNull TruckPair truckPair) {
         //the speed of the truck in kilometers per hour
         final double truckSpeed = 90.0;
         final double maxHoursPerMonth = 176.0;
@@ -287,7 +302,7 @@ public class TruckServiceImpl implements TruckService {
 
         for (DriverDto driverDto : truckPair.getTruckDto().getDriverList()) {
             if ((driverDto.getHoursThisMonth() + hoursForOrder) < maxHoursPerMonth) {
-                return false;
+                return true;
             } else {
                 DateTime currentDate = new DateTime();
                 int month = currentDate.getMonthOfYear() + 1;
@@ -302,10 +317,22 @@ public class TruckServiceImpl implements TruckService {
 
                 //even if the driver goes out to order every day
                 double maxHoursInThisMonth = daysToEndThisMonth * truckPair.getTruckDto().getDriverShiftSize();
-                return (driverDto.getHoursThisMonth() + maxHoursInThisMonth) > maxHoursPerMonth;
+                return !((driverDto.getHoursThisMonth() + maxHoursInThisMonth) > maxHoursPerMonth);
             }
         }
-        return true;
+        return false;
+    }
+
+    /**
+     * Finds truck by id
+     *
+     * @param id - truck id
+     * @return Truck
+     */
+    private Truck findTruckById(final long id) {
+        return Optional.of(id)
+                .map(truckDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Truck with id: " + id + " does not exist"));
     }
 }
 

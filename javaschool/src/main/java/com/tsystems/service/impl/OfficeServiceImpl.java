@@ -5,16 +5,23 @@ import com.tsystems.dto.OfficeDto;
 import com.tsystems.entity.Office;
 import com.tsystems.exception.DataChangingException;
 import com.tsystems.service.api.OfficeService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class OfficeServiceImpl implements OfficeService {
+    private static final Logger LOGGER = LogManager.getLogger(OfficeServiceImpl.class);
 
     @Autowired
     private OfficeDao officeDao;
@@ -30,8 +37,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional(readOnly = true)
     public List<OfficeDto> findAll() {
-        List<Office> offices = officeDao.findAll();
-        return offices.stream()
+        return officeDao.findAll().stream()
                 .map(office -> modelMapper.map(office, OfficeDto.class))
                 .collect(Collectors.toList());
     }
@@ -44,8 +50,11 @@ public class OfficeServiceImpl implements OfficeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public OfficeDto findById(long id) {
-        return modelMapper.map(officeDao.findById(id), OfficeDto.class);
+    public OfficeDto findById(final long id) {
+        final Office office = Optional.of(id)
+                .map(officeDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Office with id: " + id + " does not exist"));
+        return modelMapper.map(office, OfficeDto.class);
     }
 
     /**
@@ -56,9 +65,9 @@ public class OfficeServiceImpl implements OfficeService {
      */
     @Override
     @Transactional
-    public boolean save(OfficeDto officeDto) {
-        Office office = modelMapper.map(officeDto, Office.class);
-        officeDao.save(office);
+    public boolean save(final @NonNull OfficeDto officeDto) {
+        officeDao.save(modelMapper.map(officeDto, Office.class));
+        LOGGER.info("Created a new office with name " + officeDto.getTitle());
         return true;
     }
 
@@ -70,12 +79,15 @@ public class OfficeServiceImpl implements OfficeService {
      */
     @Override
     @Transactional
-    public boolean deleteById(long id) {
-        Office office = officeDao.findById(id);
-        if (!office.getTruckList().isEmpty()) {
+    public boolean deleteById(final long id) {
+        final Office office = Optional.of(id)
+                .map(officeDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Office with id: " + id + " does not exist"));
+        if (CollectionUtils.isNotEmpty(office.getTruckList())) {
             throw new DataChangingException("There are trucks in this office");
         }
         officeDao.delete(office);
+        LOGGER.info("Deleted the office with name " + office.getTitle());
         return true;
     }
 }

@@ -24,7 +24,9 @@
                             <th rowspan="2"></th>
                         </c:if>
                         <th colspan="5">Cargo</th>
-                        <th rowspan="2"></th>
+                        <c:if test="${!flag}">
+                            <th rowspan="2"></th>
+                        </c:if>
                     </tr>
                     <tr>
                         <th>Name</th>

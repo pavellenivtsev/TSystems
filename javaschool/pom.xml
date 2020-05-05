@@ -208,6 +208,13 @@
             <version>7.0.0.CR1</version>
         </dependency>
 
+        <!-- Commons-collections4 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+
         <!-- Spring-jms -->
         <dependency>
             <groupId>org.springframework</groupId>

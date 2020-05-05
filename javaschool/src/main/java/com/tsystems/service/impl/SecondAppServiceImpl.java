@@ -46,7 +46,7 @@ public class SecondAppServiceImpl implements SecondAppService {
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<UserOrderDto> findAllCompletedOrCarriedOrders() {
-        List<UserOrder> userOrderList = userOrderDao.findAllCompletedOrCarried();
+        final List<UserOrder> userOrderList = userOrderDao.findAllCompletedOrCarried();
         return userOrderList.stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
                 .collect(Collectors.toList());
@@ -60,9 +60,9 @@ public class SecondAppServiceImpl implements SecondAppService {
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<CargoDto> findAllCargoForCompletedOrCarriedOrders() {
-        List<Cargo> cargoList =cargoDao.findAllCargoForCompletedOrCarriedOrders();
+        final List<Cargo> cargoList = cargoDao.findAllCargoForCompletedOrCarriedOrders();
         return cargoList.stream()
-                .map(cargo -> modelMapper.map(cargo,CargoDto.class))
+                .map(cargo -> modelMapper.map(cargo, CargoDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -74,11 +74,11 @@ public class SecondAppServiceImpl implements SecondAppService {
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<EntryDto> createCountTable() {
-        List<EntryDto> countTable = new LinkedList<>();
-        Long trucksCount = truckDao.getTrucksCount();
-        Long carryingOrderTrucksCount = truckDao.getCarryingOrderTrucksCount();
-        Long faultyTrucksCount = truckDao.getFaultyTrucksCount();
-        Long freeTrucksCount = trucksCount - carryingOrderTrucksCount - faultyTrucksCount;
+        final List<EntryDto> countTable = new LinkedList<>();
+        final Long trucksCount = truckDao.getTrucksCount();
+        final Long carryingOrderTrucksCount = truckDao.getCarryingOrderTrucksCount();
+        final Long faultyTrucksCount = truckDao.getFaultyTrucksCount();
+        final Long freeTrucksCount = trucksCount - carryingOrderTrucksCount - faultyTrucksCount;
         countTable.add(new EntryDto("Total drivers count", driverDao.getDriversCount()));
         countTable.add(new EntryDto("Drivers on shift", driverDao.getOnShiftDriversCount()));
         countTable.add(new EntryDto("Drivers on vacation", driverDao.getRestDriversCount()));

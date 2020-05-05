@@ -15,8 +15,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 @Service
 public class CargoServiceImpl implements CargoService {
@@ -42,8 +46,8 @@ public class CargoServiceImpl implements CargoService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CargoDto findById(long id) {
-        return modelMapper.map(cargoDao.findById(id), CargoDto.class);
+    public CargoDto findById(final long id) {
+        return modelMapper.map(findCargoById(id), CargoDto.class);
     }
 
     /**
@@ -55,8 +59,10 @@ public class CargoServiceImpl implements CargoService {
      */
     @Override
     @Transactional
-    public boolean addCargoToOrder(CargoDto cargoDto, long orderId) {
-        UserOrder userOrder = userOrderDao.findById(orderId);
+    public boolean addCargoToOrder(final @NonNull CargoDto cargoDto, final long orderId) {
+        final UserOrder userOrder = Optional.of(orderId)
+                .map(userOrderDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Order with id: " + orderId + " does not exist"));
         if (!userOrder.getStatus().equals(UserOrderStatus.NOT_TAKEN)) {
             throw new DataChangingException("The order must not be taken");
         }
@@ -77,8 +83,8 @@ public class CargoServiceImpl implements CargoService {
      */
     @Override
     @Transactional
-    public boolean editCargo(CargoDto cargoDto) {
-        Cargo cargo = cargoDao.findById(cargoDto.getId());
+    public boolean editCargo(final @NonNull CargoDto cargoDto) {
+        final Cargo cargo = findCargoById(cargoDto.getId());
         UserOrder userOrder = cargo.getUserOrder();
         if (!userOrder.getStatus().equals(UserOrderStatus.NOT_TAKEN)) {
             throw new DataChangingException("The order must not be taken");
@@ -102,8 +108,8 @@ public class CargoServiceImpl implements CargoService {
      */
     @Override
     @Transactional
-    public boolean deleteCargo(long cargoId) {
-        Cargo cargo = cargoDao.findById(cargoId);
+    public boolean deleteCargo(final long cargoId) {
+        final Cargo cargo = findCargoById(cargoId);
         UserOrder userOrder = cargo.getUserOrder();
         if (!userOrder.getStatus().equals(UserOrderStatus.NOT_TAKEN)) {
             throw new DataChangingException("The order must not be taken");
@@ -122,8 +128,8 @@ public class CargoServiceImpl implements CargoService {
      */
     @Override
     @Transactional
-    public boolean setStatusDelivered(long id) {
-        Cargo cargo = cargoDao.findById(id);
+    public boolean setStatusDelivered(final long id) {
+        final Cargo cargo = findCargoById(id);
         if (!cargo.getUserOrder().getStatus().equals(UserOrderStatus.TAKEN) &&
                 !cargo.getStatus().equals(CargoStatus.SHIPPED) &&
                 !cargo.getUserOrder().getTruck().getStatus().equals(TruckStatus.ON_DUTY)) {
@@ -147,8 +153,8 @@ public class CargoServiceImpl implements CargoService {
      */
     @Override
     @Transactional
-    public boolean setStatusShipped(long id) {
-        Cargo cargo = cargoDao.findById(id);
+    public boolean setStatusShipped(final long id) {
+        final Cargo cargo = findCargoById(id);
         if (!cargo.getUserOrder().getStatus().equals(UserOrderStatus.TAKEN) &&
                 !cargo.getStatus().equals(CargoStatus.PREPARED) &&
                 !cargo.getUserOrder().getTruck().getStatus().equals(TruckStatus.ON_DUTY)) {
@@ -162,5 +168,17 @@ public class CargoServiceImpl implements CargoService {
                 ", a cargo with the name " + cargo.getName() + " was shipped");
         jmsSenderService.sendMessage();
         return true;
+    }
+
+    /**
+     * Finds cargo by id
+     *
+     * @param id - cargo id
+     * @return Cargo
+     */
+    private Cargo findCargoById(final long id) {
+        return Optional.of(id)
+                .map(cargoDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Cargo with id: " + id + " does not exist"));
     }
 }

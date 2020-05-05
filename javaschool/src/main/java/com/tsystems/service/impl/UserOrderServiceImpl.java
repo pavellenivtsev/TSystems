@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -44,8 +46,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional(readOnly = true)
     public List<UserOrderDto> findAllSortedByDate() {
-        List<UserOrder> userOrderList = userOrderDao.findAllSortedByDate();
-        return userOrderList.stream()
+        return userOrderDao.findAllSortedByDate().stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
                 .collect(Collectors.toList());
     }
@@ -58,8 +59,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional(readOnly = true)
     public List<UserOrderDto> findAllCompletedSortedByDate() {
-        List<UserOrder> userOrderList = userOrderDao.findAllCompletedSortedByDate();
-        return userOrderList.stream()
+        return userOrderDao.findAllCompletedSortedByDate().stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
                 .collect(Collectors.toList());
     }
@@ -67,8 +67,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional(readOnly = true)
     public List<UserOrderDto> findAllTakenSortedByDate() {
-        List<UserOrder> userOrderList = userOrderDao.findAllTakenSortedByDate();
-        return userOrderList.stream()
+        return userOrderDao.findAllTakenSortedByDate().stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
                 .collect(Collectors.toList());
     }
@@ -76,8 +75,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional(readOnly = true)
     public List<UserOrderDto> findAllNotTakenSortedByDate() {
-        List<UserOrder> userOrderList = userOrderDao.findAllNotTakenSortedByDate();
-        return userOrderList.stream()
+        return userOrderDao.findAllNotTakenSortedByDate().stream()
                 .map(userOrder -> modelMapper.map(userOrder, UserOrderDto.class))
                 .collect(Collectors.toList());
     }
@@ -94,7 +92,7 @@ public class UserOrderServiceImpl implements UserOrderService {
         while (userOrderDao.findByUniqueNumber(uniqueNumber) != null) {
             uniqueNumber = generatorService.generateOrderUniqueNumber();
         }
-        UserOrder userOrder = new UserOrder();
+        final UserOrder userOrder = new UserOrder();
         userOrder.setCreationDate(new DateTime());
         userOrder.setStatus(UserOrderStatus.NOT_TAKEN);
         userOrder.setUniqueNumber(uniqueNumber);
@@ -112,7 +110,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional(readOnly = true)
     public UserOrderDto findById(long id) {
-        return modelMapper.map(userOrderDao.findById(id), UserOrderDto.class);
+        return modelMapper.map(findOrderById(id), UserOrderDto.class);
     }
 
     /**
@@ -124,7 +122,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     @Transactional
     public boolean deleteById(long id) {
-        UserOrder userOrder = userOrderDao.findById(id);
+        final UserOrder userOrder = findOrderById(id);
         if (userOrder.getStatus().equals(UserOrderStatus.TAKEN)) {
             throw new DataChangingException("Cant delete this order");
         }
@@ -132,5 +130,17 @@ public class UserOrderServiceImpl implements UserOrderService {
         LOGGER.info("An order with unique number " + userOrder.getUniqueNumber() + " was deleted ");
         jmsSenderService.sendMessage();
         return true;
+    }
+
+    /**
+     * Finds order by id
+     *
+     * @param id - order id
+     * @return UserOrder
+     */
+    private UserOrder findOrderById(final long id) {
+        return Optional.of(id)
+                .map(userOrderDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("Order with id: " + id + " does not exist"));
     }
 }

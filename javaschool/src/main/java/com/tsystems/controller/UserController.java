@@ -51,7 +51,7 @@ public class UserController {
      * @return user/cabinet.jsp
      */
     @PostMapping("/edit")
-    public String editUser(@ModelAttribute("user") @Valid UserDto userDto) {
+    public String editUser(@ModelAttribute("user") UserDto userDto) {
         userService.update(userDto);
         return "redirect:/user/cabinet";
     }

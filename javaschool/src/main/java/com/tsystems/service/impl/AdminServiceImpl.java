@@ -15,11 +15,14 @@ import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,8 +52,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional(readOnly = true)
     public List<UserDto> findAll() {
-        List<User> users = userDao.findAll();
-        return users.stream()
+        return userDao.findAll().stream()
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
     }
@@ -63,8 +65,8 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public boolean deleteById(long id) {
-        User user = userDao.findById(id);
+    public boolean deleteById(final long id) {
+        final User user = findUserById(id);
         userDao.delete(user);
         LOGGER.info("Deleted a user with username " + user.getUsername());
         return true;
@@ -77,8 +79,8 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public boolean appointAsAdmin(long id) {
-        User user = userDao.findById(id);
+    public boolean appointAsAdmin(final long id) {
+        final User user = findUserById(id);
         if (isDriver(user)) {
             try {
                 deleteDriver(user);
@@ -99,8 +101,8 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public boolean appointAsManager(long id) {
-        User user = userDao.findById(id);
+    public boolean appointAsManager(final long id) {
+        final User user = findUserById(id);
         if (isDriver(user)) {
             try {
                 deleteDriver(user);
@@ -121,22 +123,23 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public boolean appointAsDriver(long id) {
+    public boolean appointAsDriver(final long id) {
         String uniqueNumber = generatorService.generateDriverPersonalNumber();
         while (driverDao.findByPersonalNumber(uniqueNumber) != null) {
             uniqueNumber = generatorService.generateDriverPersonalNumber();
         }
-        User user = userDao.findById(id);
+        final User user = findUserById(id);
         if (isDriver(user)) {
             throw new DataChangingException("This user is already a driver");
         }
         grantRole(user, new Role(4L, "ROLE_DRIVER"));
-        Driver driver = new Driver();
-        driver.setHoursThisMonth(0.0);
-        driver.setStatus(DriverStatus.REST);
-        driver.setPersonalNumber(uniqueNumber);
-        driver.setShiftStartTime(new DateTime());
-        driver.setUser(user);
+        final Driver driver = Driver.builder()
+                .hoursThisMonth(0.0)
+                .status(DriverStatus.REST)
+                .personalNumber(uniqueNumber)
+                .shiftStartTime(new DateTime())
+                .user(user)
+                .build();
         driverDao.save(driver);
         LOGGER.info("A user with username " + user.getUsername() + " was appointed as driver.");
         jmsSenderService.sendMessage();
@@ -150,8 +153,8 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public boolean appointAsUser(long id) {
-        User user = userDao.findById(id);
+    public boolean appointAsUser(final long id) {
+        final User user = findUserById(id);
         if (isDriver(user)) {
             try {
                 deleteDriver(user);
@@ -161,7 +164,7 @@ public class AdminServiceImpl implements AdminService {
             jmsSenderService.sendMessage();
         }
         grantRole(user, new Role(1L, "ROLE_USER"));
-        LOGGER.info("A user with username " + user.getUsername() + " was appointed as manager.");
+        LOGGER.info("A user with username " + user.getUsername() + " was appointed as user.");
         return true;
     }
 
@@ -170,7 +173,7 @@ public class AdminServiceImpl implements AdminService {
      *
      * @param user - user
      */
-    private void deleteDriver(User user) {
+    private void deleteDriver(final @NonNull User user) {
         if (user.getDriver().getTruck() != null &&
                 user.getDriver().getTruck().getUserOrder() != null) {
             throw new DataChangingException("The driver completes the order");
@@ -186,7 +189,7 @@ public class AdminServiceImpl implements AdminService {
      * @param user - user
      * @param role - role
      */
-    private void grantRole(User user, Role role) {
+    private void grantRole(final @NonNull User user, final @NonNull Role role) {
         user.setRoles(null);
         user.setRoles(Collections.singleton(role));
     }
@@ -197,8 +200,20 @@ public class AdminServiceImpl implements AdminService {
      * @param user - user
      * @return true if user is a driver
      */
-    private boolean isDriver(User user) {
+    private boolean isDriver(final @NonNull User user) {
         return user.getDriver() != null;
+    }
+
+    /**
+     * Finds user by id
+     *
+     * @param id - user id
+     * @return User
+     */
+    private User findUserById(final long id) {
+        return Optional.of(id)
+                .map(userDao::findById)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " does not exist"));
     }
 }
 
