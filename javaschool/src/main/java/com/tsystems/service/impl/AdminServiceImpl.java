@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-    private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(AdminServiceImpl.class);
 
     @Autowired
     private UserDao userDao;
